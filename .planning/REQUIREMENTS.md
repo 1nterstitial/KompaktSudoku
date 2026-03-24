@@ -84,42 +84,40 @@
 
 ## Traceability
 
-*Populated during roadmap creation.*
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PUZZ-01 | — | Pending |
-| PUZZ-02 | — | Pending |
-| PUZZ-03 | — | Pending |
-| DIFF-01 | — | Pending |
-| DIFF-02 | — | Pending |
-| INPUT-01 | — | Pending |
-| INPUT-02 | — | Pending |
-| INPUT-03 | — | Pending |
-| INPUT-04 | — | Pending |
-| INPUT-05 | — | Pending |
-| STATE-01 | — | Pending |
-| STATE-02 | — | Pending |
-| STATE-03 | — | Pending |
-| SCORE-01 | — | Pending |
-| SCORE-02 | — | Pending |
-| SCORE-03 | — | Pending |
-| SCORE-04 | — | Pending |
-| SCORE-05 | — | Pending |
-| SCORE-06 | — | Pending |
-| HS-01 | — | Pending |
-| HS-02 | — | Pending |
-| HS-03 | — | Pending |
-| NAV-01 | — | Pending |
-| UI-01 | — | Pending |
-| UI-02 | — | Pending |
-| UI-03 | — | Pending |
+| PUZZ-01 | Phase 1 | Pending |
+| PUZZ-02 | Phase 1 | Pending |
+| PUZZ-03 | Phase 1 | Pending |
+| DIFF-01 | Phase 2 | Pending |
+| DIFF-02 | Phase 2 | Pending |
+| INPUT-01 | Phase 2 | Pending |
+| INPUT-02 | Phase 2 | Pending |
+| INPUT-03 | Phase 2 | Pending |
+| INPUT-04 | Phase 2 | Pending |
+| INPUT-05 | Phase 2 | Pending |
+| STATE-01 | Phase 4 | Pending |
+| STATE-02 | Phase 4 | Pending |
+| STATE-03 | Phase 4 | Pending |
+| SCORE-01 | Phase 2 | Pending |
+| SCORE-02 | Phase 2 | Pending |
+| SCORE-03 | Phase 5 | Pending |
+| SCORE-04 | Phase 5 | Pending |
+| SCORE-05 | Phase 5 | Pending |
+| SCORE-06 | Phase 5 | Pending |
+| HS-01 | Phase 5 | Pending |
+| HS-02 | Phase 5 | Pending |
+| HS-03 | Phase 5 | Pending |
+| NAV-01 | Phase 6 | Pending |
+| UI-01 | Phase 3 | Pending |
+| UI-02 | Phase 3 | Pending |
+| UI-03 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 26 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 26 ⚠️
+- Mapped to phases: 26
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-23*
-*Last updated: 2026-03-23 after initial definition*
+*Last updated: 2026-03-23 after roadmap creation*
