@@ -72,12 +72,17 @@ dependencies {
     implementation(libs.sudoklify.core)
     implementation(libs.sudoklify.presets)
 
+    // MMD — Mudita Mindful Design E-ink UI components (D-09)
+    implementation(libs.mmd)
+
     // Unit tests
     testImplementation(libs.junit)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
     testImplementation(libs.robolectric)
+    testImplementation(libs.compose.ui.test.junit4)
+    testImplementation(libs.compose.ui.test.manifest)
 
     // Compose UI tests
     androidTestImplementation(libs.compose.ui.test.junit4)
