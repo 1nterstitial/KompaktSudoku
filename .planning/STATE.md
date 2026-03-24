@@ -25,7 +25,7 @@ progress:
 ## Current Position
 
 Phase: 3
-Plan: 01 (ready to execute)
+Plan: 03 (ready to execute)
 
 ## Phase Sequence
 
@@ -56,6 +56,7 @@ Plan: 01 (ready to execute)
 | 02 | 01 | 5 min | 2 | 7 | 2026-03-24 |
 | Phase 02 P02 | 4 | 1 tasks | 2 files |
 | Phase 02-game-state-domain P03 | 8min | 1 tasks | 2 files |
+| 03 | 02 | 6 min | 2 | 4 | 2026-03-24 |
 
 ## Accumulated Context
 
@@ -86,6 +87,8 @@ Plan: 01 (ready to execute)
 - [03-01] MMD declared as compileOnly due to inaccessible repos — GitHub Packages needs auth token, JFrog instance deactivated; switch to implementation once credentials configured
 - [03-01] eraseCell() reuses FillCell undo action — pushes previous value/marks before clearing, enabling undo via existing infrastructure
 - [03-01] GameScreen stub created in Plan 01 — allows MainActivity compilation before Plan 02 wires the real UI
+- [03-02] ControlsRow mode toggles use Box+clickable (indication=null) instead of ButtonMMD with colors param — ButtonMMD colors API unverifiable without MMD AAR; Box approach is guaranteed safe
+- [03-02] Grid lines drawn last in Canvas to prevent thick box borders being partially overwritten by adjacent cell fills
 
 ### Architecture Decisions
 
