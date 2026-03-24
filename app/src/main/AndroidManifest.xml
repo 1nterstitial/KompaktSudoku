@@ -14,6 +14,12 @@
             </intent-filter>
         </activity>
 
+        <!-- Registered for Robolectric + Compose UI tests (createComposeRule requires it) -->
+        <activity
+            android:name="androidx.activity.ComponentActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+
     </application>
 
 </manifest>

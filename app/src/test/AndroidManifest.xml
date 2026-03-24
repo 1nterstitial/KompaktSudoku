@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Test-only manifest that registers ComponentActivity for Robolectric + Compose UI tests.
+  Without this, createComposeRule() throws "Unable to resolve activity for Intent"
+  because Robolectric cannot find ComponentActivity in the app manifest.
+  This manifest is merged with the main manifest only during unit test runs.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mudita.sudoku">
+    <application>
+        <activity
+            android:name="androidx.activity.ComponentActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+    </application>
+</manifest>
