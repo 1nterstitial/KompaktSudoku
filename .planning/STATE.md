@@ -17,21 +17,21 @@ progress:
 
 **Core Value:** A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-ink display — responsive touch input, high-contrast grid, and smooth puzzle flow without display artifacts.
 
-**Current Focus:** Phase 01 — puzzle-engine
+**Current Focus:** Phase 02 — game-state-domain
 
 ---
 
 ## Current Position
 
-Phase: 01 (puzzle-engine) — COMPLETE
-Plan: 4 of 4 (all plans complete)
+Phase: 02 (game-state-domain) — In Progress
+Plan: 2 of 3 (plan 01 complete)
 
 ## Phase Sequence
 
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | Puzzle Engine | Complete |
-| 2 | Game State & Domain | Not started |
+| 2 | Game State & Domain | In Progress |
 | 3 | Core Game UI | Not started |
 | 4 | Persistence | Not started |
 | 5 | Scoring & Completion | Not started |
@@ -52,6 +52,7 @@ Plan: 4 of 4 (all plans complete)
 | 01 | 02 | 47 min | 2 | 7 | 2026-03-24 |
 | 01 | 03 | 10 min | 1 | 2 | 2026-03-24 |
 | 01 | 04 | 16 min | 2 | 5 | 2026-03-24 |
+| 02 | 01 | 5 min | 2 | 7 | 2026-03-24 |
 
 ## Accumulated Context
 
@@ -72,6 +73,9 @@ Plan: 4 of 4 (all plans complete)
 - [01-04] Sudoklify MEDIUM produces 0% HIDDEN_PAIRS tier empirically — MEDIUM_CONFIG updated to NAKED_SINGLES_ONLY; MEDIUM differs from EASY by given-count range only (27-35 vs 36-45)
 - [01-04] toSeed() requires strictly positive Long — use Random.nextLong(1L, Long.MAX_VALUE); zero/negative seeds throw InvalidSeedException
 - [01-04] Sudoklify 1.0.0-beta04 actual API: components.toSeed, presets.loadPresetSchemas(), SudoklifyArchitect factory lambda, constructSudoku DSL builder
+- [02-01] GameUiState stores no undoStack — mutable undo history belongs in GameViewModel; keeps state immutable and recomposition-safe
+- [02-01] FakeGenerator is a standalone class (not SudokuGenerator subclass) — avoids modifying Phase 1; GameViewModel will accept a generator lambda in Plan 02
+- [02-01] Array<Set<Int>> pencilMarks requires contentDeepEquals/contentDeepHashCode — standard data class equals is reference-based for arrays
 
 ### Architecture Decisions
 
@@ -104,10 +108,11 @@ Plan: 4 of 4 (all plans complete)
 
 ## Session Continuity
 
-**Last session:** 2026-03-24T21:15:53.835Z
-**Next action:** Phase 01 complete. Run /gsd:transition to review Phase 01 outcomes and begin Phase 02 (Game State & Domain).
+**Last session:** 2026-03-24T21:44:55Z
+**Next action:** Phase 02 Plan 01 complete. Continue with Plan 02 (GameViewModel) and Plan 03 (ViewModel tests).
+**Stopped at:** Completed 02-01-PLAN.md
 
 ---
 
 *State initialized: 2026-03-23*
-*Last updated: 2026-03-24 after phase 01 plan 04 execution — Phase 01 complete*
+*Last updated: 2026-03-24 after phase 02 plan 01 execution — domain model contracts complete*

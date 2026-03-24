@@ -47,7 +47,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Domain models (GameUiState, InputMode, GameAction, GameEvent) + test infrastructure (MainDispatcherRule, FakeGenerator, GameUiState tests)
+- [x] 02-01-PLAN.md — Domain models (GameUiState, InputMode, GameAction, GameEvent) + test infrastructure (MainDispatcherRule, FakeGenerator, GameUiState tests)
 - [ ] 02-02-PLAN.md — GameViewModel core actions (startGame, selectCell, enterDigit fill, toggleInputMode) + tests for DIFF-01/02, INPUT-01/02/03
 - [ ] 02-03-PLAN.md — GameViewModel pencil marks, undo, error tracking, completion detection + tests for INPUT-04/05, SCORE-01/02
 
