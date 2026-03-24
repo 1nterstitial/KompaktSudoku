@@ -30,7 +30,7 @@
 
 Plans:
 - [x] 01-01-PLAN.md — Gradle setup, domain models (Difficulty/DifficultyConfig/SudokuPuzzle), Wave 0 test stubs
-- [ ] 01-02-PLAN.md — SudokuValidator + UniquenessVerifier (abort-on-second-solution, PUZZ-01)
+- [x] 01-02-PLAN.md — SudokuValidator + UniquenessVerifier (abort-on-second-solution, PUZZ-01)
 - [ ] 01-03-PLAN.md — DifficultyClassifier (constraint-propagation solver with technique tracking, PUZZ-02)
 - [ ] 01-04-PLAN.md — SudokuGenerator (Sudoklify wrapper + retry loop) + integration batch tests (PUZZ-01/02/03)
 
