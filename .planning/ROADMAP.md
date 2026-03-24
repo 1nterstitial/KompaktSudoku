@@ -8,7 +8,7 @@
 ## Phases
 
 - [x] **Phase 1: Puzzle Engine** - Pure Kotlin generator producing valid, unique, technique-classified puzzles (completed 2026-03-24)
-- [ ] **Phase 2: Game State & Domain** - ViewModel contract, domain models, input handling, and error tracking
+- [x] **Phase 2: Game State & Domain** - ViewModel contract, domain models, input handling, and error tracking (completed 2026-03-24)
 - [ ] **Phase 3: Core Game UI** - E-ink-native playable game screen validated on physical hardware
 - [ ] **Phase 4: Persistence** - Pause/resume and high score storage via DataStore
 - [ ] **Phase 5: Scoring & Completion** - Hint logic, score computation, completion summary, and leaderboard screens
@@ -49,7 +49,7 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — Domain models (GameUiState, InputMode, GameAction, GameEvent) + test infrastructure (MainDispatcherRule, FakeGenerator, GameUiState tests)
 - [x] 02-02-PLAN.md — GameViewModel core actions (startGame, selectCell, enterDigit fill, toggleInputMode) + tests for DIFF-01/02, INPUT-01/02/03
-- [ ] 02-03-PLAN.md — GameViewModel pencil marks, undo, error tracking, completion detection + tests for INPUT-04/05, SCORE-01/02
+- [x] 02-03-PLAN.md — GameViewModel pencil marks, undo, error tracking, completion detection + tests for INPUT-04/05, SCORE-01/02
 
 ### Phase 3: Core Game UI
 **Goal**: The game screen renders correctly on the Mudita Kompakt E-ink display with no ghosting artifacts, appropriately sized touch targets, and full MMD library compliance
@@ -108,7 +108,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
-| 2. Game State & Domain | 1/3 | In Progress|  |
+| 2. Game State & Domain | 3/3 | Complete   | 2026-03-24 |
 | 3. Core Game UI | 0/3 | Not started | - |
 | 4. Persistence | 0/0 | Not started | - |
 | 5. Scoring & Completion | 0/0 | Not started | - |
