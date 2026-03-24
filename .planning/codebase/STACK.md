@@ -53,12 +53,14 @@
 - **Version:** 2.9.0 (`lifecycle`)
 - `androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0`
 - `androidx.lifecycle:lifecycle-runtime-compose:2.9.0` (provides `collectAsStateWithLifecycle`)
+- **Status:** `GameViewModel` (`app/src/main/java/com/mudita/sudoku/game/GameViewModel.kt`) actively uses `ViewModel` and `viewModelScope`
 
 ### Coroutines
 
 - **Version:** 1.10.2 (`coroutines`)
 - `org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2` (runtime)
 - `org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2` (test only)
+- **Status:** Actively used — `GameViewModel` uses `Dispatchers.Default`, `withContext`, `viewModelScope.launch`, `MutableStateFlow`, `MutableSharedFlow`
 
 ### Serialization
 
@@ -90,7 +92,7 @@
 | Robolectric | 4.14.1 | `testImplementation` | `org.robolectric:robolectric:4.14.1` |
 | Compose UI Test JUnit4 | via BOM | `androidTestImplementation` | `androidx.compose.ui:ui-test-junit4` |
 
-**Note:** Mockk, Turbine, and Robolectric are declared in the version catalog and `app/build.gradle.kts` but not yet used in any test file — they are available for ViewModel and UI testing phases.
+**Status:** Test files exist in `app/src/test/java/com/mudita/sudoku/` covering puzzle engine and ViewModel. Mockk, Turbine, and Robolectric are used in `GameViewModelTest.kt` and related files.
 
 ## Application Config
 

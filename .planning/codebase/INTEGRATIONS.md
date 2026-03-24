@@ -43,7 +43,7 @@
 - **Notes:**
   - API is annotated `@ExperimentalSudoklifyApi` — requires `@OptIn` at call sites
   - Beta status (1.0.0-beta04): no stable release exists; breaking changes are possible
-  - Sudoklify's built-in difficulty classification does not match the project's technique-based tiers — the project's `DifficultyClassifier` is used as the authoritative gate instead
+  - Sudoklify's built-in difficulty classification does not match the project's technique-based tiers — the project's `DifficultyClassifier` (`app/src/main/java/com/mudita/sudoku/puzzle/engine/DifficultyClassifier.kt`) is the authoritative gate instead
   - `loadPresetSchemas()` comes from the `-presets` artifact (separate dependency)
   - Seeds must be strictly positive (`1L..Long.MAX_VALUE`) — zero seed causes errors
 
@@ -86,7 +86,7 @@
   - `androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0`
   - `androidx.lifecycle:lifecycle-runtime-compose:2.9.0`
 - **Purpose:** MVVM ViewModel integration with Compose; lifecycle-aware StateFlow collection
-- **Usage:** Declared in `app/build.gradle.kts`; not yet imported in source (ViewModel phases not started)
+- **Usage:** `GameViewModel` (`app/src/main/java/com/mudita/sudoku/game/GameViewModel.kt`) extends `ViewModel` and uses `viewModelScope`
 - **Key API when used:** `collectAsStateWithLifecycle()` from `lifecycle-runtime-compose` — preferred over `collectAsState()`
 
 ---
@@ -126,7 +126,7 @@
 - **Version:** 1.10.2
 - **Coordinates:** `org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2`
 - **Purpose:** Android-aware coroutine dispatcher (`Dispatchers.Main`), StateFlow foundation
-- **Usage:** Declared in `app/build.gradle.kts`; not yet directly imported in source (no ViewModel or async code yet)
+- **Usage:** Actively used — `GameViewModel` imports `Dispatchers`, `MutableStateFlow`, `MutableSharedFlow`, `StateFlow`, `SharedFlow`, `withContext`, `launch`
 
 ---
 
@@ -145,7 +145,7 @@
 - **Version:** 1.13.17
 - **Coordinates:** `io.mockk:mockk:1.13.17`
 - **Purpose:** Kotlin-idiomatic mocking for unit tests, including `suspend` functions and coroutines
-- **Usage:** Declared in `app/build.gradle.kts` (`testImplementation`); not yet used in any test file
+- **Usage:** Used in `app/src/test/java/com/mudita/sudoku/game/GameViewModelTest.kt` and related test files
 
 ---
 
@@ -154,7 +154,7 @@
 - **Version:** 1.2.0
 - **Coordinates:** `app.cash.turbine:turbine:1.2.0`
 - **Purpose:** Testing StateFlow and Flow emissions with `flow.test { ... }` syntax
-- **Usage:** Declared in `app/build.gradle.kts` (`testImplementation`); not yet used in any test file
+- **Usage:** Used in `app/src/test/java/com/mudita/sudoku/game/GameViewModelTest.kt` for StateFlow assertions
 
 ---
 
@@ -163,7 +163,7 @@
 - **Version:** 4.14.1
 - **Coordinates:** `org.robolectric:robolectric:4.14.1`
 - **Purpose:** JVM-based Android/Compose UI testing without emulator; enables headless CI
-- **Usage:** Declared in `app/build.gradle.kts` (`testImplementation`); not yet used in any test file
+- **Usage:** Declared in `app/build.gradle.kts` (`testImplementation`); available for Compose UI test phases
 
 ---
 
@@ -183,6 +183,29 @@
 | Google | `https://dl.google.com/dl/android/maven2/` | AndroidX, AGP |
 | Maven Central | `https://repo1.maven.org/maven2/` | Kotlin, Sudoklify, Coroutines, Turbine, Mockk, Robolectric |
 | GitHub Packages (Mudita) | `https://maven.pkg.github.com/mudita/MMD` | MMD library only |
+
+## Data Flow
+
+All data is local — no network calls, no backend.
+
+```
+Sudoklify (puzzle generation)
+    ↓ raw board + solution arrays (IntArray)
+SudokuGenerator (app/src/main/java/com/mudita/sudoku/puzzle/engine/SudokuGenerator.kt)
+    ↓ SudokuPuzzle (validated)
+GameViewModel (app/src/main/java/com/mudita/sudoku/game/GameViewModel.kt)
+    ↓ GameUiState (StateFlow)
+Compose UI (not yet implemented)
+    ↓ user actions (GameAction)
+GameViewModel
+    ↓ persistence (future: DataStore via kotlinx-serialization-json)
+```
+
+## Configuration
+
+- No environment variables — all configuration is compile-time or hardcoded
+- GitHub Packages authentication for MMD resolution: requires `~/.gradle/gradle.properties` or CI secret with `gpr.user` / `gpr.key` (not committed)
+- No `.env` file or secrets file present in the repository
 
 ---
 

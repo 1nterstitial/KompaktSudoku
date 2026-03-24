@@ -1,137 +1,123 @@
 # Architecture
 
-**Analysis Date:** 2026-03-24
+> Last updated: 2026-03-24
 
-## Pattern Overview
+## Pattern
 
-**Overall:** MVVM with StateFlow (mandated by project constraints)
-
-**Key Characteristics:**
-- Single Android module, single-activity app (`MainActivity`)
-- Puzzle generation engine is pure Kotlin — no Android dependencies, fully unit-testable on JVM
-- Presentation layer (ViewModels, UI State, Composables) is not yet implemented; only the domain/engine layer exists as of Phase 1
-- All persistence to be done via DataStore Preferences (async, coroutine-native)
+**MVVM with StateFlow** — a single `GameViewModel` owns all game state, exposes it as an immutable `StateFlow<GameUiState>`, and emits one-shot outcomes via `SharedFlow<GameEvent>`. The UI layer (not yet implemented) will observe both flows and call public ViewModel methods in response to user input. The puzzle engine (domain layer) is pure Kotlin with no Android dependencies and is injected into the ViewModel as a suspend lambda for testability.
 
 ## Layers
 
-**Domain / Engine:**
-- Purpose: Puzzle generation, validation, classification, and domain model definitions
+### Domain / Puzzle Engine
 - Location: `app/src/main/java/com/mudita/sudoku/puzzle/`
-- Contains: Domain models (`model/`), engine services (`engine/`), and exceptions
-- Depends on: Sudoklify library (`dev.teogor.sudoklify`) for raw puzzle seeding
-- Used by: Presentation layer (ViewModel) — not yet implemented
+- Purpose: Generate valid, uniquely-solvable puzzles at a specified difficulty. Pure Kotlin — no Android dependencies.
+- Depends on: Sudoklify library (`dev.teogor.sudoklify`) for raw seeded puzzle generation
+- Used by: `GameViewModel` (via injected `generatePuzzle` lambda)
 
-**Presentation (planned — Phase 2+):**
-- Purpose: MVVM ViewModel contract, UI state holder, Composable screens
-- Location: `app/src/main/java/com/mudita/sudoku/` (future packages: `ui/`, `viewmodel/`)
-- Contains: ViewModels exposing StateFlow<UiState>, Composable screens using MMD components
-- Depends on: Domain layer, DataStore (Phase 4)
-- Used by: `MainActivity`
+Key files:
+- `puzzle/model/Difficulty.kt` — enum: `EASY`, `MEDIUM`, `HARD`
+- `puzzle/model/DifficultyConfig.kt` — `TechniqueTier` enum + `DifficultyConfig` data class + three top-level config constants (`EASY_CONFIG`, `MEDIUM_CONFIG`, `HARD_CONFIG`) + `difficultyConfigFor()` mapping function
+- `puzzle/model/SudokuPuzzle.kt` — immutable `data class`: 81-element `board` IntArray, `solution` IntArray, `difficulty`, derived `givenCount`; custom `equals`/`hashCode` for IntArray correctness
+- `puzzle/engine/SudokuGenerator.kt` — wraps Sudoklify; runs three acceptance gates (uniqueness → given-count range → technique tier); up to `maxAttempts=50` retries; `verifier` and `classifier` are constructor-injected for testability
+- `puzzle/engine/UniquenessVerifier.kt` — backtracking solver that aborts on the second solution; `open class` to allow subclass test doubles
+- `puzzle/engine/DifficultyClassifier.kt` — human-style constraint-propagation solver; classifies minimum `TechniqueTier` (naked singles → hidden singles → advanced)
+- `puzzle/engine/SudokuValidator.kt` — top-level `isValidPlacement(board, index, digit)` function + thin `SudokuValidator` class wrapper
+- `puzzle/PuzzleGenerationException.kt` — thrown when `SudokuGenerator` exhausts `maxAttempts`
 
-**Persistence (planned — Phase 4):**
-- Purpose: Pause/resume state and per-difficulty high scores
+### Game State (ViewModel + Models)
+- Location: `app/src/main/java/com/mudita/sudoku/game/`
+- Purpose: Own all mutable game state; implement the full game loop (digit entry, pencil marks, undo, error tracking, completion detection).
+- Depends on: Domain layer (`SudokuGenerator`, `SudokuPuzzle`, `Difficulty`)
+- Used by: Presentation layer (not yet implemented)
+
+Key files:
+- `game/GameViewModel.kt` — `ViewModel` subclass; owns `MutableStateFlow<GameUiState>` and `MutableSharedFlow<GameEvent>`; holds `undoStack: ArrayDeque<GameAction>` outside `GameUiState` to keep state immutable
+- `game/model/GameUiState.kt` — immutable `data class` snapshot of all UI-visible state; manual `equals`/`hashCode` for `IntArray` and `Array<Set<Int>>` fields
+- `game/model/GameAction.kt` — `sealed class` for undoable actions: `FillCell(cellIndex, previousValue, previousPencilMarks)` and `SetPencilMark(cellIndex, digit, wasAdded)`
+- `game/model/GameEvent.kt` — `sealed class` for one-shot events: `Completed(errorCount)`
+- `game/model/InputMode.kt` — enum: `FILL`, `PENCIL`
+
+### Presentation (UI)
+- Location: `app/src/main/java/com/mudita/sudoku/MainActivity.kt`
+- Status: Stub only — `MainActivity` extends `Activity` with an empty `onCreate`. No Compose UI is implemented yet. This layer is the target of phase 03.
+
+### Persistence (Planned)
 - Location: Not yet created
-- Contains: DataStore Preferences repository
-- Storage keys: `in_progress_game` (JSON string), `high_score_easy`, `high_score_medium`, `high_score_hard`
+- Purpose: Pause/resume game state and per-difficulty high scores via DataStore Preferences
+- Storage keys: `in_progress_game` (JSON-serialized `GameState`), `high_score_easy`, `high_score_medium`, `high_score_hard`
 
-## Data Flow
+## State Management
 
-**Puzzle Generation Flow (implemented):**
+State flows in one direction:
 
-1. Caller (future ViewModel) invokes `SudokuGenerator.generatePuzzle(difficulty: Difficulty)`
-2. `SudokuGenerator` calls `tryGenerateCandidate()` which delegates to `SudoklifyArchitect` with a random seed
-3. Raw board and solution grids are flattened from `List<List<Int>>` to `IntArray(81)` (index = `row*9+col`)
-4. Gate 1: `UniquenessVerifier.hasUniqueSolution()` runs abort-on-second-solution backtracking — rejects if not unique
-5. Gate 2: Given-count range check against `DifficultyConfig` — rejects if outside `minGivens..maxGivens`
-6. Gate 3: `DifficultyClassifier.meetsRequirements()` runs human-style constraint propagation — rejects if technique tier doesn't match
-7. Accepted candidate is returned as an immutable `SudokuPuzzle`; on exhausting `maxAttempts`, throws `PuzzleGenerationException`
+1. `GameViewModel` holds `_uiState: MutableStateFlow<GameUiState>` (private); exposes `uiState: StateFlow<GameUiState>` (read-only).
+2. Every user action calls a ViewModel public method (`startGame`, `selectCell`, `enterDigit`, `toggleInputMode`, `undo`).
+3. Each method produces a new `GameUiState` via `.copy()` and calls `_uiState.update { ... }` — no in-place mutation.
+4. Compose UI will observe `uiState` via `collectAsStateWithLifecycle()` and recompose on each emission.
+5. One-shot outcomes (puzzle completed) are emitted via `_events: MutableSharedFlow<GameEvent>` with `replay=0` — not replayed on recomposition.
 
-**Game Play Flow (planned — Phase 2–3):**
+**Undo stack** (`ArrayDeque<GameAction>`) lives directly on `GameViewModel` (not inside `GameUiState`) so that `GameUiState` stays a pure immutable value.
 
-1. User selects difficulty on menu screen
-2. ViewModel calls `SudokuGenerator.generatePuzzle(difficulty)`
-3. ViewModel emits `GameUiState` via `StateFlow`
-4. Composable collects state via `collectAsStateWithLifecycle()`
-5. User taps cell → ViewModel updates selected cell in state
-6. User taps digit → ViewModel validates against `SudokuPuzzle.solution`, increments silent error count if wrong
-7. On pause: ViewModel serializes `GameState` to JSON via `kotlinx.serialization`, writes to DataStore
-8. On all 81 cells filled correctly: ViewModel triggers completion, computes score
+**Error count is permanent** — `errorCount` increments on a wrong fill and is never decremented on undo (design rule SCORE-01).
 
-**State Management:**
-- StateFlow held in ViewModel, collected in Composables via `collectAsStateWithLifecycle()`
-- Game state serialized as JSON string to DataStore for persistence across app lifecycle
+## Key Data Flows
 
-## Key Abstractions
+### Puzzle Generation Flow
+1. UI (future) calls `viewModel.startGame(difficulty)`.
+2. `_uiState.update { it.copy(isLoading = true) }` emitted immediately on the main thread.
+3. `viewModelScope.launch` runs; `generatePuzzle(difficulty)` dispatched on `Dispatchers.Default` (CPU-bound).
+4. `SudokuGenerator.generatePuzzle()` calls `SudoklifyArchitect` with a random seed, then gates the result:
+   - Gate 1: `UniquenessVerifier.hasUniqueSolution()` — abort-on-second-solution backtracking
+   - Gate 2: Given-count range check against `DifficultyConfig.minGivens..maxGivens`
+   - Gate 3: `DifficultyClassifier.meetsRequirements()` — technique-tier constraint propagation
+5. On acceptance, `undoStack.clear()` and a full `GameUiState` is constructed from `puzzle.board`, `puzzle.solution`, and a computed `givenMask` (`BooleanArray(81) { puzzle.board[i] != 0 }`).
+6. `_uiState.update { ... }` emits the loaded state with `isLoading = false`.
 
-**SudokuPuzzle:**
-- Purpose: Immutable value object representing a generated puzzle
-- File: `app/src/main/java/com/mudita/sudoku/puzzle/model/SudokuPuzzle.kt`
-- Pattern: Kotlin `data class` with custom `equals`/`hashCode` due to `IntArray` fields
-- Board encoding: 81-element `IntArray`, index `= row*9+col`, `0` = empty, `1–9` = given digit
+### Digit Entry Flow (FILL mode)
+1. UI calls `viewModel.selectCell(index)` → `_uiState.update { it.copy(selectedCellIndex = index) }`.
+2. UI calls `viewModel.enterDigit(digit)`.
+3. Guards: digit in 1..9, cell selected, cell not flagged in `givenMask`. Silent no-op if any guard fails.
+4. `applyFill(idx, digit, state)`: pushes `GameAction.FillCell` onto `undoStack`; copies board; places digit; checks `digit != solution[idx]` → increments `errorCount`; clears `pencilMarks[idx]`; checks all-correct for completion.
+5. `_uiState.update { ... }` emits new state; if `isComplete`, emits `GameEvent.Completed(errorCount)` on `_events`.
 
-**Difficulty:**
-- Purpose: Enum of the three selectable difficulty levels
-- File: `app/src/main/java/com/mudita/sudoku/puzzle/model/Difficulty.kt`
-- Values: `EASY`, `MEDIUM`, `HARD`
+### Digit Entry Flow (PENCIL mode)
+1. Same guards as FILL mode.
+2. `applyPencilMark(idx, digit, state)`: toggles `digit` in `pencilMarks[idx]` set; pushes `GameAction.SetPencilMark(idx, digit, wasAdded)` onto `undoStack`.
+3. `_uiState.update { it.copy(pencilMarks = newMarks) }`.
 
-**DifficultyConfig:**
-- Purpose: Per-difficulty constraint parameters (given-count range, required technique tier)
-- File: `app/src/main/java/com/mudita/sudoku/puzzle/model/DifficultyConfig.kt`
-- Access: `difficultyConfigFor(difficulty)` factory function
-- Concrete configs: `EASY_CONFIG` (36–45 givens), `MEDIUM_CONFIG` (27–35 givens), `HARD_CONFIG` (22–27 givens)
-
-**TechniqueTier:**
-- Purpose: Enum classifying puzzle solving complexity for the difficulty gate
-- File: `app/src/main/java/com/mudita/sudoku/puzzle/model/DifficultyConfig.kt`
-- Values: `NAKED_SINGLES_ONLY`, `HIDDEN_PAIRS`, `ADVANCED`
-
-**SudokuGenerator:**
-- Purpose: Orchestrates puzzle generation with three acceptance gates
-- File: `app/src/main/java/com/mudita/sudoku/puzzle/engine/SudokuGenerator.kt`
-- Pattern: Constructor injection of `UniquenessVerifier` and `DifficultyClassifier` for testability; retry loop up to `maxAttempts` (default 50)
-
-**UniquenessVerifier:**
-- Purpose: Verifies exactly one solution exists via backtracking with early abort
-- File: `app/src/main/java/com/mudita/sudoku/puzzle/engine/UniquenessVerifier.kt`
-- Pattern: `open class` to allow test doubles without a full mocking framework
-
-**DifficultyClassifier:**
-- Purpose: Determines minimum technique tier needed to solve a puzzle without guessing
-- File: `app/src/main/java/com/mudita/sudoku/puzzle/engine/DifficultyClassifier.kt`
-- Pattern: Attempt progressively harder solving passes; first pass that fully solves the board determines the tier
-
-**SudokuValidator / isValidPlacement:**
-- Purpose: Checks a digit placement for row/column/box conflicts
-- File: `app/src/main/java/com/mudita/sudoku/puzzle/engine/SudokuValidator.kt`
-- Pattern: Top-level function `isValidPlacement(board, index, digit)` plus a thin `SudokuValidator` class wrapper for injection
+### Undo Flow
+1. UI calls `viewModel.undo()`.
+2. If `undoStack` is empty: no-op.
+3. `undoStack.removeLast()` pops the most recent `GameAction`.
+4. `FillCell`: restores `board[cellIndex]` to `previousValue` and `pencilMarks[cellIndex]` to `previousPencilMarks`; rechecks completion; does NOT decrement `errorCount`.
+5. `SetPencilMark`: reverses the toggle based on `wasAdded` flag.
+6. `_uiState.update { ... }` emits new state.
 
 ## Entry Points
 
-**Application Entry:**
-- Location: `app/src/main/java/com/mudita/sudoku/MainActivity.kt`
-- Pattern: Minimal `Activity` subclass; Compose `setContent` and ViewModel wiring to be added in Phase 2–3
+**`MainActivity`** (`app/src/main/java/com/mudita/sudoku/MainActivity.kt`):
+- Stub `Activity` subclass; Compose `setContent` and ViewModel wiring to be added in phase 03.
 
-**Puzzle Engine Entry:**
-- Location: `app/src/main/java/com/mudita/sudoku/puzzle/engine/SudokuGenerator.kt`
-- Triggers: Called by ViewModel (future) to obtain a `SudokuPuzzle` on game start
+**`GameViewModel`** (`app/src/main/java/com/mudita/sudoku/game/GameViewModel.kt`):
+- Created via Compose `viewModel()` factory or constructor-injected in tests.
+- Public API: `startGame(Difficulty)`, `selectCell(Int)`, `enterDigit(Int)`, `toggleInputMode()`, `undo()`.
+- Exposes: `uiState: StateFlow<GameUiState>`, `events: SharedFlow<GameEvent>`.
+- Injected dependency: `generatePuzzle: suspend (Difficulty) -> SudokuPuzzle` — defaults to `SudokuGenerator().generatePuzzle(difficulty)`.
 
 ## Error Handling
 
-**Strategy:** Exception-based for generation failures; silent tracking for gameplay errors
-
-**Patterns:**
-- `PuzzleGenerationException` (checked equivalent) thrown when `SudokuGenerator` exhausts all retry attempts — caller (ViewModel) must handle and show error UI
-- Sudoklify library errors caught internally in `tryGenerateCandidate()` and treated as retry signals (return `null`)
-- Gameplay errors (wrong cell fill) tracked silently as a counter; not surfaced until game completion (requirement SCORE-01)
+- `SudokuGenerator` throws `PuzzleGenerationException` after `maxAttempts` failed candidates. Currently not caught at the ViewModel call site — will require a try/catch and error UI state in phase 03.
+- Sudoklify library errors are caught inside `tryGenerateCandidate()` and treated as retry signals (return `null`).
+- ViewModel action guards (`selectCell`, `enterDigit`, `undo`) use silent early-return no-ops rather than exceptions.
 
 ## Cross-Cutting Concerns
 
-**Logging:** None currently; `println`/`Log` not used in production code
-**Validation:** `init` blocks in `SudokuPuzzle` assert invariants (board size = 81, solution has no zeros, givenCount ≥ 17)
-**Authentication:** Not applicable (offline-only app)
-**Serialization:** `kotlinx.serialization` with `@Serializable` on domain models for DataStore persistence (Phase 4)
-**Threading:** Puzzle generation is synchronous pure Kotlin; ViewModel will wrap in `viewModelScope` coroutine (Phase 2)
+**Threading:** Puzzle generation dispatched on `Dispatchers.Default` via `withContext` in `GameViewModel.startGame`. All state updates happen on the main thread via `_uiState.update`.
 
----
+**Immutability:** `GameUiState` is a `data class` updated exclusively via `.copy()`. Array fields (`board`, `solution`, `givenMask`, `pencilMarks`) are always copied (`copyOf()`) before modification.
 
-*Architecture analysis: 2026-03-24*
+**Testability:** `SudokuGenerator` accepts `UniquenessVerifier` and `DifficultyClassifier` as constructor parameters. `GameViewModel` accepts a `generatePuzzle` lambda — `FakeGenerator` is injected in tests without a mocking framework.
+
+**No persistence yet:** DataStore is declared as a dependency in `app/build.gradle.kts` but has not been integrated into the codebase.
+
+**No UI yet:** The Compose layer does not exist. `MainActivity` is a bare stub.

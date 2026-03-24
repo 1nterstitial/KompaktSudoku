@@ -64,7 +64,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 03-01-PLAN.md — MMD dependency, MainActivity upgrade to ComponentActivity + ThemeMMD, eraseCell() added to GameViewModel
+- [ ] 03-01-PLAN.md — MMD dependency + Compose UI test deps (testImplementation), MainActivity → ComponentActivity + ThemeMMD, eraseCell() to GameViewModel
 - [ ] 03-02-PLAN.md — GameScreen, GameGrid (Canvas), NumberPad, ControlsRow — full playable UI wired to ViewModel
 - [ ] 03-03-PLAN.md — Robolectric Compose UI tests: cell tap mapping, button interaction, 56dp touch target assertions
 
