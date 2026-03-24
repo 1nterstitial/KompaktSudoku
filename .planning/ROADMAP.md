@@ -60,8 +60,13 @@ Plans:
   2. No animations, ripple effects, or transitions occur anywhere in the app when tested on physical hardware
   3. All interactive elements (cells, digit buttons, mode toggle, undo) have a minimum touch target of 56dp and are reliably activatable with a single tap on the physical device
   4. After 30+ successive cell interactions on the physical device, no visible ghosting artifacts remain on the display
-**Plans**: TBD
+**Plans**: 3 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 03-01-PLAN.md — MMD dependency, MainActivity upgrade to ComponentActivity + ThemeMMD, eraseCell() added to GameViewModel
+- [ ] 03-02-PLAN.md — GameScreen, GameGrid (Canvas), NumberPad, ControlsRow — full playable UI wired to ViewModel
+- [ ] 03-03-PLAN.md — Robolectric Compose UI tests: cell tap mapping, button interaction, 56dp touch target assertions
 
 ### Phase 4: Persistence
 **Goal**: A paused game survives app closure and device sleep, and high scores are stored durably per difficulty level
@@ -104,7 +109,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
 | 2. Game State & Domain | 1/3 | In Progress|  |
-| 3. Core Game UI | 0/0 | Not started | - |
+| 3. Core Game UI | 0/3 | Not started | - |
 | 4. Persistence | 0/0 | Not started | - |
 | 5. Scoring & Completion | 0/0 | Not started | - |
 | 6. Menu & Navigation | 0/0 | Not started | - |
