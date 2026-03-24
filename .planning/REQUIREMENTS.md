@@ -13,16 +13,16 @@
 
 ### Difficulty
 
-- [ ] **DIFF-01**: User can choose Easy, Medium, or Hard difficulty from the main menu before starting a game
+- [x] **DIFF-01**: User can choose Easy, Medium, or Hard difficulty from the main menu before starting a game
 - [ ] **DIFF-02**: Each difficulty level generates puzzles matching the cell count and technique classification defined in PUZZ-02 and PUZZ-03
 
 ### Input & Interaction
 
-- [ ] **INPUT-01**: User can tap a cell to select it; selected cell is visually highlighted
+- [x] **INPUT-01**: User can tap a cell to select it; selected cell is visually highlighted
 - [ ] **INPUT-02**: User can tap a digit (1–9) to fill the selected cell with that value
-- [ ] **INPUT-03**: User can toggle between "fill" mode and "pencil mark" mode for input
-- [ ] **INPUT-04**: User can add and remove pencil mark candidates in any cell
-- [ ] **INPUT-05**: User can undo the last move (fill or pencil mark action)
+- [x] **INPUT-03**: User can toggle between "fill" mode and "pencil mark" mode for input
+- [x] **INPUT-04**: User can add and remove pencil mark candidates in any cell
+- [x] **INPUT-05**: User can undo the last move (fill or pencil mark action)
 
 ### Game State
 
@@ -32,8 +32,8 @@
 
 ### Scoring & Completion
 
-- [ ] **SCORE-01**: Errors are tracked silently during play and not surfaced until the game ends
-- [ ] **SCORE-02**: App automatically detects when all 81 cells are correctly filled and triggers completion
+- [x] **SCORE-01**: Errors are tracked silently during play and not surfaced until the game ends
+- [x] **SCORE-02**: App automatically detects when all 81 cells are correctly filled and triggers completion
 - [ ] **SCORE-03**: User can request a hint during play; a single unfilled correct cell value is revealed; hint usage is counted
 - [ ] **SCORE-04**: Each hint used deducts a fixed penalty from the final score
 - [ ] **SCORE-05**: On completion, user sees a summary showing error count, hints used, and final score
@@ -89,18 +89,18 @@
 | PUZZ-01 | Phase 1 | Complete |
 | PUZZ-02 | Phase 1 | Complete |
 | PUZZ-03 | Phase 1 | Complete |
-| DIFF-01 | Phase 2 | Pending |
+| DIFF-01 | Phase 2 | Complete |
 | DIFF-02 | Phase 2 | Pending |
-| INPUT-01 | Phase 2 | Pending |
+| INPUT-01 | Phase 2 | Complete |
 | INPUT-02 | Phase 2 | Pending |
-| INPUT-03 | Phase 2 | Pending |
-| INPUT-04 | Phase 2 | Pending |
-| INPUT-05 | Phase 2 | Pending |
+| INPUT-03 | Phase 2 | Complete |
+| INPUT-04 | Phase 2 | Complete |
+| INPUT-05 | Phase 2 | Complete |
 | STATE-01 | Phase 4 | Pending |
 | STATE-02 | Phase 4 | Pending |
 | STATE-03 | Phase 4 | Pending |
-| SCORE-01 | Phase 2 | Pending |
-| SCORE-02 | Phase 2 | Pending |
+| SCORE-01 | Phase 2 | Complete |
+| SCORE-02 | Phase 2 | Complete |
 | SCORE-03 | Phase 5 | Pending |
 | SCORE-04 | Phase 5 | Pending |
 | SCORE-05 | Phase 5 | Pending |

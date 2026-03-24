@@ -103,7 +103,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
-| 2. Game State & Domain | 0/3 | Planned | - |
+| 2. Game State & Domain | 0/3 | Planned    |  |
 | 3. Core Game UI | 0/0 | Not started | - |
 | 4. Persistence | 0/0 | Not started | - |
 | 5. Scoring & Completion | 0/0 | Not started | - |
