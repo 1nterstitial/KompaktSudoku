@@ -3,6 +3,7 @@ package com.mudita.sudoku.ui.game
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
@@ -105,6 +106,7 @@ fun GameGrid(
 
         Canvas(
             modifier = Modifier
+                .fillMaxSize()  // gives the Canvas a layout size for pointer-input hit testing
                 .pointerInput(Unit) {
                     detectTapGestures { offset ->
                         val col = (offset.x / cellSizePx).toInt().coerceIn(0, 8)
