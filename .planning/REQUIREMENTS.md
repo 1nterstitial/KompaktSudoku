@@ -7,9 +7,9 @@
 
 ### Puzzle Generation
 
-- [ ] **PUZZ-01**: App generates valid Sudoku puzzles that have exactly one solution
-- [ ] **PUZZ-02**: Difficulty is classified by required solving technique: Easy uses naked singles only; Medium requires hidden pairs/pencil marks; Hard requires advanced techniques (X-wing, chains)
-- [ ] **PUZZ-03**: Easy puzzles provide approximately 36–45 given cells; Medium 27–35; Hard 22–27
+- [x] **PUZZ-01**: App generates valid Sudoku puzzles that have exactly one solution
+- [x] **PUZZ-02**: Difficulty is classified by required solving technique: Easy uses naked singles only; Medium requires hidden pairs/pencil marks; Hard requires advanced techniques (X-wing, chains)
+- [x] **PUZZ-03**: Easy puzzles provide approximately 36–45 given cells; Medium 27–35; Hard 22–27
 
 ### Difficulty
 
@@ -86,9 +86,9 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PUZZ-01 | Phase 1 | Pending |
-| PUZZ-02 | Phase 1 | Pending |
-| PUZZ-03 | Phase 1 | Pending |
+| PUZZ-01 | Phase 1 | Complete |
+| PUZZ-02 | Phase 1 | Complete |
+| PUZZ-03 | Phase 1 | Complete |
 | DIFF-01 | Phase 2 | Pending |
 | DIFF-02 | Phase 2 | Pending |
 | INPUT-01 | Phase 2 | Pending |
