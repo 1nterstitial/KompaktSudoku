@@ -48,7 +48,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Domain models (GameUiState, InputMode, GameAction, GameEvent) + test infrastructure (MainDispatcherRule, FakeGenerator, GameUiState tests)
-- [ ] 02-02-PLAN.md — GameViewModel core actions (startGame, selectCell, enterDigit fill, toggleInputMode) + tests for DIFF-01/02, INPUT-01/02/03
+- [x] 02-02-PLAN.md — GameViewModel core actions (startGame, selectCell, enterDigit fill, toggleInputMode) + tests for DIFF-01/02, INPUT-01/02/03
 - [ ] 02-03-PLAN.md — GameViewModel pencil marks, undo, error tracking, completion detection + tests for INPUT-04/05, SCORE-01/02
 
 ### Phase 3: Core Game UI
@@ -103,7 +103,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
-| 2. Game State & Domain | 0/3 | Planned    |  |
+| 2. Game State & Domain | 1/3 | In Progress|  |
 | 3. Core Game UI | 0/0 | Not started | - |
 | 4. Persistence | 0/0 | Not started | - |
 | 5. Scoring & Completion | 0/0 | Not started | - |

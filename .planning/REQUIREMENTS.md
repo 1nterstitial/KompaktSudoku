@@ -14,12 +14,12 @@
 ### Difficulty
 
 - [x] **DIFF-01**: User can choose Easy, Medium, or Hard difficulty from the main menu before starting a game
-- [ ] **DIFF-02**: Each difficulty level generates puzzles matching the cell count and technique classification defined in PUZZ-02 and PUZZ-03
+- [x] **DIFF-02**: Each difficulty level generates puzzles matching the cell count and technique classification defined in PUZZ-02 and PUZZ-03
 
 ### Input & Interaction
 
 - [x] **INPUT-01**: User can tap a cell to select it; selected cell is visually highlighted
-- [ ] **INPUT-02**: User can tap a digit (1–9) to fill the selected cell with that value
+- [x] **INPUT-02**: User can tap a digit (1–9) to fill the selected cell with that value
 - [x] **INPUT-03**: User can toggle between "fill" mode and "pencil mark" mode for input
 - [x] **INPUT-04**: User can add and remove pencil mark candidates in any cell
 - [x] **INPUT-05**: User can undo the last move (fill or pencil mark action)
@@ -90,9 +90,9 @@
 | PUZZ-02 | Phase 1 | Complete |
 | PUZZ-03 | Phase 1 | Complete |
 | DIFF-01 | Phase 2 | Complete |
-| DIFF-02 | Phase 2 | Pending |
+| DIFF-02 | Phase 2 | Complete |
 | INPUT-01 | Phase 2 | Complete |
-| INPUT-02 | Phase 2 | Pending |
+| INPUT-02 | Phase 2 | Complete |
 | INPUT-03 | Phase 2 | Complete |
 | INPUT-04 | Phase 2 | Complete |
 | INPUT-05 | Phase 2 | Complete |
