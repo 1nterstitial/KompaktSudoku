@@ -76,6 +76,8 @@ Plan: 2 of 3 (plan 01 complete)
 - [02-01] GameUiState stores no undoStack — mutable undo history belongs in GameViewModel; keeps state immutable and recomposition-safe
 - [02-01] FakeGenerator is a standalone class (not SudokuGenerator subclass) — avoids modifying Phase 1; GameViewModel will accept a generator lambda in Plan 02
 - [02-01] Array<Set<Int>> pencilMarks requires contentDeepEquals/contentDeepHashCode — standard data class equals is reference-based for arrays
+- [02-02] GameViewModel constructor accepts suspend lambda for puzzle generation — allows FakeGenerator injection without subclassing SudokuGenerator
+- [02-02] applyPencilMark stubbed as no-op — pencil mark logic deferred to Plan 03 per plan spec; stub keeps Plan 02 scope clean
 
 ### Architecture Decisions
 
