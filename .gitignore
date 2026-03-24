@@ -6,6 +6,7 @@ build/
 *.aab
 *.aar
 local.properties
+android-sdk-tools.zip
 
 # Android Studio / IntelliJ IDEA
 .idea/
