@@ -38,11 +38,11 @@ created: 2026-03-23
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 1-01-01 | 01 | 0 | PUZZ-01 | unit | `./gradlew :app:testDebugUnitTest --tests "*.PuzzleEngineTest"` | ❌ W0 | ⬜ pending |
-| 1-01-02 | 01 | 1 | PUZZ-01 | unit | `./gradlew :app:testDebugUnitTest --tests "*.UniquenessVerifierTest"` | ❌ W0 | ⬜ pending |
-| 1-01-03 | 01 | 1 | PUZZ-02 | unit | `./gradlew :app:testDebugUnitTest --tests "*.DifficultyClassifierTest"` | ❌ W0 | ⬜ pending |
-| 1-01-04 | 01 | 1 | PUZZ-02, PUZZ-03 | unit | `./gradlew :app:testDebugUnitTest --tests "*.DifficultyValidationTest"` | ❌ W0 | ⬜ pending |
-| 1-01-05 | 01 | 2 | PUZZ-01, PUZZ-02, PUZZ-03 | integration | `./gradlew :app:testDebugUnitTest --tests "*.SudokuEngineIntegrationTest"` | ❌ W0 | ⬜ pending |
+| 1-01-01 | 01 | 1 | PUZZ-01 | unit | `./gradlew :app:testDebugUnitTest --tests "*.SudokuValidatorTest"` | ❌ W0 | ⬜ pending |
+| 1-01-02 | 02 | 2 | PUZZ-01 | unit | `./gradlew :app:testDebugUnitTest --tests "*.UniquenessVerifierTest"` | ❌ W0 | ⬜ pending |
+| 1-01-03 | 03 | 3 | PUZZ-02 | unit | `./gradlew :app:testDebugUnitTest --tests "*.DifficultyClassifierTest"` | ❌ W0 | ⬜ pending |
+| 1-01-04 | 04 | 4 | PUZZ-01, PUZZ-02, PUZZ-03 | unit | `./gradlew :app:testDebugUnitTest --tests "*.SudokuGeneratorTest"` | ❌ W0 | ⬜ pending |
+| 1-01-05 | 04 | 4 | PUZZ-01, PUZZ-02, PUZZ-03 | integration | `./gradlew :app:testDebugUnitTest --tests "*.SudokuEngineIntegrationTest"` | ❌ W0 | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -50,10 +50,10 @@ created: 2026-03-23
 
 ## Wave 0 Requirements
 
-- [ ] `app/src/test/java/com/mudita/sudoku/puzzle/PuzzleEngineTest.kt` — stub test for SudokuEngine facade (PUZZ-01)
+- [ ] `app/src/test/java/com/mudita/sudoku/puzzle/SudokuValidatorTest.kt` — stubs for row/col/box constraint checker (PUZZ-01)
 - [ ] `app/src/test/java/com/mudita/sudoku/puzzle/UniquenessVerifierTest.kt` — stubs for abort-on-second-solution verifier (PUZZ-01)
 - [ ] `app/src/test/java/com/mudita/sudoku/puzzle/DifficultyClassifierTest.kt` — stubs for technique-based classifier (PUZZ-02)
-- [ ] `app/src/test/java/com/mudita/sudoku/puzzle/DifficultyValidationTest.kt` — 20-puzzle batch tests per difficulty verifying cell counts and technique classification (PUZZ-02, PUZZ-03)
+- [ ] `app/src/test/java/com/mudita/sudoku/puzzle/SudokuGeneratorTest.kt` — stubs for generator unit tests including 20-puzzle batch and exception test (PUZZ-01, PUZZ-02, PUZZ-03)
 - [ ] `app/src/test/java/com/mudita/sudoku/puzzle/SudokuEngineIntegrationTest.kt` — end-to-end generation + uniqueness + difficulty check (PUZZ-01, PUZZ-02, PUZZ-03)
 
 ---
