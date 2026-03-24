@@ -357,6 +357,510 @@ class GameViewModelTest {
         }
     }
 
+    // ------------------------------------------------------------------ pencil marks (INPUT-04)
+
+    @Test
+    fun `pencilMark enterDigit in PENCIL mode adds digit to pencilMarks - INPUT-04`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+
+            viewModel.toggleInputMode() // FILL -> PENCIL
+            awaitItem()
+
+            viewModel.enterDigit(5)
+            val state = awaitItem()
+            assertTrue("pencilMarks[$emptyIdx] should contain 5", 5 in state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `pencilMark enterDigit same digit again removes it (toggle off)`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.toggleInputMode()
+            awaitItem()
+
+            viewModel.enterDigit(5)
+            awaitItem() // added
+
+            viewModel.enterDigit(5)
+            val state = awaitItem() // toggled off
+            assertFalse("pencilMarks[$emptyIdx] should not contain 5 after toggle", 5 in state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `pencilMark multiple digits coexist in same cell`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.toggleInputMode()
+            awaitItem()
+
+            viewModel.enterDigit(1)
+            awaitItem()
+            viewModel.enterDigit(3)
+            awaitItem()
+            viewModel.enterDigit(7)
+            val state = awaitItem()
+            assertEquals(setOf(1, 3, 7), state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `pencilMark enterDigit in PENCIL mode on given cell is a no-op`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val givenIdx = FakeGenerator.BOARD.indexOfFirst { it != 0 }
+            viewModel.selectCell(givenIdx)
+            awaitItem()
+            viewModel.toggleInputMode()
+            awaitItem()
+
+            viewModel.enterDigit(5)
+            // No state change expected — given cell is protected
+            expectNoEvents()
+            assertTrue("pencilMarks[$givenIdx] should be empty for given cell", viewModel.uiState.value.pencilMarks[givenIdx].isEmpty())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `pencilMark enterDigit in PENCIL mode with no selection is a no-op`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            // no selectCell call
+            viewModel.toggleInputMode()
+            awaitItem()
+
+            viewModel.enterDigit(5)
+            expectNoEvents()
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `pencilMark filling cell in FILL mode clears that cells pencil marks`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+
+            // Add pencil marks
+            viewModel.toggleInputMode() // PENCIL
+            awaitItem()
+            viewModel.enterDigit(1)
+            awaitItem()
+            viewModel.enterDigit(3)
+            awaitItem()
+
+            // Switch to FILL and fill the cell
+            viewModel.toggleInputMode() // FILL
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.correctDigitAt(emptyIdx))
+            val state = awaitItem()
+            assertTrue("pencilMarks[$emptyIdx] should be empty after fill", state.pencilMarks[emptyIdx].isEmpty())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    // ------------------------------------------------------------------ undo (INPUT-05)
+
+    @Test
+    fun `undo after fill restores previous board value`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.wrongDigitAt(emptyIdx))
+            awaitItem()
+
+            viewModel.undo()
+            val state = awaitItem()
+            assertEquals("board[$emptyIdx] should be 0 after undo", 0, state.board[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `undo after fill restores pencil marks that were cleared`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+
+            // Add pencil marks
+            viewModel.toggleInputMode()
+            awaitItem()
+            viewModel.enterDigit(2)
+            awaitItem()
+            viewModel.enterDigit(4)
+            awaitItem()
+
+            // Fill the cell (clears pencil marks)
+            viewModel.toggleInputMode()
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.correctDigitAt(emptyIdx))
+            val afterFill = awaitItem()
+            assertTrue("pencilMarks cleared after fill", afterFill.pencilMarks[emptyIdx].isEmpty())
+
+            // Undo: pencil marks should be restored
+            viewModel.undo()
+            val state = awaitItem()
+            assertEquals("pencilMarks should be restored after undo", setOf(2, 4), state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `undo after pencil mark add removes the digit`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.toggleInputMode()
+            awaitItem()
+            viewModel.enterDigit(5)
+            awaitItem()
+            assertTrue("5 added", 5 in viewModel.uiState.value.pencilMarks[emptyIdx])
+
+            viewModel.undo()
+            val state = awaitItem()
+            assertFalse("5 should be removed after undo", 5 in state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `undo after pencil mark remove adds the digit back`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.toggleInputMode()
+            awaitItem()
+
+            // Add then remove (toggle)
+            viewModel.enterDigit(5)
+            awaitItem()
+            viewModel.enterDigit(5)
+            val afterRemove = awaitItem()
+            assertFalse("5 removed", 5 in afterRemove.pencilMarks[emptyIdx])
+
+            // Undo the removal → 5 should come back
+            viewModel.undo()
+            val state = awaitItem()
+            assertTrue("5 should be restored after undo of removal", 5 in state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `undo with empty stack is a no-op`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val stateBefore = viewModel.uiState.value
+            viewModel.undo() // stack is empty
+            expectNoEvents()
+            assertEquals("state should be unchanged after no-op undo", stateBefore, viewModel.uiState.value)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `undo multi-step reverses actions in LIFO order`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val indices = FakeGenerator.emptyIndices()
+            val idxA = indices[0]
+            val idxB = indices[1]
+
+            // Fill A
+            viewModel.selectCell(idxA)
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.wrongDigitAt(idxA))
+            awaitItem()
+
+            // Fill B
+            viewModel.selectCell(idxB)
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.wrongDigitAt(idxB))
+            awaitItem()
+
+            // Undo B (most recent)
+            viewModel.undo()
+            val afterUndoB = awaitItem()
+            assertEquals("B should be restored to 0", 0, afterUndoB.board[idxB])
+            assertEquals("A should still be filled", FakeGenerator.wrongDigitAt(idxA), afterUndoB.board[idxA])
+
+            // Undo A
+            viewModel.undo()
+            val afterUndoA = awaitItem()
+            assertEquals("A should be restored to 0", 0, afterUndoA.board[idxA])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `undo stack is cleared when startGame is called`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            // Fill a cell (pushes to undo stack)
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.wrongDigitAt(emptyIdx))
+            awaitItem()
+
+            // Start a new game (clears undo stack)
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            // Undo should be a no-op (stack was cleared)
+            val stateBefore = viewModel.uiState.value
+            viewModel.undo()
+            expectNoEvents()
+            assertEquals("state unchanged after no-op undo", stateBefore, viewModel.uiState.value)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    // ------------------------------------------------------------------ error tracking (SCORE-01)
+
+    @Test
+    fun `errorTracking correct digit does not increment errorCount - SCORE-01`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.correctDigitAt(emptyIdx))
+            val state = awaitItem()
+            assertEquals("errorCount should be 0 for correct fill", 0, state.errorCount)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `errorTracking wrong digit increments errorCount by 1`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.wrongDigitAt(emptyIdx))
+            val state = awaitItem()
+            assertEquals("errorCount should be 1 after wrong fill", 1, state.errorCount)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `errorTracking multiple wrong digits accumulate errorCount`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val indices = FakeGenerator.emptyIndices()
+            viewModel.selectCell(indices[0])
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.wrongDigitAt(indices[0]))
+            awaitItem()
+
+            viewModel.selectCell(indices[1])
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.wrongDigitAt(indices[1]))
+            val state = awaitItem()
+            assertEquals("errorCount should be 2 after two wrong fills", 2, state.errorCount)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `errorTracking errorCount is not decremented on undo of wrong fill`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.wrongDigitAt(emptyIdx))
+            val afterFill = awaitItem()
+            assertEquals("errorCount should be 1 after wrong fill", 1, afterFill.errorCount)
+
+            viewModel.undo()
+            val afterUndo = awaitItem()
+            assertEquals("errorCount should still be 1 after undo (errors are permanent)", 1, afterUndo.errorCount)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    // ------------------------------------------------------------------ completion detection (SCORE-02)
+
+    @Test
+    fun `completion filling last correct cell sets isComplete true - SCORE-02`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIndices = FakeGenerator.emptyIndices()
+
+            // Fill all but last correct
+            for (idx in emptyIndices.dropLast(1)) {
+                viewModel.selectCell(idx)
+                awaitItem()
+                viewModel.enterDigit(FakeGenerator.correctDigitAt(idx))
+                awaitItem()
+            }
+
+            // Fill last
+            val lastIdx = emptyIndices.last()
+            viewModel.selectCell(lastIdx)
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.correctDigitAt(lastIdx))
+            val state = awaitItem()
+            assertTrue("isComplete should be true after last correct fill", state.isComplete)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `completion filling all cells with some wrong does NOT trigger isComplete`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIndices = FakeGenerator.emptyIndices()
+
+            // Fill first with wrong digit
+            viewModel.selectCell(emptyIndices.first())
+            awaitItem()
+            viewModel.enterDigit(FakeGenerator.wrongDigitAt(emptyIndices.first()))
+            awaitItem()
+
+            // Fill remaining with correct digits
+            for (idx in emptyIndices.drop(1)) {
+                viewModel.selectCell(idx)
+                awaitItem()
+                viewModel.enterDigit(FakeGenerator.correctDigitAt(idx))
+                awaitItem()
+            }
+
+            assertFalse("isComplete should be false when any cell is wrong", viewModel.uiState.value.isComplete)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `completion undo after completing sets isComplete back to false`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIndices = FakeGenerator.emptyIndices()
+            for (idx in emptyIndices) {
+                viewModel.selectCell(idx)
+                awaitItem()
+                viewModel.enterDigit(FakeGenerator.correctDigitAt(idx))
+                awaitItem()
+            }
+            assertTrue("should be complete", viewModel.uiState.value.isComplete)
+
+            viewModel.undo()
+            val afterUndo = awaitItem()
+            assertFalse("isComplete should be false after undo", afterUndo.isComplete)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     // ------------------------------------------------------------------ completion event
 
     @Test

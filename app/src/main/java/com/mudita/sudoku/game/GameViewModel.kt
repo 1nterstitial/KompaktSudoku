@@ -117,7 +117,6 @@ class GameViewModel(
     // ------------------------------------------------------------------ private helpers
 
     private fun applyFill(idx: Int, digit: Int, state: GameUiState) {
-        // Push undo action for potential undo (Plan 03)
         undoStack.addLast(
             GameAction.FillCell(
                 cellIndex = idx,
@@ -155,10 +154,59 @@ class GameViewModel(
     }
 
     /**
-     * Stub implementation — pencil mark logic is implemented in Plan 03.
+     * Undoes the last action from [undoStack].
+     *
+     * - [GameAction.FillCell]: restores the previous board value and pencil marks at that cell.
+     *   Rechecks completion state — if undoing the last correct fill, sets isComplete=false.
+     *   Does NOT decrement errorCount — errors are permanent once counted (SCORE-01 design).
+     * - [GameAction.SetPencilMark]: reverses the pencil mark toggle.
+     * - Empty stack: no-op.
      */
-    @Suppress("UNUSED_PARAMETER")
+    fun undo() {
+        if (undoStack.isEmpty()) return
+        when (val action = undoStack.removeLast()) {
+            is GameAction.FillCell -> {
+                _uiState.update { state ->
+                    val newBoard = state.board.copyOf()
+                    newBoard[action.cellIndex] = action.previousValue
+                    val newMarks = state.pencilMarks.copyOf()
+                    newMarks[action.cellIndex] = action.previousPencilMarks
+                    // Recheck completion after undo (may no longer be complete)
+                    val allCorrect = newBoard.indices.all { i -> newBoard[i] == state.solution[i] }
+                    state.copy(
+                        board = newBoard,
+                        pencilMarks = newMarks,
+                        isComplete = allCorrect
+                    )
+                }
+            }
+            is GameAction.SetPencilMark -> {
+                _uiState.update { state ->
+                    val newMarks = state.pencilMarks.copyOf()
+                    newMarks[action.cellIndex] = if (action.wasAdded) {
+                        state.pencilMarks[action.cellIndex] - action.digit
+                    } else {
+                        state.pencilMarks[action.cellIndex] + action.digit
+                    }
+                    state.copy(pencilMarks = newMarks)
+                }
+            }
+        }
+    }
+
+    /**
+     * Toggles a pencil mark candidate for [digit] at cell [idx].
+     *
+     * - If [digit] is NOT in the current pencil mark set, adds it (wasAdded=true).
+     * - If [digit] IS already present, removes it (wasAdded=false).
+     * - Pushes a [GameAction.SetPencilMark] onto undoStack for undo support.
+     */
     private fun applyPencilMark(idx: Int, digit: Int, state: GameUiState) {
-        // Plan 03 implementation
+        val currentSet = state.pencilMarks[idx]
+        val wasAdded = digit !in currentSet
+        undoStack.addLast(GameAction.SetPencilMark(idx, digit, wasAdded))
+        val newMarks = state.pencilMarks.copyOf()
+        newMarks[idx] = if (wasAdded) currentSet + digit else currentSet - digit
+        _uiState.update { it.copy(pencilMarks = newMarks) }
     }
 }
