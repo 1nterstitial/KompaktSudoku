@@ -73,7 +73,10 @@ dependencies {
     implementation(libs.sudoklify.presets)
 
     // MMD — Mudita Mindful Design E-ink UI components (D-09)
-    implementation(libs.mmd)
+    // compileOnly for now: both known MMD repos are inaccessible (GitHub Packages requires auth,
+    // JFrog instance deactivated). Unit tests don't need MMD at runtime. Switch to implementation
+    // once the CI environment has repository credentials or the library is mirrored.
+    compileOnly(libs.mmd)
 
     // Unit tests
     testImplementation(libs.junit)

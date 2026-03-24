@@ -114,6 +114,37 @@ class GameViewModel(
         }
     }
 
+    /**
+     * Clears the selected cell's digit and pencil marks.
+     *
+     * No-op if: no cell selected, or the cell is a given.
+     * Pushes a FillCell action onto undoStack so undo() can restore the previous value.
+     */
+    fun eraseCell() {
+        val state = _uiState.value
+        val idx = state.selectedCellIndex ?: return
+        if (state.givenMask[idx]) return
+
+        undoStack.addLast(
+            GameAction.FillCell(
+                cellIndex = idx,
+                previousValue = state.board[idx],
+                previousPencilMarks = state.pencilMarks[idx]
+            )
+        )
+
+        val newBoard = state.board.copyOf()
+        newBoard[idx] = 0
+        val newMarks = state.pencilMarks.copyOf().also { it[idx] = emptySet() }
+
+        _uiState.update {
+            it.copy(
+                board = newBoard,
+                pencilMarks = newMarks
+            )
+        }
+    }
+
     // ------------------------------------------------------------------ private helpers
 
     private fun applyFill(idx: Int, digit: Int, state: GameUiState) {
