@@ -12,19 +12,23 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Player can tap a cell to select it and tap a number to fill it in — *Validated in Phase 02: game-state-domain*
+- [x] Errors are tracked silently during play (not surfaced until game end) — *Validated in Phase 02: game-state-domain*
+- [x] Puzzles vary by cells revealed AND solving complexity per difficulty level — *Validated in Phase 01 + 02: puzzle engine + difficulty selection in ViewModel*
 
 ### Active
 
 - [ ] Player can select a difficulty level (Easy, Medium, Hard) from the main menu
-- [ ] Puzzles vary by cells revealed AND solving complexity per difficulty level
-- [ ] Player can tap a cell to select it and tap a number to fill it in
-- [ ] Errors are tracked silently during play (not surfaced until game end)
+- [ ] Player can request a hint during play (each hint incurs a score penalty)
 - [ ] Player can request a hint during play (each hint incurs a score penalty)
 - [ ] Player can pause a game and resume it at a later time (game state persists on device)
 - [ ] On completion, player sees a score summary (error count, hints used, final score)
 - [ ] High scores are stored persistently per difficulty level (leaderboard)
 - [ ] All UI is built with the Mudita Mindful Design (MMD) library and ThemeMMD
+
+## Current State
+
+Phase 02 complete — GameViewModel and all game-state domain models implemented. Core game logic (cell selection, fill mode, pencil marks, undo, error tracking, completion detection) is fully tested with 38 unit tests. Building toward Phase 03: Core Game UI.
 
 ### Out of Scope
 
@@ -77,4 +81,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-23 after initialization*
+*Last updated: 2026-03-24 after Phase 02 completion — game-state domain complete*
