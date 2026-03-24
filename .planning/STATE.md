@@ -83,6 +83,9 @@ Plan: 01 (ready to execute)
 - [02-02] applyPencilMark stubbed as no-op — pencil mark logic deferred to Plan 03 per plan spec; stub keeps Plan 02 scope clean
 - [02-03] applyPencilMark wasAdded flag encodes toggle direction at write time — undo reverses without re-reading set state
 - [02-03] errorCount never decremented on undo — permanent silent tracking counts mistakes made, not current board state (SCORE-01)
+- [03-01] MMD declared as compileOnly due to inaccessible repos — GitHub Packages needs auth token, JFrog instance deactivated; switch to implementation once credentials configured
+- [03-01] eraseCell() reuses FillCell undo action — pushes previous value/marks before clearing, enabling undo via existing infrastructure
+- [03-01] GameScreen stub created in Plan 01 — allows MainActivity compilation before Plan 02 wires the real UI
 
 ### Architecture Decisions
 
