@@ -44,7 +44,12 @@ Plans:
   3. User can switch between fill mode and pencil mark mode; digits entered in each mode are stored and displayed separately
   4. Tapping undo reverses the last fill or pencil mark action, including multi-step sequences
   5. Filling an incorrect cell increments the silent error counter without displaying any error feedback to the player; filling the last correct cell triggers completion detection
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Domain models (GameUiState, InputMode, GameAction, GameEvent) + test infrastructure (MainDispatcherRule, FakeGenerator, GameUiState tests)
+- [ ] 02-02-PLAN.md — GameViewModel core actions (startGame, selectCell, enterDigit fill, toggleInputMode) + tests for DIFF-01/02, INPUT-01/02/03
+- [ ] 02-03-PLAN.md — GameViewModel pencil marks, undo, error tracking, completion detection + tests for INPUT-04/05, SCORE-01/02
 
 ### Phase 3: Core Game UI
 **Goal**: The game screen renders correctly on the Mudita Kompakt E-ink display with no ghosting artifacts, appropriately sized touch targets, and full MMD library compliance
@@ -98,7 +103,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
-| 2. Game State & Domain | 0/0 | Not started | - |
+| 2. Game State & Domain | 0/3 | Planned | - |
 | 3. Core Game UI | 0/0 | Not started | - |
 | 4. Persistence | 0/0 | Not started | - |
 | 5. Scoring & Completion | 0/0 | Not started | - |
