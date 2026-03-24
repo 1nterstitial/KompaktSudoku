@@ -7,7 +7,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Puzzle Engine** - Pure Kotlin generator producing valid, unique, technique-classified puzzles
+- [x] **Phase 1: Puzzle Engine** - Pure Kotlin generator producing valid, unique, technique-classified puzzles (completed 2026-03-24)
 - [ ] **Phase 2: Game State & Domain** - ViewModel contract, domain models, input handling, and error tracking
 - [ ] **Phase 3: Core Game UI** - E-ink-native playable game screen validated on physical hardware
 - [ ] **Phase 4: Persistence** - Pause/resume and high score storage via DataStore
@@ -32,7 +32,7 @@ Plans:
 - [x] 01-01-PLAN.md — Gradle setup, domain models (Difficulty/DifficultyConfig/SudokuPuzzle), Wave 0 test stubs
 - [x] 01-02-PLAN.md — SudokuValidator + UniquenessVerifier (abort-on-second-solution, PUZZ-01)
 - [x] 01-03-PLAN.md — DifficultyClassifier (constraint-propagation solver with technique tracking, PUZZ-02)
-- [ ] 01-04-PLAN.md — SudokuGenerator (Sudoklify wrapper + retry loop) + integration batch tests (PUZZ-01/02/03)
+- [x] 01-04-PLAN.md — SudokuGenerator (Sudoklify wrapper + retry loop) + integration batch tests (PUZZ-01/02/03)
 
 ### Phase 2: Game State & Domain
 **Goal**: The game loop is fully modeled — difficulty is selectable, cells accept input, errors are tracked silently, and undo works — all backed by a stable ViewModel contract
@@ -97,7 +97,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Puzzle Engine | 3/4 | In Progress|  |
+| 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
 | 2. Game State & Domain | 0/0 | Not started | - |
 | 3. Core Game UI | 0/0 | Not started | - |
 | 4. Persistence | 0/0 | Not started | - |

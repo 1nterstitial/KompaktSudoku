@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-24T04:29:36.733Z"
+last_updated: "2026-03-24T04:51:20.806Z"
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State: Mudita Kompakt Sudoku
@@ -23,14 +23,14 @@ progress:
 
 ## Current Position
 
-Phase: 01 (puzzle-engine) — EXECUTING
-Plan: 4 of 4
+Phase: 01 (puzzle-engine) — COMPLETE
+Plan: 4 of 4 (all plans complete)
 
 ## Phase Sequence
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | Puzzle Engine | Not started |
+| 1 | Puzzle Engine | Complete |
 | 2 | Game State & Domain | Not started |
 | 3 | Core Game UI | Not started |
 | 4 | Persistence | Not started |
@@ -41,9 +41,9 @@ Plan: 4 of 4
 
 ## Performance Metrics
 
-**Plans completed:** 2
+**Plans completed:** 4
 **Plans total:** 4 (phase 01)
-**Phases completed:** 0/6
+**Phases completed:** 1/6
 **Requirements mapped:** 26/26
 
 | Phase | Plan | Duration | Tasks | Files | Completed |
@@ -51,6 +51,7 @@ Plan: 4 of 4
 | 01 | 01 | 6 min | 3 | 17 | 2026-03-24 |
 | 01 | 02 | 47 min | 2 | 7 | 2026-03-24 |
 | 01 | 03 | 10 min | 1 | 2 | 2026-03-24 |
+| 01 | 04 | 16 min | 2 | 5 | 2026-03-24 |
 
 ## Accumulated Context
 
@@ -68,6 +69,9 @@ Plan: 4 of 4
 - [01-02] kotlin { compilerOptions } DSL — required by Kotlin 2.3.20 K2; kotlinOptions jvmTarget String is an error in Kotlin 2.x
 - [01-03] Exact-tier matching for meetsRequirements — easy puzzle fails Hard requirements (too easy for challenge)
 - [01-03] No naked-pairs pass in DifficultyClassifier — pairs pass without mutable candidate-set would loop infinitely; two-tier design is termination-safe and sufficient for PUZZ-02
+- [01-04] Sudoklify MEDIUM produces 0% HIDDEN_PAIRS tier empirically — MEDIUM_CONFIG updated to NAKED_SINGLES_ONLY; MEDIUM differs from EASY by given-count range only (27-35 vs 36-45)
+- [01-04] toSeed() requires strictly positive Long — use Random.nextLong(1L, Long.MAX_VALUE); zero/negative seeds throw InvalidSeedException
+- [01-04] Sudoklify 1.0.0-beta04 actual API: components.toSeed, presets.loadPresetSchemas(), SudoklifyArchitect factory lambda, constructSudoku DSL builder
 
 ### Architecture Decisions
 
@@ -100,10 +104,10 @@ Plan: 4 of 4
 
 ## Session Continuity
 
-**Last session:** 2026-03-24T04:29:36.730Z
-**Next action:** Execute Phase 01 Plan 04 (SudokuGenerator wrapping Sudoklify)
+**Last session:** 2026-03-24T04:51:20.803Z
+**Next action:** Phase 01 complete. Run /gsd:transition to review Phase 01 outcomes and begin Phase 02 (Game State & Domain).
 
 ---
 
 *State initialized: 2026-03-23*
-*Last updated: 2026-03-24 after phase 01 plan 02 execution*
+*Last updated: 2026-03-24 after phase 01 plan 04 execution — Phase 01 complete*
