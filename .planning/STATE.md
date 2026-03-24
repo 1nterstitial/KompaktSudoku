@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: ready
-stopped_at: Phase 02 complete — Phase 03 planned and ready to execute
-last_updated: "2026-03-24T23:00:00Z"
+status: unknown
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-03-24T23:53:53.329Z"
 progress:
   total_phases: 6
   completed_phases: 2
-  total_plans: 10
-  completed_plans: 7
+  total_plans: 11
+  completed_plans: 10
 ---
 
 # Project State: Mudita Kompakt Sudoku
@@ -33,7 +33,7 @@ Plan: 03 (ready to execute)
 |-------|------|--------|
 | 1 | Puzzle Engine | Complete |
 | 2 | Game State & Domain | Complete |
-| 3 | Core Game UI | Not started |
+| 3 | Core Game UI | Complete |
 | 4 | Persistence | Not started |
 | 5 | Scoring & Completion | Not started |
 | 6 | Menu & Navigation | Not started |
@@ -57,6 +57,7 @@ Plan: 03 (ready to execute)
 | Phase 02 P02 | 4 | 1 tasks | 2 files |
 | Phase 02-game-state-domain P03 | 8min | 1 tasks | 2 files |
 | 03 | 02 | 6 min | 2 | 4 | 2026-03-24 |
+| Phase 03 P03 | 45min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,10 @@ Plan: 03 (ready to execute)
 - [03-01] GameScreen stub created in Plan 01 — allows MainActivity compilation before Plan 02 wires the real UI
 - [03-02] ControlsRow mode toggles use Box+clickable (indication=null) instead of ButtonMMD with colors param — ButtonMMD colors API unverifiable without MMD AAR; Box approach is guaranteed safe
 - [03-02] Grid lines drawn last in Canvas to prevent thick box borders being partially overwritten by adjacent cell fills
+- [03-03] MMD stubs placed in main source set (com.mudita.mmd) — only way to compile production files without AAR; replaces compileOnly(libs.mmd) for offline dev
+- [03-03] Canvas needs Modifier.fillMaxSize() for pointer-input hit testing — Spacer-based Canvas is 0x0 without explicit size modifier; this was a production bug
+- [03-03] Square Canvas tap coords use min(width, height) matching BoxWithConstraints minOf(maxWidth, maxHeight) logic
+- [03-03] activity-compose declared explicitly — was previously provided only transitively by MMD; must be explicit dependency
 
 ### Architecture Decisions
 
@@ -121,9 +126,9 @@ Plan: 03 (ready to execute)
 
 ## Session Continuity
 
-**Last session:** 2026-03-24T22:17:37.892Z
+**Last session:** 2026-03-24T23:53:53.326Z
 **Next action:** Phase 02 complete (verified 5/5). Execute Phase 03: `/gsd:execute-phase 03`
-**Stopped at:** Phase 02 complete, Phase 03 plans ready
+**Stopped at:** Completed 03-03-PLAN.md
 
 ---
 

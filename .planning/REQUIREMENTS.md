@@ -48,9 +48,9 @@
 ### Navigation & UI
 
 - [ ] **NAV-01**: App has a main menu with options to start a new game (with difficulty selection) and view the leaderboard
-- [ ] **UI-01**: All UI components are built using the MMD library wrapped in ThemeMMD
-- [ ] **UI-02**: No animations, ripple effects, or transitions are used anywhere in the app (E-ink compliance)
-- [ ] **UI-03**: All interactive touch targets are at minimum 56dp (E-ink usability on 800×480 display)
+- [x] **UI-01**: All UI components are built using the MMD library wrapped in ThemeMMD
+- [x] **UI-02**: No animations, ripple effects, or transitions are used anywhere in the app (E-ink compliance)
+- [x] **UI-03**: All interactive touch targets are at minimum 56dp (E-ink usability on 800×480 display)
 
 ## v2 Requirements
 
@@ -109,9 +109,9 @@
 | HS-02 | Phase 5 | Pending |
 | HS-03 | Phase 5 | Pending |
 | NAV-01 | Phase 6 | Pending |
-| UI-01 | Phase 3 | Pending |
-| UI-02 | Phase 3 | Pending |
-| UI-03 | Phase 3 | Pending |
+| UI-01 | Phase 3 | Complete |
+| UI-02 | Phase 3 | Complete |
+| UI-03 | Phase 3 | Complete |
 
 **Coverage:**
 - v1 requirements: 26 total

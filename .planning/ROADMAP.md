@@ -9,7 +9,7 @@
 
 - [x] **Phase 1: Puzzle Engine** - Pure Kotlin generator producing valid, unique, technique-classified puzzles (completed 2026-03-24)
 - [x] **Phase 2: Game State & Domain** - ViewModel contract, domain models, input handling, and error tracking (completed 2026-03-24)
-- [ ] **Phase 3: Core Game UI** - E-ink-native playable game screen validated on physical hardware
+- [x] **Phase 3: Core Game UI** - E-ink-native playable game screen validated on physical hardware (completed 2026-03-24)
 - [ ] **Phase 4: Persistence** - Pause/resume and high score storage via DataStore
 - [ ] **Phase 5: Scoring & Completion** - Hint logic, score computation, completion summary, and leaderboard screens
 - [ ] **Phase 6: Menu & Navigation** - Full navigation graph assembling all screens into a complete app flow
@@ -64,9 +64,9 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 03-01-PLAN.md — MMD dependency + Compose UI test deps (testImplementation), MainActivity → ComponentActivity + ThemeMMD, eraseCell() to GameViewModel
-- [ ] 03-02-PLAN.md — GameScreen, GameGrid (Canvas), NumberPad, ControlsRow — full playable UI wired to ViewModel
-- [ ] 03-03-PLAN.md — Robolectric Compose UI tests: cell tap mapping, button interaction, 56dp touch target assertions
+- [x] 03-01-PLAN.md — MMD dependency + Compose UI test deps (testImplementation), MainActivity → ComponentActivity + ThemeMMD, eraseCell() to GameViewModel
+- [x] 03-02-PLAN.md — GameScreen, GameGrid (Canvas), NumberPad, ControlsRow — full playable UI wired to ViewModel
+- [x] 03-03-PLAN.md — Robolectric Compose UI tests: cell tap mapping, button interaction, 56dp touch target assertions
 
 ### Phase 4: Persistence
 **Goal**: A paused game survives app closure and device sleep, and high scores are stored durably per difficulty level
@@ -109,7 +109,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
 | 2. Game State & Domain | 3/3 | Complete   | 2026-03-24 |
-| 3. Core Game UI | 0/3 | Not started | - |
+| 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
 | 4. Persistence | 0/0 | Not started | - |
 | 5. Scoring & Completion | 0/0 | Not started | - |
 | 6. Menu & Navigation | 0/0 | Not started | - |
