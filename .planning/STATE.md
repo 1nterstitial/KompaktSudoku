@@ -78,6 +78,8 @@ Plan: 2 of 3 (plan 01 complete)
 - [02-01] Array<Set<Int>> pencilMarks requires contentDeepEquals/contentDeepHashCode — standard data class equals is reference-based for arrays
 - [02-02] GameViewModel constructor accepts suspend lambda for puzzle generation — allows FakeGenerator injection without subclassing SudokuGenerator
 - [02-02] applyPencilMark stubbed as no-op — pencil mark logic deferred to Plan 03 per plan spec; stub keeps Plan 02 scope clean
+- [02-03] applyPencilMark wasAdded flag encodes toggle direction at write time — undo reverses without re-reading set state
+- [02-03] errorCount never decremented on undo — permanent silent tracking counts mistakes made, not current board state (SCORE-01)
 
 ### Architecture Decisions
 
