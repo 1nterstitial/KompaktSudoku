@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 6 UI-SPEC approved
-last_updated: "2026-03-25T04:39:30.955Z"
+stopped_at: Completed 05-03-PLAN.md
+last_updated: "2026-03-25T03:47:29.687Z"
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 19
+  total_plans: 17
   completed_plans: 16
 ---
 
@@ -18,14 +18,14 @@ progress:
 
 **Core Value:** A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-ink display — responsive touch input, high-contrast grid, and smooth puzzle flow without display artifacts.
 
-**Current Focus:** Phase 06 — menu-navigation
+**Current Focus:** Phase 05 — scoring-completion
 
 ---
 
 ## Current Position
 
-Phase: 06 (menu-navigation) — EXECUTING
-Plan: 2 of 2
+Phase: 6
+Plan: 02 (ready to execute)
 
 ## Phase Sequence
 
@@ -64,7 +64,6 @@ Plan: 2 of 2
 | Phase 05 P01 | 4 | 2 tasks | 13 files |
 | Phase 05 P02 | 11min | 2 tasks | 5 files |
 | 05 | 03 | 22 min | 2 | 5 | 2026-03-25 |
-| Phase 06 P01 | 15min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -117,6 +116,10 @@ Plan: 2 of 2
 - [05-03] Screen enum routing in MainActivity — top-level GAME/SUMMARY/LEADERBOARD enum; Phase 6 replaces with NavHost; leaf composables remain nav-unaware
 - [05-03] completionResult set BEFORE currentScreen in onCompleted callback — prevents null CompletionResult on SummaryScreen first recomposition (Pitfall 2 ordering)
 - [05-03] LeaderboardScreen heading is "Best Scores" not "Leaderboard" — reflects single-best-score-per-difficulty design (D-08); "Leaderboard" only in code identifiers
+- [06-01] Screen enum retained (not NavHost) — enum-based routing sufficient for 5 screens with no deep linking (D-09)
+- [06-01] showResumeDialog StateFlow now collected in MainActivity to drive MenuScreen hasSavedGame — Resume button moved from GameScreen dialog to main menu
+- [06-01] startGame(difficulty) called before navigating to GAME screen to pre-start puzzle generation (Pitfall 5 avoidance)
+- [06-01] MenuScreen has no BackHandler — ComponentActivity back exits app by default (D-11 intentional)
 
 ### Architecture Decisions
 
@@ -149,9 +152,9 @@ Plan: 2 of 2
 
 ## Session Continuity
 
-**Last session:** 2026-03-25T04:02:43.546Z
-**Next action:** Execute Phase 5 Plan 02 — ViewModel scoring logic
-**Stopped at:** Phase 6 UI-SPEC approved
+**Last session:** 2026-03-25T08:37:54Z
+**Next action:** Execute Phase 6 Plan 02 — navigation tests
+**Stopped at:** Completed 06-01-PLAN.md
 
 ---
 

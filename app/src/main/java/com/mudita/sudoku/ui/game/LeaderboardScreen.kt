@@ -1,5 +1,6 @@
 package com.mudita.sudoku.ui.game
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,14 +33,17 @@ import com.mudita.sudoku.puzzle.model.Difficulty
  * No animations (UI-02). All text uses TextMMD, all buttons use ButtonMMD (MMD compliance).
  * Layout: full-screen Column with system bar insets and 16dp horizontal padding.
  *
- * @param scores   Map from [Difficulty] to the stored best score (null if no score recorded).
- * @param onNewGame Called when the player taps "New Game".
+ * @param scores        Map from [Difficulty] to the stored best score (null if no score recorded).
+ * @param onBackToMenu  Called when the player taps "Back to Menu" or presses the system back button.
  */
 @Composable
 fun LeaderboardScreen(
     scores: Map<Difficulty, Int?>,
-    onNewGame: () -> Unit
+    onBackToMenu: () -> Unit
 ) {
+    // System back press returns to MENU (D-12)
+    BackHandler { onBackToMenu() }
+
     Column(
         modifier = Modifier
             .windowInsetsPadding(WindowInsets.systemBars)
@@ -81,14 +85,14 @@ fun LeaderboardScreen(
         // 3. Spacer — pushes action button to the bottom of the screen
         Spacer(modifier = Modifier.weight(1f))
 
-        // 4. New Game button
+        // 4. Back to Menu button
         ButtonMMD(
-            onClick = onNewGame,
+            onClick = onBackToMenu,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
         ) {
-            TextMMD(text = "New Game")
+            TextMMD(text = "Back to Menu")
         }
 
         Spacer(modifier = Modifier.height(8.dp))

@@ -19,8 +19,10 @@ import com.mudita.sudoku.game.GameViewModel
 import com.mudita.sudoku.game.gameDataStore
 import com.mudita.sudoku.game.model.CompletionResult
 import com.mudita.sudoku.game.scoreDataStore
+import com.mudita.sudoku.ui.game.DifficultyScreen
 import com.mudita.sudoku.ui.game.GameScreen
 import com.mudita.sudoku.ui.game.LeaderboardScreen
+import com.mudita.sudoku.ui.game.MenuScreen
 import com.mudita.sudoku.ui.game.SummaryScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,10 +30,10 @@ import kotlinx.coroutines.launch
 /**
  * Top-level screen routing enum.
  *
- * Phase 6 replaces this with NavHost. Leaf composables (SummaryScreen, LeaderboardScreen) must
+ * Leaf composables (SummaryScreen, LeaderboardScreen, MenuScreen, DifficultyScreen) must
  * not contain nav-awareness — they receive data as parameters and emit callbacks.
  */
-enum class Screen { GAME, SUMMARY, LEADERBOARD }
+enum class Screen { MENU, DIFFICULTY, GAME, SUMMARY, LEADERBOARD }
 
 class MainActivity : ComponentActivity() {
 
@@ -73,11 +75,41 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ThemeMMD {
-                var currentScreen by remember { mutableStateOf(Screen.GAME) }
+                var currentScreen by remember { mutableStateOf(Screen.MENU) }
                 var completionResult by remember { mutableStateOf<CompletionResult?>(null) }
                 val leaderboardScores by viewModel.leaderboardScores.collectAsStateWithLifecycle()
+                // Reactive: showResumeDialog StateFlow emits true when DataStore load finds a
+                // saved game. Collecting here ensures the Resume button appears as soon as the
+                // async load completes (Pitfall 1 avoidance).
+                val hasSavedGame by viewModel.showResumeDialog.collectAsStateWithLifecycle()
 
                 when (currentScreen) {
+                    Screen.MENU -> MenuScreen(
+                        hasSavedGame = hasSavedGame,
+                        onNewGame = {
+                            currentScreen = Screen.DIFFICULTY
+                        },
+                        onResume = {
+                            // MUST call resumeGame() here — clears showResumeDialog and restores
+                            // board state from the persisted save (Pitfall 4).
+                            viewModel.resumeGame()
+                            currentScreen = Screen.GAME
+                        },
+                        onBestScores = {
+                            currentScreen = Screen.LEADERBOARD
+                        }
+                    )
+                    Screen.DIFFICULTY -> DifficultyScreen(
+                        onDifficultySelected = { difficulty ->
+                            // Call startGame() BEFORE navigating — ensures ViewModel starts
+                            // generating the puzzle before GameScreen renders (Pitfall 5).
+                            viewModel.startGame(difficulty)
+                            currentScreen = Screen.GAME
+                        },
+                        onBack = {
+                            currentScreen = Screen.MENU
+                        }
+                    )
                     Screen.GAME -> GameScreen(
                         viewModel = viewModel,
                         onCompleted = { result ->
@@ -86,9 +118,12 @@ class MainActivity : ComponentActivity() {
                             // a single recomposition, but assignment order still matters:
                             // SummaryScreen is rendered with the LATEST value of completionResult
                             // at the point of recomposition. Setting it first ensures
-                            // SummaryScreen never receives a null result (Pitfall 2).
+                            // SummaryScreen never receives a null result (Pitfall 3).
                             completionResult = result
                             currentScreen = Screen.SUMMARY
+                        },
+                        onBackToMenu = {
+                            currentScreen = Screen.MENU
                         }
                     )
                     Screen.SUMMARY -> SummaryScreen(
@@ -96,16 +131,14 @@ class MainActivity : ComponentActivity() {
                         onViewLeaderboard = {
                             currentScreen = Screen.LEADERBOARD
                         },
-                        onNewGame = {
-                            viewModel.startNewGame()
-                            currentScreen = Screen.GAME
+                        onBackToMenu = {
+                            currentScreen = Screen.MENU
                         }
                     )
                     Screen.LEADERBOARD -> LeaderboardScreen(
                         scores = leaderboardScores,
-                        onNewGame = {
-                            viewModel.startNewGame()
-                            currentScreen = Screen.GAME
+                        onBackToMenu = {
+                            currentScreen = Screen.MENU
                         }
                     )
                 }

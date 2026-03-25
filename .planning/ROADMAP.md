@@ -114,7 +114,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 06-01-PLAN.md — MenuScreen + DifficultyScreen composables, GameScreen/SummaryScreen/LeaderboardScreen modifications, MainActivity routing rewire
+- [x] 06-01-PLAN.md — MenuScreen + DifficultyScreen composables, GameScreen/SummaryScreen/LeaderboardScreen modifications, MainActivity routing rewire
 - [ ] 06-02-PLAN.md — MenuScreenTest + DifficultyScreenTest creation, SummaryScreenTest + LeaderboardScreenTest updates for renamed callbacks
 
 ## Progress Table
@@ -126,4 +126,4 @@ Plans:
 | 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
 | 4. Persistence | 3/3 | Complete   | 2026-03-25 |
 | 5. Scoring & Completion | 2/3 | In Progress|  |
-| 6. Menu & Navigation | 0/2 | Planned    |  |
+| 6. Menu & Navigation | 1/2 | In Progress | - |
