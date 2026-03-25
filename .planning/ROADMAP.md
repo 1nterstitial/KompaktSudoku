@@ -9,7 +9,7 @@
 
 - [x] **Phase 1: Puzzle Engine** - Pure Kotlin generator producing valid, unique, technique-classified puzzles (completed 2026-03-24)
 - [x] **Phase 2: Game State & Domain** - ViewModel contract, domain models, input handling, and error tracking (completed 2026-03-24)
-- [x] **Phase 3: Core Game UI** - E-ink-native playable game screen validated on physical hardware (completed 2026-03-24)
+- [x] **Phase 3: Core Game UI** - E-ink-native playable game screen validated on physical hardware (completed 2026-03-24)
 - [ ] **Phase 4: Persistence** - Pause/resume and high score storage via DataStore
 - [ ] **Phase 5: Scoring & Completion** - Hint logic, score computation, completion summary, and leaderboard screens
 - [ ] **Phase 6: Menu & Navigation** - Full navigation graph assembling all screens into a complete app flow
@@ -76,7 +76,12 @@ Plans:
   1. Pausing a game and force-closing the app then reopening it presents a prompt to resume; all grid state, pencil marks, error count, and hint count are restored exactly as left
   2. Resuming a paused game and making additional moves does not corrupt the saved state on a subsequent pause
   3. Starting a new game after a paused game exists correctly discards the prior paused state and starts fresh
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — PersistedGameState DTO + serialization tests, GameRepository interface + DataStoreGameRepository + FakeGameRepository
+- [ ] 04-02-PLAN.md — GameViewModel persistence integration (save/load/resume/clear) + GameViewModelPersistenceTest
+- [ ] 04-03-PLAN.md — ResumeDialog UI + GameScreen guard + MainActivity lifecycle save + ViewModel factory
 
 ### Phase 5: Scoring & Completion
 **Goal**: The closed game loop is complete — hints are available with a score penalty, the game detects completion, and the player sees a meaningful summary with their score compared to their personal best
@@ -110,6 +115,6 @@ Plans:
 | 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
 | 2. Game State & Domain | 3/3 | Complete   | 2026-03-24 |
 | 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
-| 4. Persistence | 0/0 | Not started | - |
+| 4. Persistence | 0/3 | In progress | - |
 | 5. Scoring & Completion | 0/0 | Not started | - |
 | 6. Menu & Navigation | 0/0 | Not started | - |
