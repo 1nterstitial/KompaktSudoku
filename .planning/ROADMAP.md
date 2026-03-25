@@ -110,8 +110,12 @@ Plans:
   2. When a paused game exists, the main menu also presents a resume option; when no paused game exists, the resume option is absent
   3. Completing a game navigates to the summary screen; from summary the player can return to the main menu or view the leaderboard
   4. The back stack is coherent throughout — pressing back at the main menu exits the app; pressing back mid-game returns to the menu (with the game automatically paused)
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 06-01-PLAN.md — MenuScreen + DifficultyScreen composables, GameScreen/SummaryScreen/LeaderboardScreen modifications, MainActivity routing rewire
+- [ ] 06-02-PLAN.md — MenuScreenTest + DifficultyScreenTest creation, SummaryScreenTest + LeaderboardScreenTest updates for renamed callbacks
 
 ## Progress Table
 
@@ -122,4 +126,4 @@ Plans:
 | 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
 | 4. Persistence | 3/3 | Complete   | 2026-03-25 |
 | 5. Scoring & Completion | 2/3 | In Progress|  |
-| 6. Menu & Navigation | 0/0 | Not started | - |
+| 6. Menu & Navigation | 0/2 | Not started | - |
