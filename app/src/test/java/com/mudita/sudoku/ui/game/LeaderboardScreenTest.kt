@@ -21,7 +21,7 @@ import org.robolectric.annotation.Config
  * - Stored scores are displayed per difficulty
  * - Em-dash is shown for null (no recorded score) difficulties
  * - All three difficulty labels are present
- * - New Game callback is invoked on button click
+ * - Back to Menu callback is invoked on button click
  *
  * ThemeMMD resolves to the real MMD AAR (from Maven Central).
  */
@@ -40,7 +40,7 @@ class LeaderboardScreenTest {
             ThemeMMD {
                 LeaderboardScreen(
                     scores = emptyMap(),
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -55,7 +55,7 @@ class LeaderboardScreenTest {
             ThemeMMD {
                 LeaderboardScreen(
                     scores = mapOf(Difficulty.EASY to 85),
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -69,7 +69,7 @@ class LeaderboardScreenTest {
                 LeaderboardScreen(
                     // All nulls: all three rows show em-dash; use allNodes to confirm at least one
                     scores = mapOf(Difficulty.EASY to null, Difficulty.MEDIUM to null, Difficulty.HARD to null),
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -91,7 +91,7 @@ class LeaderboardScreenTest {
             ThemeMMD {
                 LeaderboardScreen(
                     scores = emptyMap(),
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -103,17 +103,17 @@ class LeaderboardScreenTest {
     // ------------------------------------------------------------------ button callback
 
     @Test
-    fun `New Game button calls onNewGame callback`() {
+    fun `Back to Menu button calls onBackToMenu callback`() {
         var callCount = 0
         composeRule.setContent {
             ThemeMMD {
                 LeaderboardScreen(
                     scores = emptyMap(),
-                    onNewGame = { callCount++ }
+                    onBackToMenu = { callCount++ }
                 )
             }
         }
-        composeRule.onNodeWithText("New Game").performClick()
-        assertEquals("New Game click should invoke callback once", 1, callCount)
+        composeRule.onNodeWithText("Back to Menu").performClick()
+        assertEquals("Back to Menu click should invoke callback once", 1, callCount)
     }
 }

@@ -56,7 +56,7 @@ class SummaryScreenTest {
                 SummaryScreen(
                     result = defaultResult(),
                     onViewLeaderboard = {},
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -72,7 +72,7 @@ class SummaryScreenTest {
                 SummaryScreen(
                     result = defaultResult(difficulty = Difficulty.EASY),
                     onViewLeaderboard = {},
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -88,7 +88,7 @@ class SummaryScreenTest {
                 SummaryScreen(
                     result = defaultResult(errorCount = 3),
                     onViewLeaderboard = {},
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -104,7 +104,7 @@ class SummaryScreenTest {
                     // Use a hintCount with a unique value not shared by other stats
                     result = defaultResult(errorCount = 1, hintCount = 4, finalScore = 75),
                     onViewLeaderboard = {},
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -119,7 +119,7 @@ class SummaryScreenTest {
                 SummaryScreen(
                     result = defaultResult(finalScore = 60),
                     onViewLeaderboard = {},
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -136,7 +136,7 @@ class SummaryScreenTest {
                 SummaryScreen(
                     result = defaultResult(isPersonalBest = true),
                     onViewLeaderboard = {},
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -150,7 +150,7 @@ class SummaryScreenTest {
                 SummaryScreen(
                     result = defaultResult(isPersonalBest = false),
                     onViewLeaderboard = {},
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -167,7 +167,7 @@ class SummaryScreenTest {
                 SummaryScreen(
                     result = defaultResult(),
                     onViewLeaderboard = { callCount++ },
-                    onNewGame = {}
+                    onBackToMenu = {}
                 )
             }
         }
@@ -176,18 +176,18 @@ class SummaryScreenTest {
     }
 
     @Test
-    fun `New Game button calls onNewGame callback`() {
+    fun `Back to Menu button calls onBackToMenu callback`() {
         var callCount = 0
         composeRule.setContent {
             ThemeMMD {
                 SummaryScreen(
                     result = defaultResult(),
                     onViewLeaderboard = {},
-                    onNewGame = { callCount++ }
+                    onBackToMenu = { callCount++ }
                 )
             }
         }
-        composeRule.onNodeWithText("New Game").performClick()
-        assertEquals("New Game click should invoke callback once", 1, callCount)
+        composeRule.onNodeWithText("Back to Menu").performClick()
+        assertEquals("Back to Menu click should invoke callback once", 1, callCount)
     }
 }
