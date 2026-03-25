@@ -9,6 +9,7 @@ import com.mudita.sudoku.game.model.InputMode
 import com.mudita.sudoku.puzzle.engine.SudokuGenerator
 import com.mudita.sudoku.puzzle.model.Difficulty
 import com.mudita.sudoku.puzzle.model.SudokuPuzzle
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,11 +29,17 @@ import kotlinx.coroutines.withContext
  *
  * @param generatePuzzle Puzzle generation function; defaults to [SudokuGenerator]. Injectable for
  *                       testing via [FakeGenerator] or any suspend lambda returning [SudokuPuzzle].
+ * @param repository Persistence contract for save/load/clear. Defaults to [NoOpGameRepository]
+ *                   for backward compatibility with callers that do not require persistence.
+ * @param ioDispatcher Dispatcher for I/O-bound work (DataStore reads/writes). Injectable for
+ *                     tests — pass [UnconfinedTestDispatcher] to run synchronously under runTest.
  */
 class GameViewModel(
     private val generatePuzzle: suspend (Difficulty) -> SudokuPuzzle = { difficulty ->
         SudokuGenerator().generatePuzzle(difficulty)
-    }
+    },
+    private val repository: GameRepository = NoOpGameRepository(),
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GameUiState())
@@ -41,10 +48,76 @@ class GameViewModel(
     private val _events = MutableSharedFlow<GameEvent>(replay = 0, extraBufferCapacity = 1)
     val events: SharedFlow<GameEvent> = _events.asSharedFlow()
 
+    private val _showResumeDialog = MutableStateFlow(false)
+    val showResumeDialog: StateFlow<Boolean> = _showResumeDialog.asStateFlow()
+
+    /** Saved game state pending user decision (resume or start new). Null if no saved game. */
+    private var pendingSavedState: GameUiState? = null
+
     /** Mutable undo history; lives in ViewModel, NOT in GameUiState (keeps state immutable). */
     private val undoStack = ArrayDeque<GameAction>()
 
+    init {
+        viewModelScope.launch {
+            val saved = withContext(ioDispatcher) { repository.loadGame() }
+            if (saved != null) {
+                pendingSavedState = saved
+                _showResumeDialog.value = true
+            }
+        }
+    }
+
     // ------------------------------------------------------------------ public actions
+
+    /**
+     * Returns true if a previously saved game is pending resume decision.
+     */
+    fun hasSavedGame(): Boolean = pendingSavedState != null || _showResumeDialog.value
+
+    /**
+     * Restores the previously saved game state.
+     *
+     * Clears the undo stack (per decision D-05 — undo history is not persisted).
+     * Sets showResumeDialog to false and replaces [uiState] with the saved state.
+     * No-op if no saved state is pending.
+     */
+    fun resumeGame() {
+        val saved = pendingSavedState ?: return
+        pendingSavedState = null
+        _showResumeDialog.value = false
+        undoStack.clear()
+        _uiState.value = saved
+    }
+
+    /**
+     * Discards any saved game state and starts a fresh Easy game.
+     *
+     * Per decision D-04: the new game difficulty is always Easy when starting from
+     * the resume-or-new decision dialog.
+     * Calls [repository.clearGame] to remove the saved state from storage.
+     */
+    fun startNewGame() {
+        pendingSavedState = null
+        _showResumeDialog.value = false
+        viewModelScope.launch {
+            withContext(ioDispatcher) { repository.clearGame() }
+        }
+        startGame(Difficulty.EASY)
+    }
+
+    /**
+     * Persists the current game state to [repository].
+     *
+     * Guards:
+     * - Does nothing if [GameUiState.isLoading] is true (puzzle not yet ready)
+     * - Does nothing if [GameUiState.isComplete] is true (game over, no need to persist)
+     * - Does nothing if board is all zeros (no game started yet)
+     */
+    suspend fun saveNow() {
+        val state = _uiState.value
+        if (state.isLoading || state.isComplete || state.board.all { it == 0 }) return
+        repository.saveGame(state)
+    }
 
     /**
      * Starts a new game at [difficulty].
@@ -178,6 +251,9 @@ class GameViewModel(
         }
 
         if (allCorrect) {
+            viewModelScope.launch {
+                withContext(ioDispatcher) { repository.clearGame() }
+            }
             viewModelScope.launch {
                 _events.emit(GameEvent.Completed(newErrorCount))
             }
