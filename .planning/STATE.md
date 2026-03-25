@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-25T02:10:25.910Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-03-25T02:17:08.454Z"
 progress:
   total_phases: 6
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 14
-  completed_plans: 12
+  completed_plans: 13
 ---
 
 # Project State: Mudita Kompakt Sudoku
@@ -60,6 +60,7 @@ Plan: 3 of 3
 | Phase 03 P03 | 45min | 2 tasks | 10 files |
 | Phase 04 P01 | 25 | 2 tasks | 5 files |
 | Phase 04 P02 | 9 | 1 tasks | 2 files |
+| Phase 04 P03 | 3 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,8 @@ Plan: 3 of 3
 - [04-02] ioDispatcher injected into GameViewModel constructor (Dispatchers.IO default) — allows UnconfinedTestDispatcher in tests to make withContext(ioDispatcher) synchronous, avoiding advanceUntilIdle() races with real thread pools
 - [04-02] Tests that need loaded game state use Turbine awaitItem() sequences rather than advanceUntilIdle() — startGame dispatches to Dispatchers.Default (real thread), which test schedulers cannot control
 - [04-02] saveNow() is a suspend fun (not fire-and-forget) — caller controls timing; critical for lifecycle-aware save-on-pause in Plan 03
+- [04-03] ButtonMMD import is com.mudita.mmd.components.buttons.ButtonMMD (plural) — confirmed from actual AAR class inspection; plan comment used wrong singular path
+- [04-03] ResumeDialog placed before isLoading check in GameScreen — dialog must appear immediately at launch before startGame sets isLoading=true
 
 ### Architecture Decisions
 
@@ -131,9 +134,9 @@ Plan: 3 of 3
 
 ## Session Continuity
 
-**Last session:** 2026-03-25T02:10:25.907Z
+**Last session:** 2026-03-25T02:17:08.451Z
 **Next action:** Phase 02 complete (verified 5/5). Execute Phase 03: `/gsd:execute-phase 03`
-**Stopped at:** Completed 04-02-PLAN.md
+**Stopped at:** Completed 04-03-PLAN.md
 
 ---
 

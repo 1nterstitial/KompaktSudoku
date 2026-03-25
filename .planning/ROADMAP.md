@@ -10,7 +10,7 @@
 - [x] **Phase 1: Puzzle Engine** - Pure Kotlin generator producing valid, unique, technique-classified puzzles (completed 2026-03-24)
 - [x] **Phase 2: Game State & Domain** - ViewModel contract, domain models, input handling, and error tracking (completed 2026-03-24)
 - [x] **Phase 3: Core Game UI** - E-ink-native playable game screen validated on physical hardware (completed 2026-03-24)
-- [ ] **Phase 4: Persistence** - Pause/resume and high score storage via DataStore
+- [x] **Phase 4: Persistence** - Pause/resume and high score storage via DataStore (completed 2026-03-25)
 - [ ] **Phase 5: Scoring & Completion** - Hint logic, score computation, completion summary, and leaderboard screens
 - [ ] **Phase 6: Menu & Navigation** - Full navigation graph assembling all screens into a complete app flow
 
@@ -81,7 +81,7 @@ Plans:
 Plans:
 - [x] 04-01-PLAN.md — PersistedGameState DTO + serialization tests, GameRepository interface + DataStoreGameRepository + FakeGameRepository
 - [x] 04-02-PLAN.md — GameViewModel persistence integration (save/load/resume/clear) + GameViewModelPersistenceTest
-- [ ] 04-03-PLAN.md — ResumeDialog UI + GameScreen guard + MainActivity lifecycle save + ViewModel factory
+- [x] 04-03-PLAN.md — ResumeDialog UI + GameScreen guard + MainActivity lifecycle save + ViewModel factory
 
 ### Phase 5: Scoring & Completion
 **Goal**: The closed game loop is complete — hints are available with a score penalty, the game detects completion, and the player sees a meaningful summary with their score compared to their personal best
@@ -115,6 +115,6 @@ Plans:
 | 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
 | 2. Game State & Domain | 3/3 | Complete   | 2026-03-24 |
 | 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
-| 4. Persistence | 2/3 | In Progress|  |
+| 4. Persistence | 3/3 | Complete   | 2026-03-25 |
 | 5. Scoring & Completion | 0/0 | Not started | - |
 | 6. Menu & Navigation | 0/0 | Not started | - |
