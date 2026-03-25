@@ -46,8 +46,11 @@ Declared values (multiples of 4):
 | 3xl | 64dp | not used in this phase |
 
 Exceptions:
-- NumberPad uses 2dp between digit buttons (10 buttons across 800px — tighter packing required to fit row)
 - All interactive elements enforce 56dp minimum height regardless of spacing scale (UI-03 touch target floor)
+
+Note (inherited from Phase 3 — not a Phase 5 decision): NumberPad uses 2dp between digit buttons
+(10 buttons across 800px — tighter packing required to fit row). This value is outside the 4-point
+scale and is owned by Phase 3; it is not modified or extended in Phase 5.
 
 **Source:** codebase — ControlsRow.kt (`Arrangement.spacedBy(8.dp)`), GameScreen.kt (`Spacer(height = 8.dp)`, `padding(horizontal = 8.dp)`), ResumeDialog (`padding(vertical = 16.dp, horizontal = 24.dp)`), NumberPad.kt (`Arrangement.spacedBy(2.dp)`).
 
@@ -105,10 +108,10 @@ New screen surfaces (SummaryScreen, LeaderboardScreen):
 
 ### Hint Button (ControlsRow extension)
 
-**Placement:** Fourth button in ControlsRow — `[ Fill ] [ Pencil ] [ Undo ] [ Hint ]`
+**Placement:** Fourth button in ControlsRow — `[ Fill ] [ Pencil ] [ Undo ] [ Get Hint ]`
 **Component:** ButtonMMD (same as Undo — stateless, no active/inactive color inversion)
 **Modifier:** `Modifier.weight(1f).sizeIn(minHeight = 56.dp)` — identical to Undo button
-**Label:** "Hint"
+**Label:** "Get Hint"
 **Disabled state:** ButtonMMD disabled (greyed by MMD internals) when no valid hint target exists
 **Source:** 05-CONTEXT.md D-02
 
@@ -170,7 +173,7 @@ All stat rows use this pattern — label left-aligned, value right-aligned.
 
 | Element | Copy |
 |---------|------|
-| Hint button label | "Hint" |
+| Hint button label | "Get Hint" |
 | Summary screen heading | "Puzzle Complete" |
 | Summary personal best notice | "New personal best!" |
 | Summary stat label — errors | "Errors" |
