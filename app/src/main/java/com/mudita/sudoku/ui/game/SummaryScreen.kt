@@ -1,5 +1,6 @@
 package com.mudita.sudoku.ui.game
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,16 +34,19 @@ import com.mudita.sudoku.game.model.CompletionResult
  * No animations (UI-02). All text uses TextMMD, all buttons use ButtonMMD (MMD compliance).
  * Layout: full-screen Column with system bar insets and 16dp horizontal padding.
  *
- * @param result       Full completion data from [GameEvent.Completed] — never null when shown.
+ * @param result            Full completion data from [GameEvent.Completed] — never null when shown.
  * @param onViewLeaderboard Called when the player taps "View Leaderboard".
- * @param onNewGame    Called when the player taps "New Game".
+ * @param onBackToMenu      Called when the player taps "Back to Menu" or presses the system back button.
  */
 @Composable
 fun SummaryScreen(
     result: CompletionResult,
     onViewLeaderboard: () -> Unit,
-    onNewGame: () -> Unit
+    onBackToMenu: () -> Unit
 ) {
+    // System back press returns to MENU (D-12)
+    BackHandler { onBackToMenu() }
+
     Column(
         modifier = Modifier
             .windowInsetsPadding(WindowInsets.systemBars)
@@ -110,14 +114,14 @@ fun SummaryScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // 7. New Game button
+        // 7. Back to Menu button
         ButtonMMD(
-            onClick = onNewGame,
+            onClick = onBackToMenu,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
         ) {
-            TextMMD(text = "New Game")
+            TextMMD(text = "Back to Menu")
         }
 
         Spacer(modifier = Modifier.height(8.dp))
