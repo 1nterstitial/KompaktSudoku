@@ -10,7 +10,7 @@
 - [x] **Phase 1: Puzzle Engine** - Pure Kotlin generator producing valid, unique, technique-classified puzzles (completed 2026-03-24)
 - [x] **Phase 2: Game State & Domain** - ViewModel contract, domain models, input handling, and error tracking (completed 2026-03-24)
 - [x] **Phase 3: Core Game UI** - E-ink-native playable game screen validated on physical hardware (completed 2026-03-24)
-- [x] **Phase 4: Persistence** - Pause/resume and high score storage via DataStore (completed 2026-03-25)
+- [x] **Phase 4: Persistence** - Pause/resume and high score storage via DataStore (completed 2026-03-25)
 - [ ] **Phase 5: Scoring & Completion** - Hint logic, score computation, completion summary, and leaderboard screens
 - [ ] **Phase 6: Menu & Navigation** - Full navigation graph assembling all screens into a complete app flow
 
@@ -93,8 +93,13 @@ Plans:
   3. The final score is calculated as a function of errors and hints used, where fewer errors and fewer hints produce a higher score
   4. If the completed game's score is a personal best for that difficulty, the summary screen displays a new personal best notification
   5. The leaderboard screen shows the top scores for each difficulty level, drawn from persistent storage
-**Plans**: TBD
+**Plans**: 3 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 05-01-PLAN.md — State model additions (hintCount), CompletionResult, ScoreRepository + DataStoreScoreRepository, score formula tests
+- [ ] 05-02-PLAN.md — GameViewModel hint + completion logic, ControlsRow Hint button, GameScreen completion callback
+- [ ] 05-03-PLAN.md — SummaryScreen, LeaderboardScreen, MainActivity Screen enum routing
 
 ### Phase 6: Menu & Navigation
 **Goal**: The app has a complete navigation flow from main menu through game to summary and leaderboard, with the resume prompt correctly driven by persisted state
@@ -116,5 +121,5 @@ Plans:
 | 2. Game State & Domain | 3/3 | Complete   | 2026-03-24 |
 | 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
 | 4. Persistence | 3/3 | Complete   | 2026-03-25 |
-| 5. Scoring & Completion | 0/0 | Not started | - |
+| 5. Scoring & Completion | 0/3 | In progress | - |
 | 6. Menu & Navigation | 0/0 | Not started | - |
