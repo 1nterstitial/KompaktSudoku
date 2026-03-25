@@ -1,73 +1,63 @@
 ---
 phase: 03-core-game-ui
-verified: 2026-03-24T00:00:00Z
-status: gaps_found
-score: 17/20 must-haves verified
-re_verification: false
-gaps:
-  - truth: "Project compiles cleanly after adding MMD dependency"
-    status: failed
-    reason: "MMD library dependency is commented out in build.gradle.kts. The real MMD AAR is not resolvable (GitHub Packages returns 401, JFrog instance deactivated). Local stub file MmdComponents.kt substitutes ThemeMMD/ButtonMMD/TextMMD but stubs use Material3, not the real E-ink-optimized library. The app cannot be deployed or APK-linked without credentials."
-    artifacts:
-      - path: "app/build.gradle.kts"
-        issue: "libs.mmd is commented out — the real MMD library is not on the classpath; stubs are compiled into main source set instead"
-      - path: "app/src/main/java/com/mudita/mmd/MmdComponents.kt"
-        issue: "Non-E-ink-optimized stub: ThemeMMD wraps MaterialTheme (not eInkColorScheme), ButtonMMD uses Box+clickable (not ripple-free ButtonMMD), TextMMD uses Material3 Text (not E-ink typography)"
-    missing:
-      - "Resolve MMD AAR access: configure GitHub Packages credentials in ~/.gradle/gradle.properties (githubToken) and set credentials in settings.gradle.kts, then switch build.gradle.kts back to implementation(libs.mmd) and delete MmdComponents.kt"
-  - truth: "No ripple, no animation, no Animated* composable is used anywhere"
-    status: partial
-    reason: "The production UI source files contain no Animated* or rememberRipple calls. However, the stub ButtonMMD in MmdComponents.kt uses Box+clickable WITHOUT indication=null — the clickable modifier's default indication will apply ripple in Material3 at runtime on devices where the real MMD is not providing the ripple override. This only affects NumberPad buttons and ControlsRow Undo button; the Fill/Pencil toggles correctly use indication=null."
-    artifacts:
-      - path: "app/src/main/java/com/mudita/mmd/MmdComponents.kt"
-        issue: "Stub ButtonMMD implementation: Box(modifier = modifier.clickable(onClick = onClick)) — clickable without indication=null will render ripple on Material3 (E-ink ghosting risk when stubs are active)"
-    missing:
-      - "Add indication=null and MutableInteractionSource to stub ButtonMMD.clickable, or accept the risk as a dev-only stub concern and document that the real MMD ButtonMMD is ripple-free by design"
-human_verification:
-  - test: "Install the APK on a Mudita Kompakt device (requires resolving MMD credentials first)"
-    expected: "ThemeMMD provides eInkColorScheme (monochromatic), E-ink typography, and ripple-free button behavior matching CLAUDE.md E-ink requirements"
-    why_human: "Cannot verify real MMD behavior without device access and resolved AAR"
-  - test: "Visually inspect the running game screen: tap a cell, tap a digit, toggle modes, use undo and erase"
-    expected: "Grid renders with thick box borders (2.5dp at 3x3 boundaries) and thin cell borders (1dp); selected cell shows solid black fill with white digit; given cells use bold text; player entries use regular weight; error cells show 1dp inset border; loading state shows centered static text; no ripple visible on any button tap"
-    why_human: "Canvas rendering, cell selection visuals, and E-ink display behavior cannot be confirmed without a running device or emulator"
+verified: 2026-03-25T00:00:00Z
+status: passed
+score: 20/20 must-haves verified
+re_verification:
+  previous_status: gaps_found
+  previous_score: 17/20
+  gaps_closed:
+    - "Project compiles cleanly after adding MMD dependency — real MMD AAR now active from Maven Central; MmdComponents.kt stub deleted (commit 2e505b7)"
+    - "No ripple, no animation, no Animated* composable is used anywhere — stub ButtonMMD deleted; real ThemeMMD suppresses ripple globally; all clickable overrides in ControlsRow use indication=null"
+    - "Install APK on Mudita Kompakt device — physical device verified in plan 03-05; user confirmed 'approved'; all 24 checklist items pass"
+    - "Visually inspect the running game screen — confirmed on physical hardware in plan 03-05; grid, borders, mode toggles, number pad all verified"
+  gaps_remaining: []
+  regressions: []
 ---
 
 # Phase 3: Core Game UI Verification Report
 
-**Phase Goal:** Build the complete game UI screen using MMD components — Canvas grid, number pad, mode controls, and ViewModel wiring — so the app is playable end-to-end on device.
-**Verified:** 2026-03-24
-**Status:** gaps_found
-**Re-verification:** No — initial verification
+**Phase Goal:** The game screen renders correctly on the Mudita Kompakt E-ink display with no ghosting artifacts, appropriately sized touch targets, and full MMD library compliance
+**Verified:** 2026-03-25
+**Status:** passed
+**Re-verification:** Yes — after gap closure (plans 03-04 and 03-05)
+
+## Summary of Changes Since Initial Verification (2026-03-24)
+
+The initial verification (2026-03-24) found two automated gaps and two human-verification items. All four are now resolved:
+
+- **Gap 1 closed:** The MMD stub file (`MmdComponents.kt`) was deleted in commit `2e505b7`. The real `com.mudita:MMD:1.0.1` AAR resolves from Maven Central. `implementation(libs.mmd)` is active and uncommented in `app/build.gradle.kts`. A scoped GitHub Packages fallback repository was added to `settings.gradle.kts` (plan 03-04, commit `b3c6f4c`) for environments where Maven Central is unavailable.
+- **Gap 2 closed (as no-op):** The stub `ButtonMMD` ripple issue was eliminated by stub deletion. Real MMD `ThemeMMD` suppresses ripple globally by design. `ControlsRow.kt` explicitly uses `indication=null` on both mode toggle `clickable` calls.
+- **Human verification 1 closed:** Physical device testing conducted in plan 03-05. User confirmed "approved" — all 24 checklist items pass on physical Mudita Kompakt hardware.
+- **Human verification 2 closed:** Visual rendering confirmed on physical device — grid borders, cell selection, bold/regular weight digits, pencil marks, number pad layout, and monochromatic ThemeMMD color scheme all verified.
 
 ## Goal Achievement
 
 ### Observable Truths
 
-All truths from the three plan must_haves sections are consolidated and verified below.
-
 **From Plan 01 (03-01):**
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|---------|
-| 1 | Project compiles cleanly after adding MMD dependency | FAILED | MMD dependency commented out; stub MmdComponents.kt substitutes the library — app cannot be deployed |
-| 2 | MainActivity is a ComponentActivity with ThemeMMD root wrapper | VERIFIED | MainActivity.kt extends ComponentActivity, calls setContent { ThemeMMD { GameScreen() } } |
+| 1 | Project compiles cleanly after adding MMD dependency | VERIFIED | `implementation(libs.mmd)` active in build.gradle.kts line 87; MmdComponents.kt deleted (commit 2e505b7); build.gradle.kts shows no commented-out MMD lines |
+| 2 | MainActivity is a ComponentActivity with ThemeMMD root wrapper | VERIFIED | MainActivity.kt extends ComponentActivity; setContent { ThemeMMD { ... } } present at line 77; imports `com.mudita.mmd.ThemeMMD` |
 | 3 | GameViewModel exposes eraseCell() that clears selected cell digit and pencil marks | VERIFIED | eraseCell() present in GameViewModel.kt with full guard logic and undo support; 5/5 TDD tests pass |
 
 **From Plan 02 (03-02):**
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|---------|
-| 4 | The game screen renders a 9x9 grid with thick box borders and thin cell borders | VERIFIED | drawGridLines() in GameGrid.kt: 2.5dp at i%3==0, 1dp otherwise |
-| 5 | Selected cell shows solid black fill with white digit | VERIFIED | drawSelectedCell() draws solid black rect; digit text uses digitStyleSelectedGiven/Player (Color.White) |
-| 6 | Given cells display digits in bold; player entries display in regular weight | VERIFIED | digitStyleGiven: FontWeight.Bold; digitStylePlayer: FontWeight.Normal |
+| 4 | The game screen renders a 9x9 grid with thick box borders and thin cell borders | VERIFIED | drawGridLines() in GameGrid.kt: 2.5dp at i%3==0, 1dp otherwise; confirmed visually on device (plan 03-05) |
+| 5 | Selected cell shows solid black fill with white digit | VERIFIED | drawSelectedCell() draws solid black rect; digit text uses digitStyleSelectedGiven/Player (Color.White); confirmed on device |
+| 6 | Given cells display digits in bold; player entries display in regular weight | VERIFIED | digitStyleGiven: FontWeight.Bold; digitStylePlayer: FontWeight.Normal; confirmed on device |
 | 7 | Error cells (wrong player digit) show a 1dp inset border indicator | VERIFIED | drawErrorIndicator() draws Stroke(1dp) rect with 2dp inset; skipped on selected cell |
-| 8 | Pencil marks render as a 3x3 mini-grid inside the cell | VERIFIED | drawPencilMarks() places digit n at subCell ((n-1)/3, (n-1)%3) with 9sp font |
-| 9 | Number pad shows digits 1-9 plus an Erase button in a single horizontal row | VERIFIED | NumberPad.kt: Row of 10 ButtonMMD items (1-9 + U+00D7), Arrangement.spacedBy(2dp) |
-| 10 | Fill and Pencil mode buttons are visually distinct (active = black fill, inactive = white fill) | VERIFIED | ControlsRow.kt: Box.background(Color.Black/White) per inputMode; TextMMD.color inverted |
+| 8 | Pencil marks render as a 3x3 mini-grid inside the cell | VERIFIED | drawPencilMarks() places digit n at subCell ((n-1)/3, (n-1)%3) with 9sp font; confirmed readable on device |
+| 9 | Number pad shows digits 1-9 plus an Erase button in a single horizontal row | VERIFIED | NumberPad.kt: Row of 10 ButtonMMD items (1-9 + U+00D7), Arrangement.spacedBy(2dp); confirmed on device |
+| 10 | Fill and Pencil mode buttons are visually distinct (active = black fill, inactive = white fill) | VERIFIED | ControlsRow.kt: Box.background(Color.Black/White) per inputMode; TextMMD.color inverted; confirmed on device |
 | 11 | Undo button is present alongside mode toggles | VERIFIED | ControlsRow.kt: ButtonMMD("Undo") in same Row as Fill/Pencil Box elements |
-| 12 | Loading state shows centered static text with no animation | VERIFIED | LoadingScreen(): Box(fillMaxSize, Center) { TextMMD("Generating puzzle...") } — no Animated* composable |
-| 13 | No ripple, no animation, no Animated* composable is used anywhere | PARTIAL | Production UI files have no Animated*/rememberRipple; stub ButtonMMD uses clickable without indication=null — potential ripple in stub-active builds |
-| 14 | All interactive elements meet >=56dp minimum height | VERIFIED | All NumberPad buttons and all ControlsRow elements: Modifier.sizeIn(minHeight = 56.dp); confirmed by assertHeightIsAtLeast(56.dp) tests |
+| 12 | Loading state shows centered static text with no animation | VERIFIED | LoadingScreen(): Box(fillMaxSize, Center) { TextMMD("Generating puzzle...") } — no Animated* composable; confirmed on device (plan 03-05 item 11) |
+| 13 | No ripple, no animation, no Animated* composable is used anywhere | VERIFIED | Production UI files have no Animated*/rememberRipple; ControlsRow Fill/Pencil use indication=null; real MMD ThemeMMD suppresses ripple globally; confirmed on physical device — no ripple visible on any button tap (plan 03-05 success criterion 2) |
+| 14 | All interactive elements meet >=56dp minimum height | VERIFIED | All NumberPad buttons and all ControlsRow elements: Modifier.sizeIn(minHeight = 56.dp); confirmed by assertHeightIsAtLeast(56.dp) tests and physical device tap reliability (plan 03-05 success criterion 3) |
 
 **From Plan 03 (03-03):**
 
@@ -78,105 +68,102 @@ All truths from the three plan must_haves sections are consolidated and verified
 | 17 | Erase button tap dispatches onErase | VERIFIED | NumberPadTest: erase dispatch test passes |
 | 18 | Fill/Pencil toggle buttons call onToggleMode only when switching modes | VERIFIED | ControlsRowTest: 4 mode-toggle tests pass (no-op on active, fires on inactive) |
 | 19 | Undo button tap dispatches onUndo | VERIFIED | ControlsRowTest: undo dispatch test passes |
-| 20 | All interactive composables have a minimum touch target of 56dp | VERIFIED | ControlsRowTest: assertHeightIsAtLeast(56dp) for Fill, Pencil, Undo all pass; NumberPadTest: 56dp for digit and erase |
+| 20 | All interactive composables have a minimum touch target of 56dp | VERIFIED | ControlsRowTest: assertHeightIsAtLeast(56dp) for Fill, Pencil, Undo, Hint all pass; NumberPadTest: 56dp for digit and erase |
 
-**Score: 17/20 truths verified** (2 failed/partial, 1 additional human verification needed)
+**Score: 20/20 truths verified**
 
-## Required Artifacts
+### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `app/build.gradle.kts` | MMD library on compile classpath | PARTIAL | `libs.mmd` commented out; `implementation(libs.mmd)` blocked by inaccessible repos; local stubs are compiled instead |
-| `app/src/main/java/com/mudita/sudoku/MainActivity.kt` | ComponentActivity with ThemeMMD + GameScreen | VERIFIED | Extends ComponentActivity, setContent { ThemeMMD { GameScreen() } }, 19 lines, substantive |
-| `app/src/main/java/com/mudita/sudoku/game/GameViewModel.kt` | eraseCell() public method | VERIFIED | eraseCell() present at line 123 with guards, undo-push, board/pencilMark clearing |
-| `app/src/main/java/com/mudita/sudoku/ui/game/GameScreen.kt` | Root screen composable; ViewModel wiring; layout Column | VERIFIED | 140 lines; collectAsStateWithLifecycle; full Column layout; wired to GameGrid/ControlsRow/NumberPad |
-| `app/src/main/java/com/mudita/sudoku/ui/game/GameGrid.kt` | Canvas-based 9x9 grid; CellData model; drawGrid DrawScope extension | VERIFIED | 239 lines; single Canvas composable; CellData@Stable; 4 DrawScope extensions |
-| `app/src/main/java/com/mudita/sudoku/ui/game/NumberPad.kt` | Row of 10 ButtonMMD items (1-9 + Erase) | VERIFIED | 50 lines; Row of 10 ButtonMMD+TextMMD; sizeIn(minHeight=56dp) on all |
-| `app/src/main/java/com/mudita/sudoku/ui/game/ControlsRow.kt` | Fill/Pencil mode toggle + Undo button row | VERIFIED | 89 lines; Box+clickable(indication=null) for toggles; ButtonMMD for Undo; all sizeIn(minHeight=56dp) |
-| `app/src/main/java/com/mudita/mmd/MmdComponents.kt` | Not in plan (gap remediation artifact) | WARNING | Local stub substituting real MMD library; not E-ink optimized; present in MAIN source set — must be deleted when real MMD AAR becomes accessible |
+| `app/build.gradle.kts` | MMD library on compile classpath | VERIFIED | `implementation(libs.mmd)` active at line 87; no commented-out MMD lines |
+| `settings.gradle.kts` | GitHub Packages fallback repository for com.mudita with credential gating | VERIFIED | Added in commit b3c6f4c; contains `maven.pkg.github.com/mudita/MMD`, `includeGroup("com.mudita")`, `providers.gradleProperty("githubToken")`, `logger.warn` for absent token |
+| `app/src/main/java/com/mudita/sudoku/MainActivity.kt` | ComponentActivity with ThemeMMD + GameScreen | VERIFIED | Extends ComponentActivity; setContent { ThemeMMD { ... } }; full navigation routing present; 165 lines |
+| `app/src/main/java/com/mudita/sudoku/game/GameViewModel.kt` | eraseCell() public method | VERIFIED | eraseCell() present with guards, undo-push, board/pencilMark clearing |
+| `app/src/main/java/com/mudita/sudoku/ui/game/GameScreen.kt` | Root screen composable; ViewModel wiring; layout Column | VERIFIED | collectAsStateWithLifecycle; full Column layout; wired to GameGrid/ControlsRow/NumberPad |
+| `app/src/main/java/com/mudita/sudoku/ui/game/GameGrid.kt` | Canvas-based 9x9 grid; CellData model; drawGrid DrawScope extension | VERIFIED | Single Canvas composable; CellData@Stable; DrawScope extensions for grid lines, cells, digits, pencil marks |
+| `app/src/main/java/com/mudita/sudoku/ui/game/NumberPad.kt` | Row of 10 ButtonMMD items (1-9 + Erase) | VERIFIED | Row of 10 ButtonMMD+TextMMD; sizeIn(minHeight=56dp) on all; imports real `com.mudita.mmd.components.buttons.ButtonMMD` |
+| `app/src/main/java/com/mudita/sudoku/ui/game/ControlsRow.kt` | Fill/Pencil mode toggle + Undo button row | VERIFIED | Box+clickable(indication=null) for toggles; ButtonMMD for Undo and Hint; all sizeIn(minHeight=56dp); imports real `com.mudita.mmd.components.buttons.ButtonMMD` |
+| `app/src/main/java/com/mudita/mmd/MmdComponents.kt` | Deleted — must NOT exist | VERIFIED | File deleted in commit 2e505b7; directory `app/src/main/java/com/mudita/mmd/` is empty |
 | `app/src/test/java/com/mudita/sudoku/ui/game/GameGridTest.kt` | Robolectric Compose tests; min_lines: 40 | VERIFIED | 181 lines; 6 tests; @RunWith(RobolectricTestRunner) @Config(sdk=[31]) |
 | `app/src/test/java/com/mudita/sudoku/ui/game/NumberPadTest.kt` | Robolectric Compose tests; min_lines: 30 | VERIFIED | 143 lines; 8 tests |
 | `app/src/test/java/com/mudita/sudoku/ui/game/ControlsRowTest.kt` | Robolectric Compose tests; min_lines: 30 | VERIFIED | 164 lines; 8 tests |
 | `app/src/test/java/com/mudita/sudoku/ui/game/GameScreenTest.kt` | Integration smoke test; min_lines: 20 | VERIFIED | 79 lines; 2 tests; fake puzzle generator; assertIsDisplayed on number pad |
 
-## Key Link Verification
+### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| app/build.gradle.kts | gradle/libs.versions.toml | libs.mmd alias | PARTIAL | `libs.mmd` alias exists in toml but `compileOnly(libs.mmd)` is commented out in build.gradle.kts |
-| MainActivity.kt | ThemeMMD | setContent { ThemeMMD { ... } } | VERIFIED | Import `com.mudita.mmd.ThemeMMD`; ThemeMMD { GameScreen() } present — resolves to stub |
-| GameScreen.kt | GameViewModel | viewModel() + collectAsStateWithLifecycle() | VERIFIED | Line 35: `viewModel: GameViewModel = viewModel()`; line 37: `collectAsStateWithLifecycle()` |
-| GameScreen.kt | GameGrid.kt | board, givenMask, selectedCellIndex, pencilMarks, solution props | VERIFIED | All 6 props passed at GameScreen lines 73-83; onCellClick = viewModel::selectCell |
-| GameScreen.kt | NumberPad.kt | onDigitClick = viewModel::enterDigit, onErase = viewModel::eraseCell | VERIFIED | Lines 98-99: `onDigitClick = viewModel::enterDigit, onErase = viewModel::eraseCell` |
-| GameGrid.kt | Canvas DrawScope | Canvas + drawGrid extension + rememberTextMeasurer | VERIFIED | rememberTextMeasurer() at line 73; Canvas composable at line 107; 4 DrawScope extensions |
-| GameGridTest.kt | GameGrid composable | createComposeRule + onRoot().performTouchInput | VERIFIED | performTouchInput { click(Offset(...)) } present in all 3 tap-index tests |
-| NumberPadTest.kt | NumberPad composable | onNodeWithText("5").performClick() | VERIFIED | performClick() used for digits 1, 5, 9 and erase |
+| `app/build.gradle.kts` | `gradle/libs.versions.toml` | `libs.mmd` alias | VERIFIED | `implementation(libs.mmd)` active; `mmd = { group = "com.mudita", name = "MMD", version.ref = "mmd" }` in versions toml |
+| `settings.gradle.kts` | `~/.gradle/gradle.properties` | `providers.gradleProperty("githubToken")` | VERIFIED | Credential gating present; logger.warn when absent; com.mudita group scoping prevents credential leakage |
+| `MainActivity.kt` | `ThemeMMD` | `setContent { ThemeMMD { ... } }` | VERIFIED | Imports `com.mudita.mmd.ThemeMMD`; ThemeMMD wraps entire navigation routing block |
+| `GameScreen.kt` | `GameViewModel` | `viewModel: GameViewModel = viewModel()` passed from MainActivity + `collectAsStateWithLifecycle()` | VERIFIED | ViewModel injected; uiState collected as lifecycle-aware state |
+| `GameScreen.kt` | `GameGrid.kt` | board, givenMask, selectedCellIndex, pencilMarks, solution props | VERIFIED | All props passed; onCellClick = viewModel::selectCell |
+| `GameScreen.kt` | `NumberPad.kt` | `onDigitClick = viewModel::enterDigit, onErase = viewModel::eraseCell` | VERIFIED | Both lambdas wired |
+| `NumberPad.kt` | real `ButtonMMD` | `import com.mudita.mmd.components.buttons.ButtonMMD` | VERIFIED | Real MMD package path used; no stub import |
+| `ControlsRow.kt` | real `ButtonMMD` + `TextMMD` | `import com.mudita.mmd.components.buttons.ButtonMMD` | VERIFIED | Real MMD package path; indication=null on both clickable mode toggles |
+| `GameGrid.kt` | Canvas DrawScope | `Canvas` + `rememberTextMeasurer()` + DrawScope extensions | VERIFIED | rememberTextMeasurer() for text; Canvas composable; 4 DrawScope extensions |
 
-## Data-Flow Trace (Level 4)
+### Data-Flow Trace (Level 4)
 
 | Artifact | Data Variable | Source | Produces Real Data | Status |
 |----------|--------------|--------|--------------------|--------|
-| GameScreen.kt | uiState | GameViewModel._uiState (StateFlow) | Yes — ViewModel.startGame() calls SudokuGenerator.generatePuzzle() which queries Sudoklify | FLOWING |
-| GameGrid.kt | board, pencilMarks, selectedCellIndex | Passed as props from GameScreen via uiState | Yes — props flow from ViewModel state, not hardcoded | FLOWING |
-| NumberPad.kt | onDigitClick, onErase | Passed as lambdas from GameScreen | Yes — wired to viewModel::enterDigit and viewModel::eraseCell | FLOWING |
-| ControlsRow.kt | inputMode | uiState.inputMode from ViewModel | Yes — flows from ViewModel toggleInputMode() | FLOWING |
+| `GameScreen.kt` | uiState | `GameViewModel._uiState` (StateFlow) | Yes — ViewModel.startGame() calls SudokuGenerator.generatePuzzle() which queries Sudoklify | FLOWING |
+| `GameGrid.kt` | board, pencilMarks, selectedCellIndex | Props from GameScreen via uiState | Yes — props flow from ViewModel state, not hardcoded | FLOWING |
+| `NumberPad.kt` | onDigitClick, onErase | Lambdas from GameScreen | Yes — wired to viewModel::enterDigit and viewModel::eraseCell | FLOWING |
+| `ControlsRow.kt` | inputMode | uiState.inputMode from ViewModel | Yes — flows from ViewModel toggleInputMode() | FLOWING |
 
-## Behavioral Spot-Checks
+### Behavioral Spot-Checks
 
 | Behavior | Command | Result | Status |
 |----------|---------|--------|--------|
-| All 119 tests pass (including 24 new UI tests) | ./gradlew.bat :app:testDebugUnitTest | 119 tests, 0 failures, 0 errors, BUILD SUCCESSFUL | PASS |
-| UI game tests specifically pass | Filter to com.mudita.sudoku.ui.game.* | BUILD SUCCESSFUL | PASS |
-| Tap cell 0 dispatches index 0 | GameGridTest.tapping top-left cell | assertEquals(0, clicked) — PASS | PASS |
-| Tap cell 80 dispatches index 80 | GameGridTest.tapping bottom-right cell | assertEquals(80, clicked) — PASS | PASS |
-| Mode toggle no-op when active | ControlsRowTest.in FILL mode tapping Fill | assertEquals(0, toggleCount) — PASS | PASS |
-| APK build / compilation | ./gradlew.bat :app:compileDebugKotlin | BUILD SUCCESSFUL (all MMD refs resolve to stubs) | PASS |
+| All unit tests pass | `./gradlew.bat :app:testDebugUnitTest` | BUILD SUCCESSFUL (119 tests, 0 failures) | PASS |
+| APK compilation with real MMD | `./gradlew.bat :app:compileDebugKotlin` | BUILD SUCCESSFUL — real MMD AAR on classpath | PASS |
+| settings.gradle.kts GitHub Packages config present | `grep -c "maven.pkg.github.com/mudita/MMD" settings.gradle.kts` | 1 | PASS |
+| MmdComponents.kt stub absent | `ls app/src/main/java/com/mudita/mmd/` | Empty directory — stub deleted | PASS |
+| Physical device verification (all 24 items) | Plan 03-05 user checklist | User: "approved" — all pass | PASS |
+| No animations/ripple on device | Plan 03-05 criterion 2 | Confirmed — no ripple, no transitions | PASS |
+| Touch target reliability | Plan 03-05 criterion 3 | Confirmed — all elements register on first tap | PASS |
+| No ghosting after 30+ interactions | Plan 03-05 criterion 4 | Confirmed — no visible ghosting | PASS |
 
-## Requirements Coverage
+### Requirements Coverage
 
 | Requirement | Source Plan | Description | Status | Evidence |
 |-------------|------------|-------------|--------|---------|
-| UI-01 | 03-01, 03-02, 03-03 | All UI components built using the MMD library wrapped in ThemeMMD | PARTIAL | ThemeMMD wraps all content in MainActivity and tests; ButtonMMD/TextMMD used throughout; however real MMD library is inaccessible — stubs from MmdComponents.kt serve as the implementation, which lack E-ink optimizations |
-| UI-02 | 03-01, 03-02, 03-03 | No animations, ripple effects, or transitions anywhere | PARTIAL | No Animated* composable or rememberRipple in production UI; ControlsRow Fill/Pencil use indication=null; however stub ButtonMMD uses clickable without indication=null — ripple risk in stub-active builds |
-| UI-03 | 03-02, 03-03 | All interactive touch targets minimum 56dp | SATISFIED | sizeIn(minHeight=56dp) on all 10 NumberPad buttons and all 3 ControlsRow elements; confirmed by 5 assertHeightIsAtLeast(56dp) tests |
+| UI-01 | 03-01, 03-02, 03-03, 03-04 | All UI components built using the MMD library wrapped in ThemeMMD | SATISFIED | Real MMD 1.0.1 AAR active from Maven Central; ThemeMMD wraps all content; ButtonMMD/TextMMD used in all interactive composables; Canvas grid inside ThemeMMD scope (compliance clarified in 03-CONTEXT.md design_clarifications); no Material3 widgets used directly |
+| UI-02 | 03-01, 03-02, 03-03, 03-04, 03-05 | No animations, ripple effects, or transitions anywhere | SATISFIED | No Animated* composable or rememberRipple in any production file; ControlsRow Fill/Pencil use indication=null; real MMD ThemeMMD disables ripple globally; confirmed on physical device — no ripple visible on any tap (plan 03-05 criterion 2) |
+| UI-03 | 03-02, 03-03, 03-05 | All interactive touch targets minimum 56dp | SATISFIED | sizeIn(minHeight=56.dp) on all 10 NumberPad buttons and all 4 ControlsRow elements (Fill, Pencil, Undo, Hint); confirmed by assertHeightIsAtLeast(56.dp) tests; 56dp scope clarification documented (grid cells physically constrained to ~31dp — geometric constraint, not design choice; per 03-CONTEXT.md); confirmed on device — all elements register on first tap |
 
-**Orphaned requirements check:** REQUIREMENTS.md traceability table maps UI-01, UI-02, UI-03 to Phase 3 — all three are claimed in plan frontmatter. No orphaned requirements.
+**Orphaned requirements check:** REQUIREMENTS.md traceability table maps UI-01, UI-02, UI-03 to Phase 3 — all three are claimed in plan frontmatter and fully satisfied. No orphaned requirements.
 
-## Anti-Patterns Found
+### Anti-Patterns Found
 
 | File | Location | Pattern | Severity | Impact |
 |------|----------|---------|----------|--------|
-| `app/src/main/java/com/mudita/mmd/MmdComponents.kt` | Line 46 | `Box(modifier = modifier.clickable(onClick = onClick))` — no indication=null | Warning | ButtonMMD stub used in NumberPad and ControlsRow Undo; ripple will appear in stub-active builds (not production with real MMD) |
-| `app/src/main/java/com/mudita/sudoku/ui/game/GameScreen.kt` | Line 44 | `// TODO Phase 5: navigate to completion/score screen` | Info | Planned gap — completion navigation not yet implemented; correctly deferred to Phase 5 |
-| `app/build.gradle.kts` | Lines 87-95 | `// compileOnly(libs.mmd)` commented out | Blocker (deploy-time) | App cannot be deployed to real device without real MMD AAR; stubs block production use |
+| `app/src/main/java/com/mudita/sudoku/ui/game/GameScreen.kt` | Line 44 (approx) | `// TODO Phase 5: navigate to completion/score screen` | Info | Planned gap — completion navigation deferred to Phase 5; does not affect Phase 3 goal |
 
-**Stub classification note:** The `MmdComponents.kt` stubs are explicitly labeled as dev/test scaffolding and are not hollow in the sense of hiding data — they provide real interaction behavior (clickable, sized, labeled). However, they substitute a required third-party library for which access has not been established, which affects UI-01 and UI-02 compliance on the actual device.
+No blocker anti-patterns. No stubs. No commented-out production code. No Animated* composables.
 
-## Human Verification Required
+### Human Verification Required
 
-### 1. Real MMD Library Integration
+None — all human verification items from the initial verification have been resolved by physical device testing in plan 03-05.
 
-**Test:** Obtain GitHub Packages credentials for `maven.pkg.github.com/mudita/MMD` (a GitHub token with `read:packages` scope), configure in `~/.gradle/gradle.properties` as `githubToken=...`, update `settings.gradle.kts` credentials block, switch `build.gradle.kts` back to `implementation(libs.mmd)`, delete `MmdComponents.kt`, and build.
-**Expected:** APK compiles and links against the real MMD 1.0.1 AAR. ThemeMMD provides the eInkColorScheme (monochromatic). ButtonMMD is ripple-free by design. TextMMD uses E-ink tuned typography. UI-01 and UI-02 are fully satisfied.
-**Why human:** Requires credential access to Mudita's private Maven repository that is not available in the automated build environment.
+**Closed items:**
 
-### 2. Visual Rendering on Device/Emulator
+1. **Real MMD Library Integration** — Closed by commit 2e505b7 (real MMD AAR from Maven Central); stub deleted. No credentials required in this environment.
 
-**Test:** Install the APK (once MMD resolves) on a Mudita Kompakt device or compatible emulator, start the game, and visually inspect.
-**Expected:** 9x9 grid renders with thick box borders between 3x3 sub-grids and thin cell borders; selected cell highlights solid black with white digit; given cells appear bold; player-entered digits appear regular weight; loading state shows static "Generating puzzle..." text with no spinner; no ripple visible on any button tap.
-**Why human:** Canvas drawing correctness (border widths, text alignment, pencil mark position), E-ink display artifact absence, and visual distinction between given/player cells require physical inspection.
+2. **Visual Rendering on Device/Emulator** — Closed by plan 03-05. User tested on physical Mudita Kompakt hardware and confirmed "approved". All 24 checklist items pass, covering: no ghosting after 30+ interactions, no ripple/animation on any button, first-tap reliability for all controls, visual rendering quality (borders, digit weight, pencil marks, ThemeMMD monochromatic scheme), and 800x480 layout fit.
 
 ## Gaps Summary
 
-Two gaps block full goal achievement:
+No gaps. All 20 observable truths are verified. Both automated gaps from the initial verification are closed. Both human verification items are resolved.
 
-**Gap 1 — MMD library not resolvable (root cause of UI-01 partial):** The real Mudita MMD library is inaccessible from this environment. Both known distribution endpoints require authentication that was not available. As a pragmatic workaround, local Material3-backed stubs were placed in the main source set. The architecture is correct — all production code imports from `com.mudita.mmd.*` and the stubs provide the exact API surface. Swapping stubs for the real AAR requires only credential setup and a dependency declaration change. The game is end-to-end playable with the stubs (119 tests pass), but cannot be deployed to device.
+**Closed Gap 1 — MMD library (UI-01):** The real `com.mudita:MMD:1.0.1` AAR resolves from Maven Central in this environment. `implementation(libs.mmd)` is active. All production files import from real `com.mudita.mmd.*` package paths. A scoped GitHub Packages fallback is configured in `settings.gradle.kts` for other environments.
 
-**Gap 2 — Stub ButtonMMD uses clickable with ripple (UI-02 partial):** The stub `ButtonMMD` uses `Box + clickable` without `indication=null`. This means button taps show Material3 ripple in the stub-active build. This is a dev-stub concern only — the real MMD ButtonMMD is documented to be ripple-free by design. The gap is resolved once the real MMD AAR replaces the stubs. As a low-effort fix, `indication=null` can also be added to the stub to maintain UI-02 compliance during development.
-
-Both gaps share a single root cause: the MMD AAR is inaccessible without credentials. Resolving that one blocker closes both gaps.
+**Closed Gap 2 — Ripple suppression (UI-02):** The stub `ButtonMMD` that used `clickable` without `indication=null` was deleted as part of the MMD migration. The real ThemeMMD disables ripple globally. `ControlsRow.kt` additionally uses explicit `indication=null` on mode toggle clickables as belt-and-suspenders. Physical device testing confirmed no ripple is visible.
 
 ---
 
-_Verified: 2026-03-24_
+_Verified: 2026-03-25_
 _Verifier: Claude (gsd-verifier)_
+_Re-verification: Yes — supersedes 2026-03-24 initial verification_
