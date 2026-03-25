@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mudita.mmd.TextMMD
+import com.mudita.mmd.components.text.TextMMD
 import com.mudita.sudoku.game.GameViewModel
 import com.mudita.sudoku.game.model.GameEvent
 import com.mudita.sudoku.puzzle.model.Difficulty

@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mudita.mmd.ButtonMMD
-import com.mudita.mmd.TextMMD
+import com.mudita.mmd.components.buttons.ButtonMMD
+import com.mudita.mmd.components.text.TextMMD
 
 /**
  * Horizontal row of 10 buttons: digits 1–9 plus an Erase (×) button.

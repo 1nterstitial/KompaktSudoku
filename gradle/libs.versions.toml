@@ -36,7 +36,7 @@ coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 
 # MMD
-mmd = { group = "com.mudita", name = "mmd", version.ref = "mmd" }
+mmd = { group = "com.mudita", name = "MMD", version.ref = "mmd" }
 
 # Sudoklify
 sudoklify-core = { group = "dev.teogor.sudoklify", name = "sudoklify-core", version.ref = "sudoklify" }

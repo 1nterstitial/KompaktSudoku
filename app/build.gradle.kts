@@ -84,15 +84,7 @@ dependencies {
     implementation(libs.sudoklify.presets)
 
     // MMD — Mudita Mindful Design E-ink UI components (D-09)
-    // compileOnly(libs.mmd) — commented out because both known MMD repos are inaccessible:
-    //   GitHub Packages (maven.pkg.github.com/mudita/MMD) returns 401 Unauthorized
-    //   JFrog instance (mudita.jfrog.io/artifactory/mmd-release) appears deactivated
-    //
-    // Local stubs for MMD components (ThemeMMD, ButtonMMD, TextMMD) are provided in:
-    //   app/src/main/java/com/mudita/mmd/MmdComponents.kt
-    // These allow the project to compile and tests to run without credentials.
-    // Replace with: implementation(libs.mmd) once the AAR is accessible, and delete the stubs.
-    // compileOnly(libs.mmd)
+    implementation(libs.mmd)
 
     // Unit tests
     testImplementation(libs.junit)

@@ -14,8 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.mudita.mmd.ButtonMMD
-import com.mudita.mmd.TextMMD
+import com.mudita.mmd.components.buttons.ButtonMMD
+import com.mudita.mmd.components.text.TextMMD
 import com.mudita.sudoku.game.model.InputMode
 
 /**

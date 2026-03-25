@@ -16,7 +16,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url = uri("https://maven.pkg.github.com/mudita/MMD") }
     }
 }
 
