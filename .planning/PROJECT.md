@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A Sudoku game for the Mudita Kompakt E-ink Android device, built with Kotlin and the Mudita Mindful Design (MMD) library. Players choose from three difficulty levels, solve puzzles with touch input, and earn an error-based score at completion. High scores are stored persistently per difficulty, and in-progress games can be paused and resumed later.
+A fully playable Sudoku game for the Mudita Kompakt E-ink Android device, built with Kotlin, Jetpack Compose, and the Mudita Mindful Design (MMD) library. Players choose from Easy, Medium, or Hard difficulty, solve puzzles with touch input, use hints at a score penalty, and earn an error-based score at completion. High scores are stored persistently per difficulty, and in-progress games can be paused and resumed across app restarts.
 
 ## Core Value
 
@@ -12,72 +12,78 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 
 ### Validated
 
-- [x] Player can tap a cell to select it and tap a number to fill it in — *Validated in Phase 02: game-state-domain*
-- [x] Errors are tracked silently during play (not surfaced until game end) — *Validated in Phase 02: game-state-domain*
-- [x] Puzzles vary by cells revealed AND solving complexity per difficulty level — *Validated in Phase 01 + 02: puzzle engine + difficulty selection in ViewModel*
+- ✓ App generates valid Sudoku puzzles with exactly one solution — v1.0 (PUZZ-01, 28 tests)
+- ✓ Difficulty classified by technique tier and given-cell count — v1.0 (PUZZ-02/03; Sudoklify produces bimodal NAKED_SINGLES/ADVANCED distribution; MEDIUM uses count-only differentiation by library constraint)
+- ✓ Player selects Easy, Medium, or Hard from main menu — v1.0 (DIFF-01, DIFF-02)
+- ✓ Player taps cell to select; taps digit to fill; selection highlights immediately — v1.0 (INPUT-01, INPUT-02)
+- ✓ Player toggles fill / pencil mark mode; marks stored and displayed separately — v1.0 (INPUT-03, INPUT-04)
+- ✓ Player undoes last fill or pencil mark action — v1.0 (INPUT-05)
+- ✓ Errors tracked silently; not surfaced until game end — v1.0 (SCORE-01)
+- ✓ App detects completion when all 81 cells correctly filled — v1.0 (SCORE-02)
+- ✓ Player requests hint; one unfilled correct cell revealed; hint count incremented — v1.0 (SCORE-03)
+- ✓ Each hint deducts fixed penalty from final score — v1.0 (SCORE-04)
+- ✓ Completion screen shows error count, hints used, and final score — v1.0 (SCORE-05, SCORE-06)
+- ✓ Per-difficulty high scores stored persistently — v1.0 (HS-01)
+- ✓ New personal best detected and displayed on summary screen — v1.0 (HS-02)
+- ✓ Leaderboard screen shows top score per difficulty — v1.0 (HS-03)
+- ✓ Game state (board, pencil marks, errors, hints) persisted on pause — v1.0 (STATE-01)
+- ✓ Resume prompt shown on launch when saved game exists — v1.0 (STATE-02)
+- ✓ Player resumes paused game exactly as left — v1.0 (STATE-03)
+- ✓ Main menu with New Game (→ difficulty selection) and Best Scores — v1.0 (NAV-01)
+- ✓ All UI built with MMD library wrapped in ThemeMMD — v1.0 (UI-01)
+- ✓ No animations, ripple effects, or transitions — v1.0 (UI-02)
+- ✓ All touch targets ≥56dp — v1.0 (UI-03)
 
 ### Active
 
-- [x] Player can select a difficulty level (Easy, Medium, Hard) from the main menu — *Validated in Phase 06: menu-navigation*
-- [x] Player can request a hint during play (each hint incurs a score penalty) — *Validated in Phase 05: scoring-completion*
-- [x] Player can pause a game and resume it at a later time (game state persists on device) — *Validated in Phase 04: persistence*
-- [x] On completion, player sees a score summary (error count, hints used, final score) — *Validated in Phase 05: scoring-completion*
-- [x] High scores are stored persistently per difficulty level (leaderboard) — *Validated in Phase 05: scoring-completion*
-- [ ] All UI is built with the Mudita Mindful Design (MMD) library and ThemeMMD
-
-## Current State
-
-Phase 06 complete — Full 5-screen navigation flow implemented. App launches to MenuScreen with conditional Resume button (reactive StateFlow). DifficultyScreen added. All screens wired via Screen enum in MainActivity (MENU→DIFFICULTY→GAME→SUMMARY→LEADERBOARD). BackHandler save-on-back in GameScreen. All 6 phases of v1.0 are complete.
+_(None — start v1.1 planning with `/gsd:new-milestone`)_
 
 ### Out of Scope
 
-- Multiplayer or online features — single-player offline experience only
-- Color UI elements — E-ink display is monochromatic, high contrast only
-- Animated transitions — E-ink ghosting prevention; use instant state updates
-- Custom puzzle creation — generated puzzles only for v1
-- Account system — local device storage only
+- Real-time error highlighting — deliberately silent; errors revealed at completion; aligns with mindful ethos
+- Timer / time-based scoring — creates anxiety; contradicts Mudita device philosophy
+- Daily challenges / streaks — obligation-inducing gamification loops; against mindful premise
+- Global / online leaderboards — no Google Services on MuditaOS K; local only
+- Multiplayer — single-player offline experience by design
+- Achievements / badges / XP — visual noise and extrinsic motivation loops; contrary to mindful design
+- Color themes / custom skins — E-ink is monochromatic; theming is irrelevant
+- Sound effects / haptics — E-ink audience values quiet focus
+- Cloud save / cross-device sync — no backend; local-only scope
+- Ad monetization — violates distraction-free premise
+- Auto-fill pencil marks — reduces cognitive challenge; manual annotation is part of the game
+- Custom puzzle creation — generated puzzles only; no import/entry UI
 
 ## Context
 
-- **Platform**: Mudita Kompakt running MuditaOS K (de-Googled AOSP Android)
-- **Display**: 4.3" E-ink touchscreen, 800×480 px, monochromatic, ~216 ppi
-- **E-ink constraints**: No ripple effects, no animations, full-width layouts preferred, minimal partial refreshes
-- **MMD library**: Kotlin + Jetpack Compose components optimized for E-ink (ThemeMMD, ButtonMMD, TextMMD, etc.) — repo: https://github.com/mudita/MMD
-- **Scoring**: Error-based — fewer errors = higher score; each hint used deducts a fixed penalty from the final score
-- **Game state persistence**: Paused games saved to local device storage (DataStore or SharedPreferences)
+- **Shipped:** v1.0 MVP — 2026-03-25
+- **Codebase:** ~6,650 lines Kotlin, 138 commits, 6 phases, 21 plans
+- **Platform:** Mudita Kompakt, MuditaOS K (de-Googled AOSP Android 12, API 31)
+- **Display:** 4.3" E-ink touchscreen, 800×480, monochromatic, ~216 ppi
+- **Tech stack:** Kotlin 2.3.20, Jetpack Compose BOM 2026.03.00, MMD 1.0.1, Sudoklify 1.0.0-beta04, DataStore 1.2.1
+- **Architecture:** MVVM + StateFlow; single-module; Screen enum routing (5 screens)
+- **E-ink validation:** Physical device verified — no ghosting, no ripple, all touch targets pass
 
 ## Constraints
 
-- **Tech Stack**: Kotlin + Jetpack Compose + MMD library — required for Mudita Kompakt compatibility
-- **Display**: 800×480 E-ink — large touch targets, high contrast, no animations, instant feedback
-- **Architecture**: MVVM with StateFlow — aligns with MMD's recommended pattern
-- **Storage**: Local only — no network, no backend
+- **Tech Stack:** Kotlin + Jetpack Compose + MMD library — required for Mudita Kompakt compatibility
+- **Display:** 800×480 E-ink — large touch targets, high contrast, no animations, instant feedback
+- **Architecture:** MVVM with StateFlow — aligns with MMD's recommended pattern
+- **Storage:** Local only — no network, no backend
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Error-based scoring (not time-based) | Aligns with mindful, low-pressure design ethos of Mudita | Validated Phase 05 |
-| Silent error tracking (not real-time highlights) | Reduces distraction; player discovers mistakes at completion | Validated Phase 05 |
-| Hint penalty instead of leaderboard disqualification | Keeps game flowing; penalty is gentler than hard disqualification | Validated Phase 05 |
-| Pause/resume via local persistence | E-ink device users may put down device for hours; state must survive | Validated Phase 04 |
-
-## Evolution
-
-This document evolves at phase transitions and milestone boundaries.
-
-**After each phase transition** (via `/gsd:transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
-
-**After each milestone** (via `/gsd:complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+| Error-based scoring (not time-based) | Aligns with mindful, low-pressure design ethos of Mudita | ✓ Validated v1.0 |
+| Silent error tracking (not real-time highlights) | Reduces distraction; player discovers mistakes at completion | ✓ Validated v1.0 |
+| Hint penalty instead of leaderboard disqualification | Keeps game flowing; gentler than hard disqualification | ✓ Validated v1.0 |
+| Pause/resume via local persistence (DataStore) | E-ink device users may put down device for hours; state must survive | ✓ Validated v1.0 |
+| Sudoklify for puzzle generation | Only Kotlin-native library with built-in difficulty levels; 2.4T+ variations | ✓ Good — but MEDIUM tier is count-only due to bimodal preset distribution |
+| MEDIUM difficulty uses given-count range only | Sudoklify presets produce no HIDDEN_PAIRS tier empirically (bimodal: NAKED_SINGLES or ADVANCED) | ✓ Accepted — documented in DifficultyConfig.kt |
+| Screen enum routing (not NavHost) | 5 screens, no deep linking; enum is sufficient and simpler | ✓ Good — refactor to NavHost only if deep linking needed |
+| MMD local stubs for offline dev | GitHub Packages requires auth token; stubs allow compilation without AAR | ✓ Good — replaced with real AAR once credentials configured |
+| compileOnly → implementation for MMD | Real AAR resolved via scoped GitHub Packages repo with credential gating | ✓ Good |
+| Resume button on MenuScreen (not GameScreen dialog) | Cleaner UX — user sees resume option before any game logic runs | ✓ Validated v1.0 |
 
 ---
-*Last updated: 2026-03-25 after Phase 01 gap closure — PUZZ-02 requirement text updated to reflect Sudoklify HIDDEN_PAIRS limitation (count-only Medium differentiation)*
+*Last updated: 2026-03-25 after v1.0 milestone completion*
