@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 05-03-PLAN.md
-last_updated: "2026-03-25T03:47:29.687Z"
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-03-25T04:50:20.692Z"
 progress:
   total_phases: 6
-  completed_phases: 4
-  total_plans: 17
-  completed_plans: 16
+  completed_phases: 5
+  total_plans: 19
+  completed_plans: 18
 ---
 
 # Project State: Mudita Kompakt Sudoku
@@ -18,14 +18,14 @@ progress:
 
 **Core Value:** A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-ink display — responsive touch input, high-contrast grid, and smooth puzzle flow without display artifacts.
 
-**Current Focus:** Phase 05 — scoring-completion
+**Current Focus:** Phase 06 — menu-navigation (complete)
 
 ---
 
 ## Current Position
 
 Phase: 6
-Plan: 02 (ready to execute)
+Plan: 02 (complete)
 
 ## Phase Sequence
 
@@ -36,7 +36,7 @@ Plan: 02 (ready to execute)
 | 3 | Core Game UI | Complete |
 | 4 | Persistence | Not started |
 | 5 | Scoring & Completion | Not started |
-| 6 | Menu & Navigation | Not started |
+| 6 | Menu & Navigation | Complete |
 
 ---
 
@@ -64,6 +64,8 @@ Plan: 02 (ready to execute)
 | Phase 05 P01 | 4 | 2 tasks | 13 files |
 | Phase 05 P02 | 11min | 2 tasks | 5 files |
 | 05 | 03 | 22 min | 2 | 5 | 2026-03-25 |
+| 06 | 01 | 15 min | 3 | 6 | 2026-03-25 |
+| 06 | 02 | 5 min | 2 | 4 | 2026-03-25 |
 
 ## Accumulated Context
 
@@ -120,6 +122,7 @@ Plan: 02 (ready to execute)
 - [06-01] showResumeDialog StateFlow now collected in MainActivity to drive MenuScreen hasSavedGame — Resume button moved from GameScreen dialog to main menu
 - [06-01] startGame(difficulty) called before navigating to GAME screen to pre-start puzzle generation (Pitfall 5 avoidance)
 - [06-01] MenuScreen has no BackHandler — ComponentActivity back exits app by default (D-11 intentional)
+- [06-02] assertDoesNotExist() used for conditionally absent Resume button — node is not in composition at all when hasSavedGame=false (if block removes it); assertIsNotDisplayed() would fail
 
 ### Architecture Decisions
 
@@ -152,9 +155,9 @@ Plan: 02 (ready to execute)
 
 ## Session Continuity
 
-**Last session:** 2026-03-25T08:37:54Z
-**Next action:** Execute Phase 6 Plan 02 — navigation tests
-**Stopped at:** Completed 06-01-PLAN.md
+**Last session:** 2026-03-25T04:50:20.689Z
+**Next action:** All phases complete — v1.0 milestone ready
+**Stopped at:** Completed 06-02-PLAN.md
 
 ---
 

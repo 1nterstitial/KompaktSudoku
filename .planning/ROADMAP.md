@@ -12,7 +12,7 @@
 - [x] **Phase 3: Core Game UI** - E-ink-native playable game screen validated on physical hardware (completed 2026-03-24)
 - [x] **Phase 4: Persistence** - Pause/resume and high score storage via DataStore (completed 2026-03-25)
 - [ ] **Phase 5: Scoring & Completion** - Hint logic, score computation, completion summary, and leaderboard screens
-- [ ] **Phase 6: Menu & Navigation** - Full navigation graph assembling all screens into a complete app flow
+- [x] **Phase 6: Menu & Navigation** - Full navigation graph assembling all screens into a complete app flow (completed 2026-03-25)
 
 ## Phase Details
 
@@ -115,7 +115,7 @@ Plans:
 
 Plans:
 - [x] 06-01-PLAN.md — MenuScreen + DifficultyScreen composables, GameScreen/SummaryScreen/LeaderboardScreen modifications, MainActivity routing rewire
-- [ ] 06-02-PLAN.md — MenuScreenTest + DifficultyScreenTest creation, SummaryScreenTest + LeaderboardScreenTest updates for renamed callbacks
+- [x] 06-02-PLAN.md — MenuScreenTest + DifficultyScreenTest creation, SummaryScreenTest + LeaderboardScreenTest updates for renamed callbacks
 
 ## Progress Table
 
@@ -126,4 +126,4 @@ Plans:
 | 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
 | 4. Persistence | 3/3 | Complete   | 2026-03-25 |
 | 5. Scoring & Completion | 2/3 | In Progress|  |
-| 6. Menu & Navigation | 1/2 | In Progress | - |
+| 6. Menu & Navigation | 2/2 | Complete   | 2026-03-25 |
