@@ -80,4 +80,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 after Phase 05 completion — scoring, hints, and completion screens complete*
+*Last updated: 2026-03-25 after Phase 01 gap closure — PUZZ-02 requirement text updated to reflect Sudoklify HIDDEN_PAIRS limitation (count-only Medium differentiation)*
