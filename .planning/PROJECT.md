@@ -19,16 +19,16 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 ### Active
 
 - [ ] Player can select a difficulty level (Easy, Medium, Hard) from the main menu
-- [ ] Player can request a hint during play (each hint incurs a score penalty)
-- [ ] Player can request a hint during play (each hint incurs a score penalty)
+- [ ] Player can select a difficulty level (Easy, Medium, Hard) from the main menu
+- [x] Player can request a hint during play (each hint incurs a score penalty) — *Validated in Phase 05: scoring-completion*
 - [x] Player can pause a game and resume it at a later time (game state persists on device) — *Validated in Phase 04: persistence*
-- [ ] On completion, player sees a score summary (error count, hints used, final score)
-- [ ] High scores are stored persistently per difficulty level (leaderboard)
+- [x] On completion, player sees a score summary (error count, hints used, final score) — *Validated in Phase 05: scoring-completion*
+- [x] High scores are stored persistently per difficulty level (leaderboard) — *Validated in Phase 05: scoring-completion*
 - [ ] All UI is built with the Mudita Mindful Design (MMD) library and ThemeMMD
 
 ## Current State
 
-Phase 04 complete — Pause/resume persistence fully wired via DataStore. GameViewModel loads saved state on init, exposes ResumeDialog to player, and auto-saves on app background. Building toward Phase 05: Scoring & Completion.
+Phase 05 complete — Scoring and completion screens fully wired. Score formula (max(0, 100 - errors×10 - hints×5)), ScoreRepository with DataStore persistence, SummaryScreen, LeaderboardScreen, and GAME→SUMMARY→LEADERBOARD→GAME navigation in place. Building toward Phase 06: Menu & Navigation.
 
 ### Out of Scope
 
@@ -58,10 +58,10 @@ Phase 04 complete — Pause/resume persistence fully wired via DataStore. GameVi
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Error-based scoring (not time-based) | Aligns with mindful, low-pressure design ethos of Mudita | — Pending |
-| Silent error tracking (not real-time highlights) | Reduces distraction; player discovers mistakes at completion | — Pending |
-| Hint penalty instead of leaderboard disqualification | Keeps game flowing; penalty is gentler than hard disqualification | — Pending |
-| Pause/resume via local persistence | E-ink device users may put down device for hours; state must survive | — Pending |
+| Error-based scoring (not time-based) | Aligns with mindful, low-pressure design ethos of Mudita | Validated Phase 05 |
+| Silent error tracking (not real-time highlights) | Reduces distraction; player discovers mistakes at completion | Validated Phase 05 |
+| Hint penalty instead of leaderboard disqualification | Keeps game flowing; penalty is gentler than hard disqualification | Validated Phase 05 |
+| Pause/resume via local persistence | E-ink device users may put down device for hours; state must survive | Validated Phase 04 |
 
 ## Evolution
 
@@ -81,4 +81,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 after Phase 04 completion — pause/resume persistence complete*
+*Last updated: 2026-03-25 after Phase 05 completion — scoring, hints, and completion screens complete*
