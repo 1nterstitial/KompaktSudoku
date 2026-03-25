@@ -18,8 +18,7 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 
 ### Active
 
-- [ ] Player can select a difficulty level (Easy, Medium, Hard) from the main menu
-- [ ] Player can select a difficulty level (Easy, Medium, Hard) from the main menu
+- [x] Player can select a difficulty level (Easy, Medium, Hard) from the main menu — *Validated in Phase 06: menu-navigation*
 - [x] Player can request a hint during play (each hint incurs a score penalty) — *Validated in Phase 05: scoring-completion*
 - [x] Player can pause a game and resume it at a later time (game state persists on device) — *Validated in Phase 04: persistence*
 - [x] On completion, player sees a score summary (error count, hints used, final score) — *Validated in Phase 05: scoring-completion*
@@ -28,7 +27,7 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 
 ## Current State
 
-Phase 05 complete — Scoring and completion screens fully wired. Score formula (max(0, 100 - errors×10 - hints×5)), ScoreRepository with DataStore persistence, SummaryScreen, LeaderboardScreen, and GAME→SUMMARY→LEADERBOARD→GAME navigation in place. Building toward Phase 06: Menu & Navigation.
+Phase 06 complete — Full 5-screen navigation flow implemented. App launches to MenuScreen with conditional Resume button (reactive StateFlow). DifficultyScreen added. All screens wired via Screen enum in MainActivity (MENU→DIFFICULTY→GAME→SUMMARY→LEADERBOARD). BackHandler save-on-back in GameScreen. All 6 phases of v1.0 are complete.
 
 ### Out of Scope
 
