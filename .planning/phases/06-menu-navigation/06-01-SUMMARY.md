@@ -126,3 +126,13 @@ The worktree required merging from local master to obtain phase 06 plan files (t
 ---
 *Phase: 06-menu-navigation*
 *Completed: 2026-03-25*
+
+## Self-Check: PASSED
+
+- FOUND: app/src/main/java/com/mudita/sudoku/ui/game/MenuScreen.kt
+- FOUND: app/src/main/java/com/mudita/sudoku/ui/game/DifficultyScreen.kt
+- FOUND: .planning/phases/06-menu-navigation/06-01-SUMMARY.md
+- FOUND: d984d14 (Task 1 commit)
+- FOUND: 658ee85 (Task 2 commit)
+- FOUND: ab0a9b2 (Task 3 commit)
+- FOUND: 4beeef0 (metadata commit)
