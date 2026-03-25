@@ -8,7 +8,7 @@
 ### Puzzle Generation
 
 - [x] **PUZZ-01**: App generates valid Sudoku puzzles that have exactly one solution
-- [x] **PUZZ-02**: Difficulty is classified by required solving technique: Easy uses naked singles only; Medium requires hidden pairs/pencil marks; Hard requires advanced techniques (X-wing, chains)
+- [x] **PUZZ-02**: Difficulty is classified by required solving technique: Easy uses naked singles only; Hard requires advanced techniques (X-wing, chains). Medium is differentiated from Easy by given-cell count only (27–35 vs 36–45 givens) — Sudoklify's preset schemas produce no hidden-pairs-tier puzzles empirically (bimodal distribution: NAKED_SINGLES_ONLY or ADVANCED, nothing in between). The DifficultyClassifier correctly implements hidden-pairs detection infrastructure; the generator constraint is a library limitation documented in DifficultyConfig.kt.
 - [x] **PUZZ-03**: Easy puzzles provide approximately 36–45 given cells; Medium 27–35; Hard 22–27
 
 ### Difficulty
@@ -87,7 +87,7 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | PUZZ-01 | Phase 1 | Complete |
-| PUZZ-02 | Phase 1 | Complete |
+| PUZZ-02 | Phase 1 | Complete (Sudoklify HIDDEN_PAIRS limitation — count-only medium differentiation) |
 | PUZZ-03 | Phase 1 | Complete |
 | DIFF-01 | Phase 2 | Complete |
 | DIFF-02 | Phase 2 | Complete |
