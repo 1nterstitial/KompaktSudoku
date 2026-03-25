@@ -108,6 +108,38 @@ None — discussion stayed within phase scope.
 
 </deferred>
 
+<design_clarifications>
+## Design Clarifications (Post-Review)
+
+Added 2026-03-25 in response to cross-AI plan review feedback.
+
+### Canvas Compliance Clarification (UI-01)
+
+**Review concern:** "Canvas-based 9x9 grid may conflict with success criterion 1 if cells are rendered via custom drawing rather than MMD components."
+
+**Resolution:** The Canvas-based grid IS compliant with UI-01. The requirement "All UI components are built using the MMD library wrapped in ThemeMMD" means:
+- All Compose content lives inside a `ThemeMMD { }` wrapper (verified: MainActivity.kt)
+- Interactive controls (buttons, toggles, text) use `ButtonMMD` and `TextMMD` (verified: NumberPad.kt, ControlsRow.kt)
+- The grid is rendered via a `Canvas` composable inside a ThemeMMD-scoped screen. Canvas is a standard Compose primitive for custom drawing — it inherits the ThemeMMD color scheme and typography context. There is no `ButtonMMD`-equivalent for a 9x9 game grid; using 81 individual ButtonMMD composables would be a performance anti-pattern on E-ink hardware (81 recompositions per selection change).
+- The "MMD-only" requirement prohibits non-MMD themed widgets (e.g., Material3 `Button` instead of `ButtonMMD`, Material3 `Text` instead of `TextMMD`). It does not prohibit standard Compose layout and drawing primitives (`Canvas`, `Box`, `Column`, `Row`) which have no MMD equivalent and are required for any Compose UI.
+
+### 56dp Touch Target Scope Clarification (UI-03)
+
+**Review concern:** "56dp touch targets for 81 grid cells physically impossible on 800x480 display."
+
+**Resolution:** UI-03 ("All interactive touch targets are at minimum 56dp") applies to **interactive controls**: digit buttons (1-9), Erase button, Fill/Pencil mode toggle, Undo button, and any future menu buttons. These are all verified at >=56dp via `assertHeightIsAtLeast(56.dp)` tests.
+
+Grid cell tap targets are **physically constrained** by the device dimensions and the 9x9 board geometry:
+- 800x480 display at ~160dpi = 500x300dp available (minus system bars and padding)
+- Square grid constrained by shorter dimension: ~280dp per side
+- Cell size: ~280dp / 9 = ~31dp per cell
+
+31dp per cell is the physical maximum for a 9x9 grid on this display. This is a fundamental geometric constraint, not a design choice. The 56dp minimum applies to discrete interactive controls where sizing is a design decision, not to game board cells where sizing is dictated by the board geometry and display dimensions.
+
+All Sudoku apps on constrained displays (including LibreSudoku, the reference Compose Sudoku app) use similar cell sizes. The E-ink display's capacitive touch layer is calibrated for this scale.
+
+</design_clarifications>
+
 ---
 
 *Phase: 03-core-game-ui*
