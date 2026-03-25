@@ -68,7 +68,7 @@ Plans:
 - [x] 03-02-PLAN.md — GameScreen, GameGrid (Canvas), NumberPad, ControlsRow — full playable UI wired to ViewModel
 - [x] 03-03-PLAN.md — Robolectric Compose UI tests: cell tap mapping, button interaction, 56dp touch target assertions
 - [x] 03-04-PLAN.md — Scoped GitHub Packages repository for MMD with fail-fast credential gating + design clarification docs
-- [ ] 03-05-PLAN.md — Physical device E-ink verification checklist (ghosting, tap reliability, animation absence, rendering quality)
+- [x] 03-05-PLAN.md — Physical device E-ink verification checklist (ghosting, tap reliability, animation absence, rendering quality)
 
 ### Phase 4: Persistence
 **Goal**: A paused game survives app closure and device sleep, and high scores are stored durably per difficulty level
