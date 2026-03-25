@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.mudita.sudoku.game.GameViewModel
+import com.mudita.sudoku.game.model.CompletionResult
 import com.mudita.sudoku.game.model.GameEvent
 import com.mudita.sudoku.puzzle.model.Difficulty
 
@@ -35,20 +36,38 @@ import com.mudita.sudoku.puzzle.model.Difficulty
  *
  * Layout order (D-07): difficulty label → grid → controls row → number pad.
  * No ripple, no animation, no Animated* composable (UI-02).
+ *
+ * @param onCompleted Called when the game is completed with full score data. The caller
+ *                    (e.g. MainActivity or parent composable) navigates to the Summary screen.
  */
 @Composable
 fun GameScreen(
-    viewModel: GameViewModel = viewModel()
+    viewModel: GameViewModel = viewModel(),
+    onCompleted: (CompletionResult) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val showResumeDialog by viewModel.showResumeDialog.collectAsStateWithLifecycle()
 
-    // Collect one-shot completion events (navigation handled in Phase 5)
+    // canRequestHint: derived from uiState — true when there is at least one non-given cell
+    // where the current board value differs from the solution (empty OR wrong-filled).
+    // Recomputed on every recomposition so the button disables instantly when no targets remain.
+    val canRequestHint = !uiState.isComplete && !uiState.isLoading &&
+        (0..80).any { i -> !uiState.givenMask[i] && uiState.board[i] != uiState.solution[i] }
+
+    // Collect one-shot completion events and route to onCompleted callback
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
                 is GameEvent.Completed -> {
-                    // TODO Phase 5: navigate to completion/score screen
+                    onCompleted(
+                        CompletionResult(
+                            difficulty = event.difficulty,
+                            errorCount = event.errorCount,
+                            hintCount = event.hintCount,
+                            finalScore = event.score,
+                            isPersonalBest = event.isPersonalBest
+                        )
+                    )
                 }
             }
         }
@@ -102,11 +121,13 @@ fun GameScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // 3. Controls row — Fill/Pencil mode toggles + Undo (D-07, D-08)
+        // 3. Controls row — Fill/Pencil mode toggles + Undo + Get Hint (D-07, D-08, D-02)
         ControlsRow(
             inputMode = uiState.inputMode,
             onToggleMode = viewModel::toggleInputMode,
-            onUndo = viewModel::undo
+            onUndo = viewModel::undo,
+            onHint = viewModel::requestHint,
+            canRequestHint = canRequestHint
         )
 
         Spacer(modifier = Modifier.height(8.dp))

@@ -42,7 +42,9 @@ class ControlsRowTest {
                 ControlsRow(
                     inputMode = InputMode.FILL,
                     onToggleMode = { toggleCount++ },
-                    onUndo = {}
+                    onUndo = {},
+                    onHint = {},
+                    canRequestHint = true
                 )
             }
         }
@@ -58,7 +60,9 @@ class ControlsRowTest {
                 ControlsRow(
                     inputMode = InputMode.FILL,
                     onToggleMode = { toggleCount++ },
-                    onUndo = {}
+                    onUndo = {},
+                    onHint = {},
+                    canRequestHint = true
                 )
             }
         }
@@ -76,7 +80,9 @@ class ControlsRowTest {
                 ControlsRow(
                     inputMode = InputMode.PENCIL,
                     onToggleMode = { toggleCount++ },
-                    onUndo = {}
+                    onUndo = {},
+                    onHint = {},
+                    canRequestHint = true
                 )
             }
         }
@@ -92,7 +98,9 @@ class ControlsRowTest {
                 ControlsRow(
                     inputMode = InputMode.PENCIL,
                     onToggleMode = { toggleCount++ },
-                    onUndo = {}
+                    onUndo = {},
+                    onHint = {},
+                    canRequestHint = true
                 )
             }
         }
@@ -110,7 +118,9 @@ class ControlsRowTest {
                 ControlsRow(
                     inputMode = InputMode.FILL,
                     onToggleMode = {},
-                    onUndo = { undoCount++ }
+                    onUndo = { undoCount++ },
+                    onHint = {},
+                    canRequestHint = true
                 )
             }
         }
@@ -127,7 +137,9 @@ class ControlsRowTest {
                 ControlsRow(
                     inputMode = InputMode.FILL,
                     onToggleMode = {},
-                    onUndo = {}
+                    onUndo = {},
+                    onHint = {},
+                    canRequestHint = true
                 )
             }
         }
@@ -141,7 +153,9 @@ class ControlsRowTest {
                 ControlsRow(
                     inputMode = InputMode.FILL,
                     onToggleMode = {},
-                    onUndo = {}
+                    onUndo = {},
+                    onHint = {},
+                    canRequestHint = true
                 )
             }
         }
@@ -155,7 +169,9 @@ class ControlsRowTest {
                 ControlsRow(
                     inputMode = InputMode.FILL,
                     onToggleMode = {},
-                    onUndo = {}
+                    onUndo = {},
+                    onHint = {},
+                    canRequestHint = true
                 )
             }
         }

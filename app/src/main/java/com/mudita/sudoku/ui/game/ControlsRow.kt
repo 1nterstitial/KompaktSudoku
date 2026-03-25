@@ -19,21 +19,26 @@ import com.mudita.mmd.components.text.TextMMD
 import com.mudita.sudoku.game.model.InputMode
 
 /**
- * Controls row: Fill / Pencil mode toggles + Undo button.
+ * Controls row: Fill / Pencil mode toggles + Undo button + Get Hint button.
  *
  * Active mode button: solid black fill with white text.
  * Inactive mode button: white fill with black text.
  * Implemented using Box+clickable with indication=null (no ripple per UI-02) for the mode
  * toggles, since ButtonMMD's `colors` parameter availability is unconfirmed at compile time.
- * The Undo button uses ButtonMMD directly (no color customization needed).
+ * The Undo and Get Hint buttons use ButtonMMD directly (no color customization needed).
  *
  * No ripple, no animation (UI-02). All elements ≥56dp height (UI-03).
+ *
+ * @param onHint          Called when the player taps the Get Hint button.
+ * @param canRequestHint  When false, the Get Hint button is disabled (no valid hint targets).
  */
 @Composable
 fun ControlsRow(
     inputMode: InputMode,
     onToggleMode: () -> Unit,
     onUndo: () -> Unit,
+    onHint: () -> Unit,
+    canRequestHint: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -84,6 +89,17 @@ fun ControlsRow(
             onClick = onUndo
         ) {
             TextMMD(text = "Undo")
+        }
+
+        // Hint — no active/inactive state, standard ButtonMMD, disabled when no valid target
+        ButtonMMD(
+            modifier = Modifier
+                .weight(1f)
+                .sizeIn(minHeight = 56.dp),
+            onClick = onHint,
+            enabled = canRequestHint
+        ) {
+            TextMMD(text = "Get Hint")
         }
     }
 }
