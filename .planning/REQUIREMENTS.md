@@ -35,13 +35,13 @@
 - [x] **SCORE-01**: Errors are tracked silently during play and not surfaced until the game ends
 - [x] **SCORE-02**: App automatically detects when all 81 cells are correctly filled and triggers completion
 - [ ] **SCORE-03**: User can request a hint during play; a single unfilled correct cell value is revealed; hint usage is counted
-- [ ] **SCORE-04**: Each hint used deducts a fixed penalty from the final score
+- [x] **SCORE-04**: Each hint used deducts a fixed penalty from the final score
 - [ ] **SCORE-05**: On completion, user sees a summary showing error count, hints used, and final score
-- [ ] **SCORE-06**: Final score is error-based (fewer errors = higher score) with hint penalties applied
+- [x] **SCORE-06**: Final score is error-based (fewer errors = higher score) with hint penalties applied
 
 ### High Scores
 
-- [ ] **HS-01**: Per-difficulty high scores are stored persistently on device
+- [x] **HS-01**: Per-difficulty high scores are stored persistently on device
 - [ ] **HS-02**: After game completion, user is informed if they achieved a new personal best for that difficulty
 - [ ] **HS-03**: User can view a leaderboard screen showing top scores per difficulty
 
@@ -102,10 +102,10 @@
 | SCORE-01 | Phase 2 | Complete |
 | SCORE-02 | Phase 2 | Complete |
 | SCORE-03 | Phase 5 | Pending |
-| SCORE-04 | Phase 5 | Pending |
+| SCORE-04 | Phase 5 | Complete |
 | SCORE-05 | Phase 5 | Pending |
-| SCORE-06 | Phase 5 | Pending |
-| HS-01 | Phase 5 | Pending |
+| SCORE-06 | Phase 5 | Complete |
+| HS-01 | Phase 5 | Complete |
 | HS-02 | Phase 5 | Pending |
 | HS-03 | Phase 5 | Pending |
 | NAV-01 | Phase 6 | Pending |

@@ -97,7 +97,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 05-01-PLAN.md — State model additions (hintCount), CompletionResult, ScoreRepository + DataStoreScoreRepository, score formula tests
+- [x] 05-01-PLAN.md — State model additions (hintCount), CompletionResult, ScoreRepository + DataStoreScoreRepository, score formula tests
 - [ ] 05-02-PLAN.md — GameViewModel hint + completion logic, ControlsRow Hint button, GameScreen completion callback
 - [ ] 05-03-PLAN.md — SummaryScreen, LeaderboardScreen, MainActivity Screen enum routing
 
@@ -121,5 +121,5 @@ Plans:
 | 2. Game State & Domain | 3/3 | Complete   | 2026-03-24 |
 | 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
 | 4. Persistence | 3/3 | Complete   | 2026-03-25 |
-| 5. Scoring & Completion | 0/3 | In progress | - |
+| 5. Scoring & Completion | 1/3 | In Progress|  |
 | 6. Menu & Navigation | 0/0 | Not started | - |

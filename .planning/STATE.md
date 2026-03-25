@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-03-25T02:21:08.777Z"
+stopped_at: Phase 5 UI-SPEC approved
+last_updated: "2026-03-25T03:17:36.813Z"
 progress:
   total_phases: 6
   completed_phases: 3
-  total_plans: 14
-  completed_plans: 13
+  total_plans: 17
+  completed_plans: 14
 ---
 
 # Project State: Mudita Kompakt Sudoku
@@ -18,14 +18,14 @@ progress:
 
 **Core Value:** A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-ink display — responsive touch input, high-contrast grid, and smooth puzzle flow without display artifacts.
 
-**Current Focus:** Phase 04 — persistence
+**Current Focus:** Phase 05 — scoring-completion
 
 ---
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
+Phase: 05 (scoring-completion) — EXECUTING
+Plan: 2 of 3
 
 ## Phase Sequence
 
@@ -61,6 +61,7 @@ Plan: Not started
 | Phase 04 P01 | 25 | 2 tasks | 5 files |
 | Phase 04 P02 | 9 | 1 tasks | 2 files |
 | Phase 04 P03 | 3 | 2 tasks | 2 files |
+| Phase 05 P01 | 4 | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,11 @@ Plan: Not started
 - [04-02] saveNow() is a suspend fun (not fire-and-forget) — caller controls timing; critical for lifecycle-aware save-on-pause in Plan 03
 - [04-03] ButtonMMD import is com.mudita.mmd.components.buttons.ButtonMMD (plural) — confirmed from actual AAR class inspection; plan comment used wrong singular path
 - [04-03] ResumeDialog placed before isLoading check in GameScreen — dialog must appear immediately at launch before startGame sets isLoading=true
+- [05-01] calculateScore as top-level function in ScoreCalculation.kt — independently testable and importable by GameViewModel (mirrors isValidPlacement pattern)
+- [05-01] scoreDataStore separate from gameDataStore — one DataStore file per instance; mixing causes data corruption
+- [05-01] hintCount default = 0 in PersistedGameState — backward-compatible deserialization of Phase 4 JSON saved games
+- [05-01] GameEvent.Completed extended to full payload (hintCount, score, difficulty, isPersonalBest) — SummaryScreen gets all data without secondary state query
+- [05-01] GameViewModel emits isPersonalBest=false placeholder — Plan 02 wires ScoreRepository to compute correctly
 
 ### Architecture Decisions
 
@@ -134,9 +140,9 @@ Plan: Not started
 
 ## Session Continuity
 
-**Last session:** 2026-03-25T02:17:08.451Z
-**Next action:** Phase 02 complete (verified 5/5). Execute Phase 03: `/gsd:execute-phase 03`
-**Stopped at:** Completed 04-03-PLAN.md
+**Last session:** 2026-03-25T05:36:30.000Z
+**Next action:** Execute Phase 5 Plan 02 — ViewModel scoring logic
+**Stopped at:** Completed 05-01-PLAN.md
 
 ---
 
