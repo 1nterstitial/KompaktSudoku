@@ -21,14 +21,14 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 - [ ] Player can select a difficulty level (Easy, Medium, Hard) from the main menu
 - [ ] Player can request a hint during play (each hint incurs a score penalty)
 - [ ] Player can request a hint during play (each hint incurs a score penalty)
-- [ ] Player can pause a game and resume it at a later time (game state persists on device)
+- [x] Player can pause a game and resume it at a later time (game state persists on device) — *Validated in Phase 04: persistence*
 - [ ] On completion, player sees a score summary (error count, hints used, final score)
 - [ ] High scores are stored persistently per difficulty level (leaderboard)
 - [ ] All UI is built with the Mudita Mindful Design (MMD) library and ThemeMMD
 
 ## Current State
 
-Phase 02 complete — GameViewModel and all game-state domain models implemented. Core game logic (cell selection, fill mode, pencil marks, undo, error tracking, completion detection) is fully tested with 38 unit tests. Building toward Phase 03: Core Game UI.
+Phase 04 complete — Pause/resume persistence fully wired via DataStore. GameViewModel loads saved state on init, exposes ResumeDialog to player, and auto-saves on app background. Building toward Phase 05: Scoring & Completion.
 
 ### Out of Scope
 
@@ -81,4 +81,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-24 after Phase 02 completion — game-state domain complete*
+*Last updated: 2026-03-25 after Phase 04 completion — pause/resume persistence complete*
