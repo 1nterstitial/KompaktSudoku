@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 5 UI-SPEC approved
-last_updated: "2026-03-25T03:17:36.813Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-25T03:33:11.801Z"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 17
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State: Mudita Kompakt Sudoku
@@ -25,7 +25,7 @@ progress:
 ## Current Position
 
 Phase: 05 (scoring-completion) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Phase Sequence
 
@@ -62,6 +62,7 @@ Plan: 2 of 3
 | Phase 04 P02 | 9 | 1 tasks | 2 files |
 | Phase 04 P03 | 3 | 2 tasks | 2 files |
 | Phase 05 P01 | 4 | 2 tasks | 13 files |
+| Phase 05 P02 | 11min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,9 @@ Plan: 2 of 3
 - [03-02] Grid lines drawn last in Canvas to prevent thick box borders being partially overwritten by adjacent cell fills
 - [03-03] MMD stubs placed in main source set (com.mudita.mmd) — only way to compile production files without AAR; replaces compileOnly(libs.mmd) for offline dev
 - [03-03] Canvas needs Modifier.fillMaxSize() for pointer-input hit testing — Spacer-based Canvas is 0x0 without explicit size modifier; this was a production bug
+- [05-02] Injectable Random via constructor (Random.Default in production, Random(seed) in tests) — deterministic hint cell selection for tests without seam
+- [05-02] Hints permanently non-undoable — not pushed to undoStack; reverting hint while hintCount stays elevated creates inconsistent state (locked product decision)
+- [05-02] handleCompletion() ordering: saveBestScore -> refreshLeaderboard -> clearGame -> emit event — leaderboard must reflect new score before game is cleared
 - [03-03] Square Canvas tap coords use min(width, height) matching BoxWithConstraints minOf(maxWidth, maxHeight) logic
 - [03-03] activity-compose declared explicitly — was previously provided only transitively by MMD; must be explicit dependency
 - [04-02] ioDispatcher injected into GameViewModel constructor (Dispatchers.IO default) — allows UnconfinedTestDispatcher in tests to make withContext(ioDispatcher) synchronous, avoiding advanceUntilIdle() races with real thread pools
@@ -140,9 +144,9 @@ Plan: 2 of 3
 
 ## Session Continuity
 
-**Last session:** 2026-03-25T05:36:30.000Z
+**Last session:** 2026-03-25T03:33:11.798Z
 **Next action:** Execute Phase 5 Plan 02 — ViewModel scoring logic
-**Stopped at:** Completed 05-01-PLAN.md
+**Stopped at:** Completed 05-02-PLAN.md
 
 ---
 
