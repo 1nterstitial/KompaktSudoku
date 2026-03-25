@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-25T01:57:18.066Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-25T02:10:25.910Z"
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 14
-  completed_plans: 10
+  completed_plans: 12
 ---
 
 # Project State: Mudita Kompakt Sudoku
@@ -25,7 +25,7 @@ progress:
 ## Current Position
 
 Phase: 04 (persistence) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Phase Sequence
 
@@ -59,6 +59,7 @@ Plan: 2 of 3
 | 03 | 02 | 6 min | 2 | 4 | 2026-03-24 |
 | Phase 03 P03 | 45min | 2 tasks | 10 files |
 | Phase 04 P01 | 25 | 2 tasks | 5 files |
+| Phase 04 P02 | 9 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,9 @@ Plan: 2 of 3
 - [03-03] Canvas needs Modifier.fillMaxSize() for pointer-input hit testing — Spacer-based Canvas is 0x0 without explicit size modifier; this was a production bug
 - [03-03] Square Canvas tap coords use min(width, height) matching BoxWithConstraints minOf(maxWidth, maxHeight) logic
 - [03-03] activity-compose declared explicitly — was previously provided only transitively by MMD; must be explicit dependency
+- [04-02] ioDispatcher injected into GameViewModel constructor (Dispatchers.IO default) — allows UnconfinedTestDispatcher in tests to make withContext(ioDispatcher) synchronous, avoiding advanceUntilIdle() races with real thread pools
+- [04-02] Tests that need loaded game state use Turbine awaitItem() sequences rather than advanceUntilIdle() — startGame dispatches to Dispatchers.Default (real thread), which test schedulers cannot control
+- [04-02] saveNow() is a suspend fun (not fire-and-forget) — caller controls timing; critical for lifecycle-aware save-on-pause in Plan 03
 
 ### Architecture Decisions
 
@@ -127,9 +131,9 @@ Plan: 2 of 3
 
 ## Session Continuity
 
-**Last session:** 2026-03-25T01:57:18.063Z
+**Last session:** 2026-03-25T02:10:25.907Z
 **Next action:** Phase 02 complete (verified 5/5). Execute Phase 03: `/gsd:execute-phase 03`
-**Stopped at:** Completed 04-01-PLAN.md
+**Stopped at:** Completed 04-02-PLAN.md
 
 ---
 
