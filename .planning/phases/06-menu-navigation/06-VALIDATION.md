@@ -51,8 +51,8 @@ created: 2026-03-25
 
 ## Wave 0 Requirements
 
-- [ ] `app/src/test/java/com/mudita/sudoku/ui/MenuScreenTest.kt` — stubs for NAV-01 menu display and resume-conditional behavior
-- [ ] `app/src/test/java/com/mudita/sudoku/ui/DifficultyScreenTest.kt` — stubs for NAV-01 difficulty selection
+- [ ] `app/src/test/java/com/mudita/sudoku/ui/game/MenuScreenTest.kt` — stubs for NAV-01 menu display and resume-conditional behavior
+- [ ] `app/src/test/java/com/mudita/sudoku/ui/game/DifficultyScreenTest.kt` — stubs for NAV-01 difficulty selection
 
 *Existing infrastructure (Robolectric + Compose UI Test) covers the framework; only test files are missing.*
 
