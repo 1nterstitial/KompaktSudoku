@@ -63,6 +63,7 @@ Plan: 3 of 3
 | Phase 04 P03 | 3 | 2 tasks | 2 files |
 | Phase 05 P01 | 4 | 2 tasks | 13 files |
 | Phase 05 P02 | 11min | 2 tasks | 5 files |
+| 05 | 03 | 22 min | 2 | 5 | 2026-03-25 |
 
 ## Accumulated Context
 
@@ -112,6 +113,9 @@ Plan: 3 of 3
 - [05-01] hintCount default = 0 in PersistedGameState — backward-compatible deserialization of Phase 4 JSON saved games
 - [05-01] GameEvent.Completed extended to full payload (hintCount, score, difficulty, isPersonalBest) — SummaryScreen gets all data without secondary state query
 - [05-01] GameViewModel emits isPersonalBest=false placeholder — Plan 02 wires ScoreRepository to compute correctly
+- [05-03] Screen enum routing in MainActivity — top-level GAME/SUMMARY/LEADERBOARD enum; Phase 6 replaces with NavHost; leaf composables remain nav-unaware
+- [05-03] completionResult set BEFORE currentScreen in onCompleted callback — prevents null CompletionResult on SummaryScreen first recomposition (Pitfall 2 ordering)
+- [05-03] LeaderboardScreen heading is "Best Scores" not "Leaderboard" — reflects single-best-score-per-difficulty design (D-08); "Leaderboard" only in code identifiers
 
 ### Architecture Decisions
 
