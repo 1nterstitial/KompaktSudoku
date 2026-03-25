@@ -26,7 +26,7 @@
 
 ### Game State
 
-- [ ] **STATE-01**: User can pause a game mid-play; full grid state, pencil marks, error count, and hint count are persisted to device storage
+- [x] **STATE-01**: User can pause a game mid-play; full grid state, pencil marks, error count, and hint count are persisted to device storage
 - [ ] **STATE-02**: On app launch, if a paused game exists, user is prompted to resume it or start a new game
 - [ ] **STATE-03**: User can resume a paused game and continue exactly where they left off
 
@@ -96,7 +96,7 @@
 | INPUT-03 | Phase 2 | Complete |
 | INPUT-04 | Phase 2 | Complete |
 | INPUT-05 | Phase 2 | Complete |
-| STATE-01 | Phase 4 | Pending |
+| STATE-01 | Phase 4 | Complete |
 | STATE-02 | Phase 4 | Pending |
 | STATE-03 | Phase 4 | Pending |
 | SCORE-01 | Phase 2 | Complete |

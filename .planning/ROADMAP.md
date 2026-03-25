@@ -79,7 +79,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [x] 04-01-PLAN.md — PersistedGameState DTO + serialization tests, GameRepository interface + DataStoreGameRepository + FakeGameRepository
+- [ ] 04-01-PLAN.md — PersistedGameState DTO + serialization tests, GameRepository interface + DataStoreGameRepository + FakeGameRepository
 - [ ] 04-02-PLAN.md — GameViewModel persistence integration (save/load/resume/clear) + GameViewModelPersistenceTest
 - [ ] 04-03-PLAN.md — ResumeDialog UI + GameScreen guard + MainActivity lifecycle save + ViewModel factory
 
@@ -115,6 +115,6 @@ Plans:
 | 1. Puzzle Engine | 4/4 | Complete   | 2026-03-24 |
 | 2. Game State & Domain | 3/3 | Complete   | 2026-03-24 |
 | 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
-| 4. Persistence | 1/3 | In progress | - |
+| 4. Persistence | 0/3 | Planned    |  |
 | 5. Scoring & Completion | 0/0 | Not started | - |
 | 6. Menu & Navigation | 0/0 | Not started | - |
