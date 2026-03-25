@@ -17,18 +17,18 @@ created: 2026-03-24
 
 | Property | Value |
 |----------|-------|
-| **Framework** | JUnit 4 + Mockk + Turbine (existing) |
-| **Config file** | `app/build.gradle.kts` (test dependencies already present) |
-| **Quick run command** | `./gradlew :app:testDebugUnitTest --tests "*Persistence*" --tests "*DataStore*" --tests "*Repository*"` |
-| **Full suite command** | `./gradlew :app:testDebugUnitTest` |
+| **Framework** | JUnit 4.13.2 + Robolectric 4.14.1 + Mockk 1.13.17 + Turbine 1.2.0 |
+| **Config file** | `app/build.gradle.kts` — `testOptions.unitTests.isIncludeAndroidResources = true` |
+| **Quick run command** | `./gradlew :app:testDebugUnitTest --tests "*Persistence*" --tests "*DataStore*" --tests "*Repository*" -x lint` |
+| **Full suite command** | `./gradlew :app:testDebugUnitTest -x lint` |
 | **Estimated runtime** | ~30 seconds |
 
 ---
 
 ## Sampling Rate
 
-- **After every task commit:** Run `./gradlew :app:testDebugUnitTest --tests "*Persistence*" --tests "*DataStore*" --tests "*Repository*"`
-- **After every plan wave:** Run `./gradlew :app:testDebugUnitTest`
+- **After every task commit:** Run `./gradlew :app:testDebugUnitTest --tests "*Persistence*" --tests "*DataStore*" --tests "*Repository*" -x lint`
+- **After every plan wave:** Run `./gradlew :app:testDebugUnitTest -x lint`
 - **Before `/gsd:verify-work`:** Full suite must be green
 - **Max feedback latency:** 30 seconds
 
@@ -52,9 +52,9 @@ created: 2026-03-24
 
 ## Wave 0 Requirements
 
-- [ ] `app/src/test/java/com/mudita/sudoku/persistence/PersistedGameStateTest.kt` — DTO serialization round-trip tests for STATE-01
-- [ ] `app/src/test/java/com/mudita/sudoku/persistence/DataStoreGameRepositoryTest.kt` — repository save/load/clear tests for STATE-01
-- [ ] `app/src/test/java/com/mudita/sudoku/viewmodel/GameViewModelPersistenceTest.kt` — ViewModel integration tests for STATE-01, STATE-02, STATE-03
+- [ ] `app/src/test/java/com/mudita/sudoku/game/FakeGameRepository.kt` — shared test double used by all persistence tests
+- [ ] `app/src/test/java/com/mudita/sudoku/game/PersistedGameStateTest.kt` — DTO serialization round-trip tests for STATE-01
+- [ ] `app/src/test/java/com/mudita/sudoku/game/GameViewModelPersistenceTest.kt` — ViewModel integration tests for STATE-01, STATE-02, STATE-03
 
 *Existing test infrastructure (JUnit 4, Mockk, Turbine) covers all phase requirements — no new framework install needed.*
 
