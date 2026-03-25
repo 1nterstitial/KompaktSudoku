@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 /**
  * Central state machine for the Sudoku game loop.
@@ -32,15 +33,21 @@ import kotlinx.coroutines.withContext
  *                       testing via [FakeGenerator] or any suspend lambda returning [SudokuPuzzle].
  * @param repository Persistence contract for save/load/clear. Defaults to [NoOpGameRepository]
  *                   for backward compatibility with callers that do not require persistence.
+ * @param scoreRepository Contract for reading and writing per-difficulty high scores. Defaults to
+ *                        [NoOpScoreRepository] for callers that do not require score persistence.
  * @param ioDispatcher Dispatcher for I/O-bound work (DataStore reads/writes). Injectable for
  *                     tests — pass [UnconfinedTestDispatcher] to run synchronously under runTest.
+ * @param random Random instance used for hint cell selection. Defaults to [Random.Default].
+ *               Injectable for tests — pass [Random(seed)] for deterministic hint selection.
  */
 class GameViewModel(
     private val generatePuzzle: suspend (Difficulty) -> SudokuPuzzle = { difficulty ->
         SudokuGenerator().generatePuzzle(difficulty)
     },
     private val repository: GameRepository = NoOpGameRepository(),
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val scoreRepository: ScoreRepository = NoOpScoreRepository(),
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val random: Random = Random.Default
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(GameUiState())
@@ -51,6 +58,9 @@ class GameViewModel(
 
     private val _showResumeDialog = MutableStateFlow(false)
     val showResumeDialog: StateFlow<Boolean> = _showResumeDialog.asStateFlow()
+
+    private val _leaderboardScores = MutableStateFlow<Map<Difficulty, Int?>>(emptyMap())
+    val leaderboardScores: StateFlow<Map<Difficulty, Int?>> = _leaderboardScores.asStateFlow()
 
     /** Saved game state pending user decision (resume or start new). Null if no saved game. */
     private var pendingSavedState: GameUiState? = null
@@ -65,6 +75,7 @@ class GameViewModel(
                 pendingSavedState = saved
                 _showResumeDialog.value = true
             }
+            refreshLeaderboard()
         }
     }
 
@@ -219,7 +230,107 @@ class GameViewModel(
         }
     }
 
+    /**
+     * Requests a hint: fills one random non-given cell where board[i] != solution[i] with its
+     * correct solution value.
+     *
+     * Hint eligibility covers BOTH empty cells (board[i] == 0) AND cells filled with the wrong
+     * value (board[i] != 0 && board[i] != solution[i]). Both are "non-correct" cells the player
+     * wants revealed (per decision D-03).
+     *
+     * Hints are permanently non-undoable. This is a locked product decision: calling undo() after
+     * requestHint() must leave the hinted cell filled. Reverting a hint while hintCount stays
+     * elevated would create an inconsistent state (hintCount inflated, board as-if-no-hint).
+     * Consequently, hint actions are NOT pushed to the undoStack.
+     *
+     * Guards:
+     * - No-op if game is loading ([GameUiState.isLoading] == true)
+     * - No-op if game is complete ([GameUiState.isComplete] == true)
+     * - No-op if no valid hint targets exist (all non-given cells already correct)
+     */
+    fun requestHint() {
+        val state = _uiState.value
+        if (state.isLoading || state.isComplete) return
+
+        // Hint targets: any non-given cell where current value != solution
+        // This includes empty cells (board[i] == 0) AND cells with wrong user-entered values.
+        // Both are valid hint targets because the player wants the correct answer for any
+        // cell they have not yet filled correctly (per D-03).
+        val candidates = (0..80).filter { i ->
+            !state.givenMask[i] && state.board[i] != state.solution[i]
+        }
+        if (candidates.isEmpty()) return
+
+        val idx = candidates.random(random)
+        val newBoard = state.board.copyOf()
+        newBoard[idx] = state.solution[idx]
+        val newMarks = state.pencilMarks.copyOf().also { it[idx] = emptySet() }
+        val allCorrect = newBoard.indices.all { i -> newBoard[i] == state.solution[i] }
+
+        _uiState.update {
+            it.copy(
+                board = newBoard,
+                pencilMarks = newMarks,
+                hintCount = it.hintCount + 1,
+                isComplete = allCorrect
+            )
+        }
+
+        // Do NOT push to undoStack — hints are permanently non-undoable.
+        // This is a locked product decision: undo() after a hint must leave the
+        // hinted cell filled. Reverting a hint while hintCount stays elevated
+        // would be an inconsistent state.
+
+        if (allCorrect) handleCompletion(_uiState.value)
+    }
+
     // ------------------------------------------------------------------ private helpers
+
+    /**
+     * Handles game completion: computes score, checks/saves personal best, refreshes leaderboard,
+     * clears saved game state, and emits [GameEvent.Completed].
+     *
+     * Order matters (Pitfall 3): saveBestScore → refreshLeaderboard → clearGame → emit event.
+     * The leaderboard is refreshed BEFORE clearing the game so it reflects the new best immediately.
+     */
+    private fun handleCompletion(finalState: GameUiState) {
+        viewModelScope.launch {
+            val score = calculateScore(finalState.errorCount, finalState.hintCount)
+            val currentBest = withContext(ioDispatcher) {
+                scoreRepository.getBestScore(finalState.difficulty)
+            }
+            val isPersonalBest = currentBest == null || score > currentBest
+            if (isPersonalBest) {
+                withContext(ioDispatcher) {
+                    scoreRepository.saveBestScore(finalState.difficulty, score)
+                }
+            }
+            // Refresh leaderboard BEFORE clearing game (order matters per Pitfall 3)
+            refreshLeaderboard()
+            withContext(ioDispatcher) { repository.clearGame() }
+            _events.emit(
+                GameEvent.Completed(
+                    errorCount = finalState.errorCount,
+                    hintCount = finalState.hintCount,
+                    score = score,
+                    difficulty = finalState.difficulty,
+                    isPersonalBest = isPersonalBest
+                )
+            )
+        }
+    }
+
+    /**
+     * Refreshes [leaderboardScores] by reading all difficulty best scores from [scoreRepository].
+     * Called after completion and during init.
+     */
+    private suspend fun refreshLeaderboard() {
+        _leaderboardScores.value = mapOf(
+            Difficulty.EASY to withContext(ioDispatcher) { scoreRepository.getBestScore(Difficulty.EASY) },
+            Difficulty.MEDIUM to withContext(ioDispatcher) { scoreRepository.getBestScore(Difficulty.MEDIUM) },
+            Difficulty.HARD to withContext(ioDispatcher) { scoreRepository.getBestScore(Difficulty.HARD) }
+        )
+    }
 
     private fun applyFill(idx: Int, digit: Int, state: GameUiState) {
         undoStack.addLast(
@@ -252,21 +363,7 @@ class GameViewModel(
         }
 
         if (allCorrect) {
-            viewModelScope.launch {
-                withContext(ioDispatcher) { repository.clearGame() }
-            }
-            viewModelScope.launch {
-                val currentState = _uiState.value
-                _events.emit(
-                    GameEvent.Completed(
-                        errorCount = newErrorCount,
-                        hintCount = currentState.hintCount,
-                        score = calculateScore(newErrorCount, currentState.hintCount),
-                        difficulty = currentState.difficulty,
-                        isPersonalBest = false // Plan 02 will wire ScoreRepository to compute this
-                    )
-                )
-            }
+            handleCompletion(_uiState.value)
         }
     }
 
