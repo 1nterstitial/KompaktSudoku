@@ -25,6 +25,7 @@ data class PersistedGameState(
     val selectedCellIndex: Int? = null,
     val pencilMarks: List<List<Int>>,
     val errorCount: Int,
+    val hintCount: Int = 0,
     val isComplete: Boolean
 )
 
@@ -42,6 +43,7 @@ fun GameUiState.toPersistedState(): PersistedGameState = PersistedGameState(
     selectedCellIndex = selectedCellIndex,
     pencilMarks = pencilMarks.map { it.sorted() },
     errorCount = errorCount,
+    hintCount = hintCount,
     isComplete = isComplete
 )
 
@@ -61,6 +63,7 @@ fun PersistedGameState.toUiState(): GameUiState = GameUiState(
     inputMode = InputMode.FILL,
     pencilMarks = Array(81) { i -> pencilMarks[i].toSet() },
     errorCount = errorCount,
+    hintCount = hintCount,
     isComplete = isComplete,
     isLoading = false
 )

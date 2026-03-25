@@ -19,6 +19,7 @@ import com.mudita.sudoku.puzzle.model.Difficulty
  * @param inputMode        Current input mode: FILL writes digits, PENCIL toggles candidates.
  * @param pencilMarks      81-element array of candidate digit sets, one per cell.
  * @param errorCount       Number of incorrect digit entries (silent, not surfaced during play).
+ * @param hintCount        Number of hints requested during play (each hint incurs a score penalty).
  * @param isComplete       True when all 81 cells match the solution.
  * @param isLoading        True while puzzle generation is in progress.
  */
@@ -31,6 +32,7 @@ data class GameUiState(
     val inputMode: InputMode = InputMode.FILL,
     val pencilMarks: Array<Set<Int>> = Array(81) { emptySet() },
     val errorCount: Int = 0,
+    val hintCount: Int = 0,
     val isComplete: Boolean = false,
     val isLoading: Boolean = false
 ) {
@@ -46,6 +48,7 @@ data class GameUiState(
                 inputMode == other.inputMode &&
                 pencilMarks.contentDeepEquals(other.pencilMarks) &&
                 errorCount == other.errorCount &&
+                hintCount == other.hintCount &&
                 isComplete == other.isComplete &&
                 isLoading == other.isLoading
     }
@@ -59,6 +62,7 @@ data class GameUiState(
         result = 31 * result + inputMode.hashCode()
         result = 31 * result + pencilMarks.contentDeepHashCode()
         result = 31 * result + errorCount
+        result = 31 * result + hintCount
         result = 31 * result + isComplete.hashCode()
         result = 31 * result + isLoading.hashCode()
         return result

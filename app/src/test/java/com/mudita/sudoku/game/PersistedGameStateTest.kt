@@ -147,4 +147,46 @@ class PersistedGameStateTest {
         val restored = original.toPersistedState().toUiState()
         assertArrayEquals(IntArray(81) { 0 }, restored.board)
     }
+
+    // Test 8: Backward compatibility — JSON without hintCount deserializes to hintCount = 0
+    @Test
+    fun `JSON missing hintCount field deserializes to hintCount 0`() {
+        // Simulate Phase 4 saved data that predates hintCount
+        val jsonWithoutHintCount = """
+            {
+                "board": [${IntArray(81) { 0 }.joinToString(",")}],
+                "solution": [${FakeGenerator.SOLUTION.joinToString(",")}],
+                "givenMask": [${BooleanArray(81) { false }.joinToString(",") { it.toString() }}],
+                "difficulty": "EASY",
+                "selectedCellIndex": null,
+                "pencilMarks": [${(0 until 81).joinToString(",") { "[]" }}],
+                "errorCount": 2,
+                "isComplete": false
+            }
+        """.trimIndent()
+
+        @Suppress("DEPRECATION")
+        val decoded = Json.decodeFromString<PersistedGameState>(jsonWithoutHintCount)
+        assertEquals(0, decoded.hintCount)
+    }
+
+    // Test 9: hintCount round-trips correctly when non-zero
+    @Test
+    fun `hintCount 3 round-trips through JSON correctly`() {
+        val original = GameUiState(
+            board = FakeGenerator.BOARD.copyOf(),
+            solution = FakeGenerator.SOLUTION.copyOf(),
+            givenMask = BooleanArray(81) { i -> FakeGenerator.BOARD[i] != 0 },
+            difficulty = Difficulty.HARD,
+            pencilMarks = Array(81) { emptySet() },
+            errorCount = 1,
+            hintCount = 3,
+            isComplete = false
+        )
+        val json = Json.encodeToString(original.toPersistedState())
+        @Suppress("DEPRECATION")
+        val decoded = Json.decodeFromString<PersistedGameState>(json)
+        assertEquals(3, decoded.hintCount)
+        assertEquals(3, decoded.toUiState().hintCount)
+    }
 }

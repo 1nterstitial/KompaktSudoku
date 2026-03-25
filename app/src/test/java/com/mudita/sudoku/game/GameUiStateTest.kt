@@ -161,13 +161,25 @@ class GameUiStateTest {
 
     @Test
     fun `GameEvent Completed stores errorCount`() {
-        val event = GameEvent.Completed(errorCount = 3)
+        val event = GameEvent.Completed(
+            errorCount = 3,
+            hintCount = 0,
+            score = 70,
+            difficulty = Difficulty.EASY,
+            isPersonalBest = false
+        )
         assertEquals(3, event.errorCount)
     }
 
     @Test
     fun `GameEvent Completed with zero errors`() {
-        val event = GameEvent.Completed(errorCount = 0)
+        val event = GameEvent.Completed(
+            errorCount = 0,
+            hintCount = 0,
+            score = 100,
+            difficulty = Difficulty.EASY,
+            isPersonalBest = true
+        )
         assertEquals(0, event.errorCount)
     }
 

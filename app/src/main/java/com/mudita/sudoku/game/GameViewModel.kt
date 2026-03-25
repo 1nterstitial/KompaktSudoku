@@ -6,6 +6,7 @@ import com.mudita.sudoku.game.model.GameAction
 import com.mudita.sudoku.game.model.GameEvent
 import com.mudita.sudoku.game.model.GameUiState
 import com.mudita.sudoku.game.model.InputMode
+import com.mudita.sudoku.game.model.calculateScore
 import com.mudita.sudoku.puzzle.engine.SudokuGenerator
 import com.mudita.sudoku.puzzle.model.Difficulty
 import com.mudita.sudoku.puzzle.model.SudokuPuzzle
@@ -255,7 +256,16 @@ class GameViewModel(
                 withContext(ioDispatcher) { repository.clearGame() }
             }
             viewModelScope.launch {
-                _events.emit(GameEvent.Completed(newErrorCount))
+                val currentState = _uiState.value
+                _events.emit(
+                    GameEvent.Completed(
+                        errorCount = newErrorCount,
+                        hintCount = currentState.hintCount,
+                        score = calculateScore(newErrorCount, currentState.hintCount),
+                        difficulty = currentState.difficulty,
+                        isPersonalBest = false // Plan 02 will wire ScoreRepository to compute this
+                    )
+                )
             }
         }
     }
