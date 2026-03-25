@@ -25,7 +25,7 @@ progress:
 ## Current Position
 
 Phase: 6
-Plan: Not started
+Plan: 02 (ready to execute)
 
 ## Phase Sequence
 
@@ -116,6 +116,10 @@ Plan: Not started
 - [05-03] Screen enum routing in MainActivity — top-level GAME/SUMMARY/LEADERBOARD enum; Phase 6 replaces with NavHost; leaf composables remain nav-unaware
 - [05-03] completionResult set BEFORE currentScreen in onCompleted callback — prevents null CompletionResult on SummaryScreen first recomposition (Pitfall 2 ordering)
 - [05-03] LeaderboardScreen heading is "Best Scores" not "Leaderboard" — reflects single-best-score-per-difficulty design (D-08); "Leaderboard" only in code identifiers
+- [06-01] Screen enum retained (not NavHost) — enum-based routing sufficient for 5 screens with no deep linking (D-09)
+- [06-01] showResumeDialog StateFlow now collected in MainActivity to drive MenuScreen hasSavedGame — Resume button moved from GameScreen dialog to main menu
+- [06-01] startGame(difficulty) called before navigating to GAME screen to pre-start puzzle generation (Pitfall 5 avoidance)
+- [06-01] MenuScreen has no BackHandler — ComponentActivity back exits app by default (D-11 intentional)
 
 ### Architecture Decisions
 
@@ -148,9 +152,9 @@ Plan: Not started
 
 ## Session Continuity
 
-**Last session:** 2026-03-25T03:42:19.993Z
-**Next action:** Execute Phase 5 Plan 02 — ViewModel scoring logic
-**Stopped at:** Completed 05-03-PLAN.md
+**Last session:** 2026-03-25T08:37:54Z
+**Next action:** Execute Phase 6 Plan 02 — navigation tests
+**Stopped at:** Completed 06-01-PLAN.md
 
 ---
 
