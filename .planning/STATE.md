@@ -24,8 +24,8 @@ progress:
 
 ## Current Position
 
-Phase: 3
-Plan: 03 (ready to execute)
+Phase: 4
+Plan: 02 (ready to execute)
 
 ## Phase Sequence
 
@@ -34,7 +34,7 @@ Plan: 03 (ready to execute)
 | 1 | Puzzle Engine | Complete |
 | 2 | Game State & Domain | Complete |
 | 3 | Core Game UI | Complete |
-| 4 | Persistence | Not started |
+| 4 | Persistence | In Progress (Plan 1/3 done) |
 | 5 | Scoring & Completion | Not started |
 | 6 | Menu & Navigation | Not started |
 
@@ -58,6 +58,7 @@ Plan: 03 (ready to execute)
 | Phase 02-game-state-domain P03 | 8min | 1 tasks | 2 files |
 | 03 | 02 | 6 min | 2 | 4 | 2026-03-24 |
 | Phase 03 P03 | 45min | 2 tasks | 10 files |
+| 04 | 01 | 25 min | 2 | 5 | 2026-03-24 |
 
 ## Accumulated Context
 
@@ -94,6 +95,10 @@ Plan: 03 (ready to execute)
 - [03-03] Canvas needs Modifier.fillMaxSize() for pointer-input hit testing — Spacer-based Canvas is 0x0 without explicit size modifier; this was a production bug
 - [03-03] Square Canvas tap coords use min(width, height) matching BoxWithConstraints minOf(maxWidth, maxHeight) logic
 - [03-03] activity-compose declared explicitly — was previously provided only transitively by MMD; must be explicit dependency
+- [04-01] PersistedGameState as separate DTO — GameUiState stays free of @Serializable, keeping domain model clean
+- [04-01] DataStoreGameRepository.loadGame() returns null on Exception — corrupt DataStore data treated as no saved game, never crashes
+- [04-01] gameDataStore Context extension at file scope — matches official DataStore DI pattern
+- [04-01] pencilMarks stored as sorted List<Int> in PersistedGameState — deterministic JSON output
 
 ### Architecture Decisions
 
@@ -126,9 +131,9 @@ Plan: 03 (ready to execute)
 
 ## Session Continuity
 
-**Last session:** 2026-03-25T01:10:16.654Z
-**Next action:** Phase 02 complete (verified 5/5). Execute Phase 03: `/gsd:execute-phase 03`
-**Stopped at:** Phase 4 UI-SPEC approved
+**Last session:** 2026-03-24T22:15:00.000Z
+**Next action:** Execute Phase 04 Plan 02 — GameViewModel integration with GameRepository
+**Stopped at:** Completed 04-01-PLAN.md
 
 ---
 
