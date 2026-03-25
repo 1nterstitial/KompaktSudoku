@@ -126,4 +126,4 @@ Plans:
 | 3. Core Game UI | 3/3 | Complete   | 2026-03-24 |
 | 4. Persistence | 3/3 | Complete   | 2026-03-25 |
 | 5. Scoring & Completion | 2/3 | In Progress|  |
-| 6. Menu & Navigation | 0/2 | Not started | - |
+| 6. Menu & Navigation | 0/2 | Planned    |  |
