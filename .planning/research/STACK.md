@@ -290,3 +290,369 @@ dependencies {
 - [Mudita Forum — What Android API will the Kompakt support?](https://forum.mudita.com/t/what-android-api-will-the-kompakt-support/7376) — API level context
 - [NotebookCheck — Mudita Kompakt E Ink Phone](https://www.notebookcheck.net/Mudita-Kompakt-E-Ink-Phone-A-minimalist-privacy-focused-phone-powered-by-Android.911587.0.html) — Hardware specs, AOSP 12 confirmation
 - [Atipik — DataStore vs SharedPreferences 2025](https://www.atipik.ch/en/blog/android-jetpack-datastore-vs-sharedpreferences) — DataStore recommendation context
+
+---
+
+---
+
+# v1.1 Rendering API Reference
+
+**Added:** 2026-03-25
+**Scope:** Specific Compose/Canvas/Material 3 APIs for 5 cosmetic rendering tasks in v1.1
+**Overall confidence:** HIGH (all primary recommendations verified against official Android documentation)
+
+## Context
+
+The existing codebase at v1.0 uses:
+- Canvas-based `GameGrid` with `TextMeasurer` + `drawText` + `drawRect` + `drawLine` in DrawScope
+- `ButtonMMD` + `TextMMD` for all non-canvas UI components
+- `ThemeMMD` (monochromatic, ripple disabled, E-ink tuned)
+- No new dependencies needed for any of the 5 tasks below
+
+No new Gradle dependencies are required for v1.1. All APIs are present in the existing stack.
+
+---
+
+## Task 1: Pencil-mark text in white on selected (black) cells
+
+### Problem
+`GameGrid.kt` lines 96–100 define `pencilStyle` with `color = Color.Black`. When a cell is selected, `drawSelectedCell` fills the background with solid black, making black pencil marks invisible.
+
+### API: `DrawScope.drawText` `color` parameter
+
+`drawText` has a `color` parameter that **overrides** the color stored in the `TextLayoutResult` at draw time. The existing `TextLayoutResult` does not need to be re-measured.
+
+**Exact stable signature (androidx.compose.ui.graphics.drawscope):**
+```kotlin
+fun DrawScope.drawText(
+    textLayoutResult: TextLayoutResult,
+    color: Color = Color.Unspecified,   // pass Color.White to override
+    topLeft: Offset = Offset.Zero,
+    alpha: Float = Float.NaN,
+    shadow: Shadow? = null,
+    textDecoration: TextDecoration? = null,
+    drawStyle: DrawStyle? = null,
+    blendMode: BlendMode = DrawScope.DefaultBlendMode,
+)
+```
+
+When `color != Color.Unspecified`, the draw call ignores the color baked into the `TextLayoutResult` and uses the supplied color. No re-measure step, no new `TextStyle` object per call.
+
+**Recommended change in `drawPencilMarks`:**
+- Add `isSelected: Boolean` parameter
+- Pass `color = if (isSelected) Color.White else Color.Unspecified` at the `drawText` call site
+- The existing `pencilStyle` declaration (`color = Color.Black`) does not need to change
+
+```kotlin
+// Example call site after the change:
+drawText(
+    textLayoutResult = measured,
+    topLeft = Offset(x, y),
+    color = if (isSelected) Color.White else Color.Unspecified
+)
+```
+
+**Confidence:** HIGH — signature verified from official Android Developers documentation. Already in use in `GameGrid.kt` without the color parameter; adding it is non-breaking.
+
+**E-ink note:** No animation or frame-rate change. A single-color swap at draw time; safe for E-ink.
+
+---
+
+## Task 2: Dynamic pencil-mark font sized to fit 4 marks in a 2x2 layout
+
+### Problem
+`pencilStyle` uses `fontSize = 9.sp` fixed. The v1.1 requirement changes pencil mark layout from a 3x3 (9-digit) mini-grid to a 2x2 layout (up to 4 marks per cell). Each mark must fit in one quadrant of the cell. Cell size is dynamic (computed from `gridSizePx / 9f`), so font size must be derived from the available pixel space.
+
+### API: `TextMeasurer.measure` + `Density.toSp`
+
+`TextMeasurer` is already imported and used in `GameGrid.kt`. Font size can be computed from `cellSizePx` at composition time using `LocalDensity`.
+
+**Recommended approach (heuristic, O(1)):**
+```kotlin
+val density = LocalDensity.current
+val subCellPx = cellSizePx / 2f                          // one quadrant width
+val pencilFontSp = with(density) { (subCellPx * 0.65f).toSp() }  // ~65% fill factor
+
+val pencilStyle = remember(cellSizePx) {
+    TextStyle(
+        fontSize = pencilFontSp,
+        fontWeight = FontWeight.Normal,
+        color = Color.Black
+    )
+}
+```
+
+The `0.65f` factor gives visual breathing room. For a standard Roboto digit, rendered width is approximately 55–65% of the font em-square. Wrap in `remember(cellSizePx)` to avoid recomputing on every recomposition.
+
+**Alternative: binary search (O(log n), higher precision):**
+```kotlin
+fun computeFittingFontSp(
+    textMeasurer: TextMeasurer,
+    targetPx: Float,
+    density: Density
+): TextUnit {
+    var lo = 4f
+    var hi = with(density) { targetPx.toSp().value }
+    repeat(8) {                       // 8 iterations gives < 1sp precision
+        val mid = (lo + hi) / 2f
+        val measured = textMeasurer.measure("8", TextStyle(fontSize = mid.sp))
+        if (measured.size.width <= targetPx && measured.size.height <= targetPx) lo = mid
+        else hi = mid
+    }
+    return lo.sp
+}
+
+// At composable level:
+val pencilFontSp = remember(cellSizePx, textMeasurer) {
+    computeFittingFontSp(textMeasurer, cellSizePx / 2f, density)
+}
+```
+
+Use the binary search approach if the 0.65 heuristic visually clips digits on the physical device.
+
+**Confidence:** HIGH — `TextMeasurer.measure` is a stable API since Compose 1.4; BOM 2026.03.00 is well beyond that. `Density.toSp()` is a standard Compose unit conversion.
+
+**E-ink note:** Font size computed once at composition time when `cellSizePx` changes. No per-frame recomputation; safe.
+
+---
+
+## Task 3: Taller/thinner font for number pad digit buttons
+
+### Problem
+`NumberPad.kt` uses `ButtonMMD` with `TextMMD(text = digit.toString())`. MMD default typography is readable but not visually condensed. Goal: a taller/thinner (condensed) appearance for digit labels.
+
+### API: `DeviceFontFamilyName("sans-serif-condensed")`
+
+**`sans-serif-condensed`** is defined in AOSP's `data/fonts/fonts.xml` as Roboto with `wdth=75` (75% of standard width). It ships in the platform fonts partition of all standard AOSP 12 builds — not in Google apps — so it is present on de-Googled MuditaOS K unless Mudita explicitly stripped the condensed Roboto variant (which would be unusual).
+
+`DeviceFontFamilyName` is a **stable** API — the `@ExperimentalTextApi` annotation was removed in a Compose UI framework commit. No opt-in annotation is required with BOM 2026.03.00.
+
+**Option A (recommended): use device system font**
+```kotlin
+import androidx.compose.ui.text.font.DeviceFontFamilyName
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+
+val condensedFamily = FontFamily(
+    Font(DeviceFontFamilyName("sans-serif-condensed"), weight = FontWeight.Normal)
+)
+```
+
+Use inside `ButtonMMD` content lambda with a standard Compose `Text` (since `TextMMD` may not expose a `fontFamily` parameter):
+
+```kotlin
+ButtonMMD(
+    modifier = Modifier.weight(1f).sizeIn(minHeight = 56.dp),
+    onClick = { onDigitClick(digit) }
+) {
+    Text(
+        text = digit.toString(),
+        style = TextStyle(
+            fontFamily = condensedFamily,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.Black
+        )
+    )
+}
+```
+
+**Note on using `Text` vs `TextMMD` inside `ButtonMMD`:** `ButtonMMD` accepts a standard Compose content lambda. Placing a plain `Text` composable inside it does not re-enable ripple or violate E-ink constraints. The ripple suppression is applied at the `ThemeMMD` level (theme-wide `LocalIndication`), not per-composable. Using `Text` here for font control is safe.
+
+**Option B (fallback): bundle the font file**
+
+If `DeviceFontFamilyName("sans-serif-condensed")` renders as the default `sans-serif` on the Kompakt (device font partition differs), bundle the font:
+
+1. Download `RobotoCondensed-Regular.ttf` from Google Fonts (OFL licensed — same file AOSP bundles)
+2. Place at `app/src/main/res/font/roboto_condensed.ttf`
+3. Use: `FontFamily(Font(R.font.roboto_condensed, FontWeight.Normal))`
+
+APK size impact: ~60 KB. No build configuration changes needed.
+
+**Recommendation:** Ship with Option A. Add physical device verification to the execution plan. Prepare Option B font file in case of fallback.
+
+**Do NOT use:** `androidx.compose.ui.text.googlefonts` (downloadable fonts) — requires Google Play Services, absent on MuditaOS K.
+
+**Confidence:** MEDIUM — `sans-serif-condensed` confirmed in AOSP 12 `fonts.xml` via AOSP mirror. De-Googled device may omit it (LOW probability but unverified). `DeviceFontFamilyName` stabilization confirmed via Android Googlesource commit. Option B is HIGH confidence.
+
+**E-ink note:** Font family change has no E-ink impact. Static text, no animation.
+
+---
+
+## Task 4: Diagonal hatching / crosshatch pattern drawn on a Canvas rect
+
+### Problem
+Draw a fill pattern of parallel diagonal lines over a rectangular area within `DrawScope`. Needed for visual state distinction (e.g., used/disabled cell or button region).
+
+### API: `DrawScope.clipRect` + `drawLine` loop
+
+`PathEffect.dashPathEffect` creates dashed single paths — it does not tile a fill pattern. Diagonal hatching requires looping `drawLine` calls. Using `clipRect` keeps line math simple — draw extended lines, let the clip do the bounding.
+
+**45-degree diagonal hatch (top-left to bottom-right), using `clipRect`:**
+```kotlin
+import androidx.compose.ui.graphics.drawscope.clipRect
+
+fun DrawScope.drawDiagonalHatch(
+    topLeft: Offset,
+    rectSize: Size,
+    spacingPx: Float,      // e.g. 6.dp.toPx() — space between lines
+    strokeWidthPx: Float,  // e.g. 1.dp.toPx()
+    color: Color = Color.Black
+) {
+    clipRect(
+        left = topLeft.x,
+        top = topLeft.y,
+        right = topLeft.x + rectSize.width,
+        bottom = topLeft.y + rectSize.height
+    ) {
+        // Sweep lines from -(height) to +(width) to cover full diagonal range
+        var offset = -rectSize.height
+        while (offset < rectSize.width) {
+            drawLine(
+                color = color,
+                start = Offset(topLeft.x + offset, topLeft.y + rectSize.height),
+                end = Offset(topLeft.x + offset + rectSize.height, topLeft.y),
+                strokeWidth = strokeWidthPx
+            )
+            offset += spacingPx
+        }
+    }
+}
+```
+
+**For crosshatch:** Call a second time with `start`/`end` reversed on one axis (135-degree lines):
+```kotlin
+// 135-degree lines:
+drawLine(
+    color = color,
+    start = Offset(topLeft.x + offset, topLeft.y),
+    end = Offset(topLeft.x + offset + rectSize.height, topLeft.y + rectSize.height),
+    strokeWidth = strokeWidthPx
+)
+```
+
+`clipRect` is in `androidx.compose.ui.graphics.drawscope` — stable, no API-level requirement, no new imports beyond what `GameGrid.kt` already uses.
+
+**Confidence:** HIGH — `drawLine`, `clipRect`, and `DrawScope` are core stable Compose Canvas APIs. The geometry is pure math with no library dependency.
+
+**E-ink note:** Use a spacing of 4–8 dp minimum. Very dense lines (< 2dp spacing) may cause E-ink ghosting from complex partial refresh patterns. Draw this pattern only on state change, not continuously.
+
+---
+
+## Task 5: Subtle background for the inactive mode button + frame separating the Fill/Pencil pair
+
+### Problem
+`ControlsRow.kt` currently uses `Color.White` as the inactive button background. Two improvements needed:
+1. A perceptible light-gray background on the inactive `Fill` or `Pencil` box
+2. A visible border frame around the Fill+Pencil pair to visually separate it from the number pad row
+
+### Part A: Subtle inactive background color
+
+**Recommended:** `Color(0xFFE0E0E0)` — 12% gray from white.
+
+On monochromatic E-ink, this is the minimum gray value that renders visually distinct from `Color.White` without requiring a heavy full-page refresh. Values lighter than `0xFFE8E8E8` may be indistinguishable on panels with high gamma.
+
+```kotlin
+// In ControlsRow.kt, replace the inactive branch:
+.background(
+    if (inputMode == InputMode.FILL) Color.Black
+    else Color(0xFFE0E0E0)
+)
+```
+
+**Do not use** `MaterialTheme.colorScheme.surfaceVariant` or tonal elevation values. `ThemeMMD` uses a monochromatic `eInkColorScheme` where the primary color is black/white. Tonal elevation applies a primary-color tint that produces an unpredictable shade and may conflict with MMD's intent. An explicit literal color is more predictable and verifiable on device.
+
+**Confidence:** HIGH for the API (`Modifier.background(Color)` — stable, already used in `ControlsRow.kt`). MEDIUM for the specific shade — needs physical device verification. Start with `0xFFE0E0E0`; if not visible, try `0xFFCCCCCC`.
+
+### Part B: Frame around the Fill/Pencil pair
+
+**Recommended: `Modifier.border`**
+
+Wrap the two mode-toggle `Box` composables in their own `Row` and apply `Modifier.border`:
+
+```kotlin
+import androidx.compose.foundation.border
+import androidx.compose.ui.graphics.RectangleShape
+
+// Outer Row in ControlsRow:
+Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+
+    // Fill + Pencil pair wrapped in a bordered Row:
+    Row(
+        modifier = Modifier
+            .weight(2f)
+            .border(width = 1.dp, color = Color.Black, shape = RectangleShape)
+    ) {
+        // Fill Box (weight 1f, no border here)
+        // Pencil Box (weight 1f, no border here)
+    }
+
+    // Undo ButtonMMD (weight 1f)
+    // Hint ButtonMMD (weight 1f)
+}
+```
+
+`Modifier.border` draws a stroke border inset to the composable boundary. `RectangleShape` produces a sharp rectangular frame. Use `RoundedCornerShape(2.dp)` if a slight radius is preferred.
+
+**Alternative: `Modifier.drawBehind` for bottom-only separator**
+
+If the design intent is only a separator line between the controls row and the number pad (not a full box frame around Fill/Pencil), use `drawBehind` on the outer `Row`:
+
+```kotlin
+Modifier.drawBehind {
+    drawLine(
+        color = Color.Black,
+        start = Offset(0f, size.height),
+        end = Offset(size.width, size.height),
+        strokeWidth = 1.dp.toPx()
+    )
+}
+```
+
+**Recommendation:** Use `Modifier.border` if the requirement is a frame around the pair. Use `Modifier.drawBehind` with a single line if the requirement is just a row separator.
+
+**Confidence:** HIGH — `Modifier.border` and `Modifier.drawBehind` are stable Compose foundation APIs with no API-level requirements.
+
+**E-ink note:** A 1dp border on a static layout triggers one E-ink refresh at state change. No ghosting risk.
+
+---
+
+## Summary Table
+
+| Task | Primary API | Key Call | Confidence | Device Verify |
+|------|-------------|----------|------------|---------------|
+| 1 — Pencil marks white on selected | `DrawScope.drawText(color=)` | `drawText(measured, color = Color.White, topLeft = ...)` | HIGH | No |
+| 2 — Dynamic pencil font size | `TextMeasurer.measure` + `Density.toSp` | `remember(cellSizePx) { (cellSizePx / 2f * 0.65f).toSp() }` | HIGH | No |
+| 3 — Condensed number pad font | `DeviceFontFamilyName("sans-serif-condensed")` | `FontFamily(Font(DeviceFontFamilyName(...)))` | MEDIUM | YES — verify on Kompakt |
+| 4 — Diagonal hatching | `clipRect` + `drawLine` loop | Loop-based hatch inside `clipRect { }` | HIGH | No |
+| 5a — Subtle inactive background | `Modifier.background(Color)` | `Color(0xFFE0E0E0)` | MEDIUM | YES — verify shade on E-ink |
+| 5b — Frame around pair | `Modifier.border` | `border(1.dp, Color.Black, RectangleShape)` | HIGH | No |
+
+---
+
+## No New Dependencies Required
+
+All APIs for v1.1 tasks are present in the existing stack. No changes to `build.gradle.kts`, `libs.versions.toml`, or any Gradle files are needed.
+
+The only conditional addition is the bundled font fallback for Task 3 (Option B): `app/src/main/res/font/roboto_condensed.ttf`. This requires no build configuration change — `res/font/` resources are automatically compiled by AGP.
+
+---
+
+## Physical Device Verification Flags
+
+- **Task 3:** Run a test screen with `DeviceFontFamilyName("sans-serif-condensed")` before finalizing. If the font renders identically to the default sans-serif, switch to the bundled `res/font/roboto_condensed.ttf`.
+- **Task 5a shade:** Verify `Color(0xFFE0E0E0)` is perceptibly distinct from `Color.White` on the E-ink panel. If not, try `0xFFCCCCCC` (20% gray). If the panel cannot render intermediate gray at all, substitute a 1dp border outline on the inactive button box instead of a gray fill.
+
+---
+
+## v1.1 Sources
+
+- [Android Developers — Graphics in Compose (DrawScope, drawText)](https://developer.android.com/develop/ui/compose/graphics/draw/overview) — `drawText` `color` parameter; `clipRect`; `drawLine`
+- [Android Developers — Work with fonts in Compose](https://developer.android.com/develop/ui/compose/text/fonts) — `DeviceFontFamilyName`, `FontFamily`, custom font resources
+- [Android Developers — DeviceFontFamilyName API reference](https://developer.android.com/reference/kotlin/androidx/compose/ui/text/font/DeviceFontFamilyName) — stable API confirmation
+- [AOSP fonts.xml (aosp-mirror/platform_frameworks_base)](https://github.com/aosp-mirror/platform_frameworks_base/blob/master/data/fonts/fonts.xml) — `sans-serif-condensed` defined as Roboto `wdth=75` in AOSP 12
+- [DeviceFontFamilyName stabilization commit (Android Googlesource)](https://android.googlesource.com/platform/frameworks/support/+/0490e25b6d1a7e57410d3c80f77720542d3a6150%5E!/) — `@ExperimentalTextApi` removal confirmed
+- [ProAndroidDev — Auto-sizing Text with TextMeasurer](https://proandroiddev.com/auto-sizing-text-in-jetpack-compose-with-basictext-effbc41502fa) — binary search font sizing pattern
+- [ProAndroidDev — Dot Dash Design: Lines in Compose with PathEffect](https://proandroiddev.com/dot-dash-design-c30928484f79) — PathEffect vs manual drawLine for patterns
+- [Android Developers — Graphics modifiers (Modifier.border, drawBehind)](https://developer.android.com/develop/ui/compose/graphics/draw/modifiers) — border and drawBehind APIs
