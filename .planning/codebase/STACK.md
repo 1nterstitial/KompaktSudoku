@@ -1,108 +1,107 @@
-# Tech Stack
+# Technology Stack
 
-**Analysis Date:** 2026-03-24
+**Analysis Date:** 2026-03-25
 
-## Build System
+## Languages
 
-- **Gradle:** 8.11.1 (wrapper: `gradle/wrapper/gradle-wrapper.properties`)
-- **Android Gradle Plugin (AGP):** 8.9.0 (`gradle/libs.versions.toml` → `agp = "8.9.0"`)
-- **Version catalog:** `gradle/libs.versions.toml` (all dependency versions centralised here)
-- **Build scripts:** Kotlin DSL (`.gradle.kts`) — `build.gradle.kts` (root), `app/build.gradle.kts`
-- **Repositories:** Google, Maven Central, `https://maven.pkg.github.com/mudita/MMD` (for MMD library)
-- **Repository mode:** `FAIL_ON_PROJECT_REPOS` — all repos must be declared in `settings.gradle.kts`
+**Primary:**
+- Kotlin 2.3.20 - All application and test code under `app/src/`
 
-## Language & Runtime
+**Secondary:**
+- None — no Java source files present
 
-- **Kotlin:** 2.3.20 — primary language, all source files
-- **JVM target:** 17 (`compileOptions` + `kotlin.compilerOptions.jvmTarget = JVM_17` in `app/build.gradle.kts`)
-- **Kotlin compiler plugins active:**
-  - `kotlin-android` — Android integration
-  - `kotlin-compose` — Compose compiler (tracks Kotlin version: 2.3.20)
-  - `kotlin-serialization` — enables `@Serializable` annotation processing
-- **Min Java source/target compatibility:** `JavaVersion.VERSION_17`
+## Runtime
 
-## SDK Config
+**Environment:**
+- Android (AOSP 12 / API 31) — Mudita Kompakt E-ink device target
 
-| Setting | Value | Notes |
-|---------|-------|-------|
-| `compileSdk` | 35 | IDE warnings and deprecation notices |
-| `targetSdk` | 31 | Matches MuditaOS K (AOSP 12 / API 31) |
-| `minSdk` | 31 | Kompakt cannot run older Android |
+**JVM Target:**
+- Java 17 (`sourceCompatibility`, `targetCompatibility`, and `compilerOptions.jvmTarget` all set to `JVM_17` in `app/build.gradle.kts`)
 
-## Core Dependencies
+**Package Manager:**
+- Gradle 8.11.1 (via wrapper at `gradle/wrapper/gradle-wrapper.properties`)
+- Version catalog: `gradle/libs.versions.toml`
+- Lockfile: Not present (no `gradle.lockfile`)
 
-### Compose
+## Frameworks
 
-- **Compose BOM:** `androidx.compose:compose-bom:2026.03.00` — pins all Compose library versions
-  - Applied as `platform(libs.compose.bom)` in both `implementation` and `androidTestImplementation`
-  - `compose-ui` (no version — from BOM)
-  - `compose-material3` (no version — from BOM; Material 3 1.4.0)
-  - `compose-ui-tooling-preview` (runtime dep)
-  - `compose-ui-tooling` (debug only)
-- **Compose enabled via:** `buildFeatures { compose = true }` in `app/build.gradle.kts`
+**Core:**
+- Jetpack Compose BOM 2026.03.00 — pins all Compose library versions (`app/build.gradle.kts` line 56)
+  - `compose-ui` (via BOM)
+  - `compose-material3` (via BOM)
+  - `compose-ui-tooling-preview` (via BOM)
+- AndroidX Activity Compose 1.8.2 — `ComponentActivity.setContent` entry point (`MainActivity.kt`)
+- AndroidX Lifecycle ViewModel Compose 2.9.0 — `viewModels {}` delegation, `collectAsStateWithLifecycle`
+- AndroidX Lifecycle Runtime Compose 2.9.0 — `collectAsStateWithLifecycle` extension
 
-### MMD (Mudita Mindful Design)
+**Puzzle Generation:**
+- Sudoklify Core `dev.teogor.sudoklify:sudoklify-core` 1.0.0-beta04 — puzzle generation via `SudoklifyArchitect`, `constructSudoku` DSL
+- Sudoklify Presets `dev.teogor.sudoklify:sudoklify-presets` 1.0.0-beta04 — `loadPresetSchemas()` for preset puzzle schemas
 
-- **Version:** 1.0.1
-- **Coordinates:** `com.mudita:mmd:1.0.1`
-- **Source:** GitHub Packages (`https://maven.pkg.github.com/mudita/MMD`)
-- **Status:** Declared in `libs.versions.toml`; NOT yet imported in any source file — scheduled for UI phases
+**UI Design System:**
+- Mudita Mindful Design (MMD) `com.mudita:MMD` 1.0.1 — `ThemeMMD`, `ButtonMMD`, `TextMMD`, E-ink optimized components; actively used in all UI screens
 
-### Lifecycle / ViewModel
+**Persistence:**
+- DataStore Preferences `androidx.datastore:datastore-preferences` 1.2.1 — actively used for game state and high scores
+- Kotlinx Serialization JSON `org.jetbrains.kotlinx:kotlinx-serialization-json` 1.8.0 — `@Serializable` on `PersistedGameState`; `Json.encodeToString` / `Json.decodeFromString`
 
-- **Version:** 2.9.0 (`lifecycle`)
-- `androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0`
-- `androidx.lifecycle:lifecycle-runtime-compose:2.9.0` (provides `collectAsStateWithLifecycle`)
-- **Status:** `GameViewModel` (`app/src/main/java/com/mudita/sudoku/game/GameViewModel.kt`) actively uses `ViewModel` and `viewModelScope`
+**Testing:**
+- JUnit 4.13.2 — unit test runner
+- MockK 1.13.17 — Kotlin-native mocking
+- Turbine 1.2.0 — Flow/StateFlow emission testing (`app.cash.turbine:turbine`)
+- Robolectric 4.14.1 — JVM-based Android/Compose test execution without a device
+- Kotlinx Coroutines Test 1.10.2 — `runTest`, `UnconfinedTestDispatcher`
+- Compose UI Test JUnit4 (via BOM) — `createComposeRule`, Compose interaction testing
 
-### Coroutines
+**Build/Dev:**
+- Android Gradle Plugin (AGP) 8.9.0 — `com.android.application` plugin
+- Kotlin Compose plugin 2.3.20 — `org.jetbrains.kotlin.plugin.compose`
+- Kotlin Serialization plugin 2.3.20 — `org.jetbrains.kotlin.plugin.serialization`
 
-- **Version:** 1.10.2 (`coroutines`)
-- `org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2` (runtime)
-- `org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2` (test only)
-- **Status:** Actively used — `GameViewModel` uses `Dispatchers.Default`, `withContext`, `viewModelScope.launch`, `MutableStateFlow`, `MutableSharedFlow`
+## Key Dependencies
 
-### Serialization
+**Critical:**
+- `com.mudita:MMD:1.0.1` — all UI uses MMD components; hosted on GitHub Packages (not Maven Central); requires `githubToken` in `~/.gradle/gradle.properties`
+- `dev.teogor.sudoklify:sudoklify-core:1.0.0-beta04` — only Kotlin-native puzzle generation library with calibrated difficulty levels; beta status is a real risk
+- `androidx.datastore:datastore-preferences:1.2.1` — sole persistence mechanism for game state and high scores
+- `org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0` — JSON encoding of `PersistedGameState` for DataStore
 
-- **Version:** 1.8.0 (`kotlinSerialization`)
-- `org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0`
-- **Status:** Declared; not yet used in source (DataStore/GameState serialization is a future phase)
+**Infrastructure:**
+- `org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2` — coroutines runtime for IO dispatch, StateFlow
+- `androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0` — ViewModel injection into Compose via `viewModel()`
 
-### DataStore
+## Configuration
 
-- **Version:** 1.2.1 (`datastore`)
-- `androidx.datastore:datastore-preferences:1.2.1`
-- **Status:** Declared; not yet used in source (persistence is a future phase)
+**Environment:**
+- `githubToken` — required in `~/.gradle/gradle.properties` (user-level, not in repo) to authenticate against `https://maven.pkg.github.com/mudita/MMD` for MMD resolution
+- No `.env` files; all Android config is in `gradle.properties` and `app/build.gradle.kts`
 
-### Sudoklify
+**Build:**
+- `gradle/libs.versions.toml` — version catalog (all versions centralized here)
+- `app/build.gradle.kts` — module-level build config
+- `build.gradle.kts` — root-level plugin declarations
+- `settings.gradle.kts` — repository configuration including conditional MMD GitHub Packages block
+- `gradle.properties` — JVM args (`-Xmx2048m`), AndroidX flag, Kotlin code style, non-transitive R class
 
-- **Version:** 1.0.0-beta04 (`sudoklify`)
-- `dev.teogor.sudoklify:sudoklify-core:1.0.0-beta04`
-- `dev.teogor.sudoklify:sudoklify-presets:1.0.0-beta04`
-- **Status:** Actively used — see INTEGRATIONS.md
+## SDK Levels
 
-## Testing Dependencies
+| Setting | Value |
+|---------|-------|
+| `minSdk` | 31 |
+| `targetSdk` | 31 |
+| `compileSdk` | 35 |
 
-| Library | Version | Scope | Coordinates |
-|---------|---------|-------|-------------|
-| JUnit 4 | 4.13.2 | `testImplementation` | `junit:junit:4.13.2` |
-| Kotlinx Coroutines Test | 1.10.2 | `testImplementation` | `org.jetbrains.kotlinx:kotlinx-coroutines-test` |
-| Mockk | 1.13.17 | `testImplementation` | `io.mockk:mockk:1.13.17` |
-| Turbine | 1.2.0 | `testImplementation` | `app.cash.turbine:turbine:1.2.0` |
-| Robolectric | 4.14.1 | `testImplementation` | `org.robolectric:robolectric:4.14.1` |
-| Compose UI Test JUnit4 | via BOM | `androidTestImplementation` | `androidx.compose.ui:ui-test-junit4` |
+## Platform Requirements
 
-**Status:** Test files exist in `app/src/test/java/com/mudita/sudoku/` covering puzzle engine and ViewModel. Mockk, Turbine, and Robolectric are used in `GameViewModelTest.kt` and related files.
+**Development:**
+- Android SDK installed (referenced via `local.properties`)
+- GitHub Personal Access Token with `read:packages` scope set as `githubToken` in `~/.gradle/gradle.properties`
 
-## Application Config
-
-- **Application ID:** `com.mudita.sudoku`
-- **Root project name:** `MuditaSudoku` (`settings.gradle.kts`)
-- **Module:** Single module — `:app`
-- **Minify:** Disabled (`isMinifyEnabled = false` in release build type)
-- **ProGuard file:** `app/proguard-rules.pro` (referenced but default rules only)
-- **Test instrumentation runner:** `androidx.test.runner.AndroidJUnitRunner`
+**Production:**
+- Mudita Kompakt device running AOSP 12 (API 31)
+- Single APK distribution (no Play Store); `versionCode = 1`, `versionName = "1.0"`
+- Minification disabled (`isMinifyEnabled = false` in release build type)
 
 ---
 
-*Stack analysis: 2026-03-24*
+*Stack analysis: 2026-03-25*
