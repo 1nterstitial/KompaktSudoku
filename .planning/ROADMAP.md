@@ -39,7 +39,10 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
   1. Pencil mark digits in a selected (black-background) cell display in white, not black
   2. Pencil mark digits are legible at all grid sizes — no clipping when all 9 marks occupy one cell
   3. Pencil mark font size adapts to the rendered cell size, not a fixed hardcoded value
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 07-01-PLAN.md — Pencil mark cap (4-mark limit) + 2x2 dynamic layout + white-on-selected color
+
 **UI hint**: yes
 
 ### Phase 8: Controls & Number Pad Fixes
@@ -75,6 +78,6 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
 | 4. Persistence | v1.0 | 3/3 | Complete | 2026-03-25 |
 | 5. Scoring & Completion | v1.0 | 3/3 | Complete | 2026-03-25 |
 | 6. Menu & Navigation | v1.0 | 2/2 | Complete | 2026-03-25 |
-| 7. Grid Rendering Fixes | v1.1 | 0/? | Not started | - |
+| 7. Grid Rendering Fixes | v1.1 | 0/1 | Planning complete | - |
 | 8. Controls & Number Pad Fixes | v1.1 | 0/? | Not started | - |
 | 9. Game Navigation | v1.1 | 0/? | Not started | - |
