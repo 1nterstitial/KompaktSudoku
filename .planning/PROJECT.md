@@ -36,7 +36,11 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 
 ### Active
 
-_(None — start v1.1 planning with `/gsd:new-milestone`)_
+- [ ] Pencil mark digits visible in white on selected (black) cells
+- [ ] Pencil mark font sized to fit 4 marks (2×2) at maximum per cell
+- [ ] Number pad text vertically centered with taller/thinner font
+- [ ] "Get Hint" button text centered (two lines, vertically centered)
+- [ ] Fill/Pencil inactive button has subtle background; pair has frame separating it from number row
 
 ### Out of Scope
 
@@ -52,6 +56,17 @@ _(None — start v1.1 planning with `/gsd:new-milestone`)_
 - Ad monetization — violates distraction-free premise
 - Auto-fill pencil marks — reduces cognitive challenge; manual annotation is part of the game
 - Custom puzzle creation — generated puzzles only; no import/entry UI
+
+## Current Milestone: v1.1 Bug Fixes and Improvements
+
+**Goal:** Fix cosmetic UI issues identified from first real-device play session.
+
+**Target features:**
+- Pencil mark digits visible in white on selected (black) cells
+- Pencil mark font sized to fit 4 marks (2×2) at maximum per cell
+- Number pad text vertically centered with taller/thinner font
+- "Get Hint" button text centered (two lines, vertically centered)
+- Fill/Pencil inactive button subtle background + frame separating pair from number row
 
 ## Context
 
@@ -85,5 +100,22 @@ _(None — start v1.1 planning with `/gsd:new-milestone`)_
 | compileOnly → implementation for MMD | Real AAR resolved via scoped GitHub Packages repo with credential gating | ✓ Good |
 | Resume button on MenuScreen (not GameScreen dialog) | Cleaner UX — user sees resume option before any game logic runs | ✓ Validated v1.0 |
 
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
 ---
-*Last updated: 2026-03-25 after v1.0 milestone completion*
+*Last updated: 2026-03-25 — v1.1 milestone started*
