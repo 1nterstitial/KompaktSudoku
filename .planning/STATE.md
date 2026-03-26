@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Bug Fixes and Improvements
-status: defining_requirements
-stopped_at: Milestone v1.1 started
+status: roadmap_ready
+stopped_at: Roadmap created — ready for phase planning
 last_updated: "2026-03-25T00:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,58 +19,43 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core Value:** A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-ink display — responsive touch input, high-contrast grid, and smooth puzzle flow without display artifacts.
-**Current Focus:** Planning next milestone — run `/gsd:new-milestone`
+**Current Focus:** v1.1 Bug Fixes and Improvements — run `/gsd:plan-phase 7` to begin
 
 ---
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 7 (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-25 — Milestone v1.1 started
+Status: Roadmap defined — awaiting phase planning
+Last activity: 2026-03-25 — v1.1 roadmap created (Phases 7–9)
 
 ## Phase Sequence
 
-| Phase | Name | Status |
-|-------|------|--------|
-| 1 | Puzzle Engine | Complete |
-| 2 | Game State & Domain | Complete |
-| 3 | Core Game UI | Complete |
-| 4 | Persistence | Not started |
-| 5 | Scoring & Completion | Not started |
-| 6 | Menu & Navigation | Complete |
+| Phase | Name | Milestone | Status |
+|-------|------|-----------|--------|
+| 1 | Puzzle Engine | v1.0 | Complete |
+| 2 | Game State & Domain | v1.0 | Complete |
+| 3 | Core Game UI | v1.0 | Complete |
+| 4 | Persistence | v1.0 | Complete |
+| 5 | Scoring & Completion | v1.0 | Complete |
+| 6 | Menu & Navigation | v1.0 | Complete |
+| 7 | Grid Rendering Fixes | v1.1 | Not started |
+| 8 | Controls & Number Pad Fixes | v1.1 | Not started |
+| 9 | Game Navigation | v1.1 | Not started |
 
 ---
 
 ## Performance Metrics
 
-**Plans completed:** 4
-**Plans total:** 4 (phase 01)
-**Phases completed:** 1/6
-**Requirements mapped:** 26/26
+**Plans completed:** 0 (v1.1)
+**Plans total:** TBD (phases not yet planned)
+**Phases completed:** 0/3 (v1.1)
+**Requirements mapped:** 9/9
 
 | Phase | Plan | Duration | Tasks | Files | Completed |
 |-------|------|----------|-------|-------|-----------|
-| 01 | 01 | 6 min | 3 | 17 | 2026-03-24 |
-| 01 | 02 | 47 min | 2 | 7 | 2026-03-24 |
-| 01 | 03 | 10 min | 1 | 2 | 2026-03-24 |
-| 01 | 04 | 16 min | 2 | 5 | 2026-03-24 |
-| 02 | 01 | 5 min | 2 | 7 | 2026-03-24 |
-| Phase 02 P02 | 4 | 1 tasks | 2 files |
-| Phase 02-game-state-domain P03 | 8min | 1 tasks | 2 files |
-| 03 | 02 | 6 min | 2 | 4 | 2026-03-24 |
-| Phase 03 P03 | 45min | 2 tasks | 10 files |
-| Phase 04 P01 | 25 | 2 tasks | 5 files |
-| Phase 04 P02 | 9 | 1 tasks | 2 files |
-| Phase 04 P03 | 3 | 2 tasks | 2 files |
-| Phase 05 P01 | 4 | 2 tasks | 13 files |
-| Phase 05 P02 | 11min | 2 tasks | 5 files |
-| 05 | 03 | 22 min | 2 | 5 | 2026-03-25 |
-| 06 | 01 | 15 min | 3 | 6 | 2026-03-25 |
-| 06 | 02 | 5 min | 2 | 4 | 2026-03-25 |
-| Phase 01 P05 | 1 | 1 tasks | 1 files |
-| Phase 03 P04 | 3 | 3 tasks | 2 files |
+| — | — | — | — | — | — |
 
 ## Accumulated Context
 
@@ -138,33 +123,34 @@ Last activity: 2026-03-25 — Milestone v1.1 started
 
 ### Research Flags (carry into planning)
 
-- **Phase 1:** Sudoklify difficulty API fidelity must be validated by generating 20+ puzzles per difficulty and verifying technique classification. Fallback: QQWing (LibreSudoku).
-- **Phase 3:** E-ink rendering on physical Kompakt hardware — ghosting threshold, touch target sizing, MMD waveform API existence all require hands-on validation.
+- **Phase 7 (GRID):** Dynamic pencil font multiplier `0.55f` is an estimate — tune on device; verify all 9 marks fit without clipping in one cell.
+- **Phase 8 (CTRL):** TextMMD font parameter surface is unknown (closed-source AAR). Attempt `TextMMD(fontSize=18.sp)` first; fall back to `BasicText` if ignored. Document result as CLAUDE.md convention.
+- **Phase 8 (CTRL):** Border thickness: 1dp may render gray at fast waveform — default to 2dp for all new borders in this milestone; verify on device before reducing.
+- **Phase 9 (NAV):** Back-press handling requires `BackHandler` composable in GameScreen — confirm interaction with existing dialog dismissal flow.
 
 ### Known Risks
 
-- Whole-grid recomposition on cell interaction — mitigate with @Stable cell data classes and `key(cellIndex)` in grid
-- E-ink ghosting from partial refreshes — mitigate with ThemeMMD, zero animations, solid backgrounds
-- Multiple-solution puzzles from generator — non-negotiable: abort-on-second-solution check required
-- MMD navigation bar padding (~20px) reduces available vertical space — measure on device in Phase 3
+- TextMMD closed-source AAR may silently ignore `fontSize`/`lineHeight` overrides — fallback path is `BasicText` inside `Box + clickable(indication=null)` (already established pattern in ControlsRow.kt)
+- Diagonal hatching finer than 6px will produce E-ink ghosting artifacts — use solid borders only (no hatching)
+- `RoundedCornerShape` on borders produces anti-aliased gray pixels on E-ink — use `RectangleShape` exclusively
 
 ### Blockers
 
-(None yet)
+(None)
 
 ### Todos
 
-(None yet)
+(None)
 
 ---
 
 ## Session Continuity
 
-**Last session:** 2026-03-25T12:56:17.119Z
-**Next action:** All phases complete — v1.0 milestone ready
-**Stopped at:** Completed 01-05-PLAN.md
+**Last session:** 2026-03-25
+**Next action:** Run `/gsd:plan-phase 7` to plan Grid Rendering Fixes
+**Stopped at:** Roadmap created for v1.1 (Phases 7–9)
 
 ---
 
 *State initialized: 2026-03-23*
-*Last updated: 2026-03-24 after phase 02 plan 01 execution — domain model contracts complete*
+*Last updated: 2026-03-25 — v1.1 roadmap defined (3 phases, 9 requirements)*

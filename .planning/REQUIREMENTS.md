@@ -41,15 +41,15 @@ _(None identified — v1.1 is scoped to bug fixes and cosmetic improvements from
 
 | REQ-ID | Phase | Plan |
 |--------|-------|------|
-| GRID-01 | — | — |
-| GRID-02 | — | — |
-| CTRL-01 | — | — |
-| CTRL-02 | — | — |
-| CTRL-03 | — | — |
-| CTRL-04 | — | — |
-| NAV-01 | — | — |
-| NAV-02 | — | — |
-| NAV-03 | — | — |
+| GRID-01 | Phase 7 | Pending |
+| GRID-02 | Phase 7 | Pending |
+| CTRL-01 | Phase 8 | Pending |
+| CTRL-02 | Phase 8 | Pending |
+| CTRL-03 | Phase 8 | Pending |
+| CTRL-04 | Phase 8 | Pending |
+| NAV-01 | Phase 9 | Pending |
+| NAV-02 | Phase 9 | Pending |
+| NAV-03 | Phase 9 | Pending |
 
 ---
-*Last updated: 2026-03-26*
+*Last updated: 2026-03-25 — traceability mapped to Phases 7–9*
