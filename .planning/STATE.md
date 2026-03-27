@@ -2,14 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Bug Fixes and Improvements
-status: roadmap_ready
-stopped_at: Roadmap created — ready for phase planning
-last_updated: "2026-03-25T00:00:00.000Z"
+status: verifying
+stopped_at: Completed 07-01-PLAN.md
+last_updated: "2026-03-27T00:04:29.758Z"
+last_activity: 2026-03-27
 progress:
   total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
 ---
 
 # Project State: Mudita Kompakt Sudoku
@@ -19,16 +20,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core Value:** A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-ink display — responsive touch input, high-contrast grid, and smooth puzzle flow without display artifacts.
-**Current Focus:** v1.1 Bug Fixes and Improvements — run `/gsd:plan-phase 7` to begin
+**Current Focus:** Phase 07 — grid-rendering-fixes
 
 ---
 
 ## Current Position
 
-Phase: 7 (not started)
-Plan: —
-Status: Roadmap defined — awaiting phase planning
-Last activity: 2026-03-25 — v1.1 roadmap created (Phases 7–9)
+Phase: 07 (grid-rendering-fixes) — EXECUTING
+Plan: 1 of 1
+Status: Phase complete — ready for verification
+Last activity: 2026-03-27
 
 ## Phase Sequence
 
@@ -56,6 +57,7 @@ Last activity: 2026-03-25 — v1.1 roadmap created (Phases 7–9)
 | Phase | Plan | Duration | Tasks | Files | Completed |
 |-------|------|----------|-------|-------|-----------|
 | — | — | — | — | — | — |
+| Phase 07-grid-rendering-fixes P01 | 7 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -113,6 +115,10 @@ Last activity: 2026-03-25 — v1.1 roadmap created (Phases 7–9)
 - [06-01] startGame(difficulty) called before navigating to GAME screen to pre-start puzzle generation (Pitfall 5 avoidance)
 - [06-01] MenuScreen has no BackHandler — ComponentActivity back exits app by default (D-11 intentional)
 - [06-02] assertDoesNotExist() used for conditionally absent Resume button — node is not in composition at all when hasSavedGame=false (if block removes it); assertIsNotDisplayed() would fail
+- [07-01] drawPencilMarks builds TextStyle internally from isSelected+density (D-08) — removes style param, encapsulates all pencil style logic in the function
+- [07-01] Dynamic pencil font: (cellSize/2 * 0.60f) / density sp — fills ~60% of each 2x2 slot, device-density-aware; reduce to 0.55f if marks clip on device
+- [07-01] 4-mark cap guard placed before undoStack.addLast — blocked adds leave undo history clean (D-05)
+- [07-01] marks.sorted().forEachIndexed for 2x2 layout — slot index (0-3) maps to positions via i/2 (row) and i%2 (col); sorted ascending (D-06)
 
 ### Architecture Decisions
 
@@ -123,7 +129,7 @@ Last activity: 2026-03-25 — v1.1 roadmap created (Phases 7–9)
 
 ### Research Flags (carry into planning)
 
-- **Phase 7 (GRID):** Dynamic pencil font multiplier `0.55f` is an estimate — tune on device; verify all 9 marks fit without clipping in one cell.
+- **Phase 7 (GRID):** Dynamic pencil font multiplier `0.60f` implemented; 2x2 layout with 4-mark cap — tune to 0.55f on device if marks clip. Implemented in 07-01.
 - **Phase 8 (CTRL):** TextMMD font parameter surface is unknown (closed-source AAR). Attempt `TextMMD(fontSize=18.sp)` first; fall back to `BasicText` if ignored. Document result as CLAUDE.md convention.
 - **Phase 8 (CTRL):** Border thickness: 1dp may render gray at fast waveform — default to 2dp for all new borders in this milestone; verify on device before reducing.
 - **Phase 9 (NAV):** Back-press handling requires `BackHandler` composable in GameScreen — confirm interaction with existing dialog dismissal flow.
@@ -146,9 +152,9 @@ Last activity: 2026-03-25 — v1.1 roadmap created (Phases 7–9)
 
 ## Session Continuity
 
-**Last session:** 2026-03-25
+**Last session:** 2026-03-27T00:04:29.756Z
 **Next action:** Run `/gsd:plan-phase 7` to plan Grid Rendering Fixes
-**Stopped at:** Roadmap created for v1.1 (Phases 7–9)
+**Stopped at:** Completed 07-01-PLAN.md
 
 ---
 

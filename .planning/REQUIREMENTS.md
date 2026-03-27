@@ -8,8 +8,8 @@
 
 ### Grid Rendering
 
-- [ ] **GRID-01**: Pencil mark digits display in white when their cell is selected (black background)
-- [ ] **GRID-02**: Pencil mark font size scales dynamically from cell size to fit a 2×2 (4-mark) arrangement at maximum
+- [x] **GRID-01**: Pencil mark digits display in white when their cell is selected (black background)
+- [x] **GRID-02**: Pencil mark font size scales dynamically from cell size to fit a 2×2 (4-mark) arrangement at maximum
 
 ### Controls & Number Pad
 
@@ -41,8 +41,8 @@ _(None identified — v1.1 is scoped to bug fixes and cosmetic improvements from
 
 | REQ-ID | Phase | Plan |
 |--------|-------|------|
-| GRID-01 | Phase 7 | Pending |
-| GRID-02 | Phase 7 | Pending |
+| GRID-01 | Phase 7 | Complete |
+| GRID-02 | Phase 7 | Complete |
 | CTRL-01 | Phase 8 | Pending |
 | CTRL-02 | Phase 8 | Pending |
 | CTRL-03 | Phase 8 | Pending |

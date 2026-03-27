@@ -25,7 +25,7 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
 
 ### v1.1 Bug Fixes and Improvements
 
-- [ ] **Phase 7: Grid Rendering Fixes** — Pencil marks visible and correctly sized in all cell states
+- [x] **Phase 7: Grid Rendering Fixes** — Pencil marks visible and correctly sized in all cell states (completed 2026-03-27)
 - [ ] **Phase 8: Controls & Number Pad Fixes** — All control buttons visually correct and grouped
 - [ ] **Phase 9: Game Navigation** — Back-press dialog and save/resume work reliably
 
@@ -41,7 +41,7 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
   3. Pencil mark font size adapts to the rendered cell size, not a fixed hardcoded value
 **Plans**: 1 plan
 Plans:
-- [ ] 07-01-PLAN.md — Pencil mark cap (4-mark limit) + 2x2 dynamic layout + white-on-selected color
+- [x] 07-01-PLAN.md — Pencil mark cap (4-mark limit) + 2x2 dynamic layout + white-on-selected color
 
 **UI hint**: yes
 
@@ -78,6 +78,6 @@ Plans:
 | 4. Persistence | v1.0 | 3/3 | Complete | 2026-03-25 |
 | 5. Scoring & Completion | v1.0 | 3/3 | Complete | 2026-03-25 |
 | 6. Menu & Navigation | v1.0 | 2/2 | Complete | 2026-03-25 |
-| 7. Grid Rendering Fixes | v1.1 | 0/1 | Planning complete | - |
+| 7. Grid Rendering Fixes | v1.1 | 1/1 | Complete   | 2026-03-27 |
 | 8. Controls & Number Pad Fixes | v1.1 | 0/? | Not started | - |
 | 9. Game Navigation | v1.1 | 0/? | Not started | - |
