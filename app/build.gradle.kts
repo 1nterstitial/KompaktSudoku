@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.mudita.sudoku"
+    namespace = "com.ledgerman.sudoku"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.mudita.sudoku"
+        applicationId = "com.ledgerman.sudoku"
         minSdk = 31
         targetSdk = 31
         versionCode = 1
