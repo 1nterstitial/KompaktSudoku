@@ -77,4 +77,4 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
 | 6. Menu & Navigation | v1.0 | 2/2 | Complete | 2026-03-25 |
 | 7. Grid Rendering Fixes | v1.1 | 0/? | Not started | - |
 | 8. Controls & Number Pad Fixes | v1.1 | 0/? | Not started | - |
-| 9. Game Navigation | v1.1 | 0/? | Not started | - |
+| 9. Game Navigation | v1.1 | 1/1 | In Progress | - |
