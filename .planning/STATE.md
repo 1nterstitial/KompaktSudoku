@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Bug Fixes and Improvements
-status: verifying
-stopped_at: Phase 8 plan approved — ready to execute
-last_updated: "2026-03-27T00:34:47.542Z"
-last_activity: 2026-03-27
+status: executing
+stopped_at: Completed 08-01-PLAN.md — Controls and Number Pad Visual Fixes
+last_updated: "2026-03-27T01:36:00Z"
+last_activity: 2026-03-27 -- Phase 08 plan 01 complete
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 1
+  total_plans: 2
   completed_plans: 1
 ---
 
@@ -20,16 +20,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core Value:** A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-ink display — responsive touch input, high-contrast grid, and smooth puzzle flow without display artifacts.
-**Current Focus:** Phase 07 — grid-rendering-fixes
+**Current Focus:** Phase 08 — controls-number-pad-fixes
 
 ---
 
 ## Current Position
 
-Phase: 8
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-03-27
+Phase: 08 (controls-number-pad-fixes) — COMPLETE
+Plan: 1 of 1
+Status: Phase 08 complete — all CTRL requirements implemented
+Last activity: 2026-03-27 -- Phase 08 plan 01 executed and committed
 
 ## Phase Sequence
 
@@ -42,7 +42,7 @@ Last activity: 2026-03-27
 | 5 | Scoring & Completion | v1.0 | Complete |
 | 6 | Menu & Navigation | v1.0 | Complete |
 | 7 | Grid Rendering Fixes | v1.1 | Not started |
-| 8 | Controls & Number Pad Fixes | v1.1 | Not started |
+| 8 | Controls & Number Pad Fixes | v1.1 | Complete |
 | 9 | Game Navigation | v1.1 | Not started |
 
 ---
@@ -58,6 +58,7 @@ Last activity: 2026-03-27
 |-------|------|----------|-------|-------|-----------|
 | — | — | — | — | — | — |
 | Phase 07-grid-rendering-fixes P01 | 7 | 2 tasks | 3 files |
+| 08 | 01 | 11min | 2 | 2 | 2026-03-27 |
 
 ## Accumulated Context
 
@@ -119,6 +120,9 @@ Last activity: 2026-03-27
 - [07-01] Dynamic pencil font: (cellSize/2 * 0.60f) / density sp — fills ~60% of each 2x2 slot, device-density-aware; reduce to 0.55f if marks clip on device
 - [07-01] 4-mark cap guard placed before undoStack.addLast — blocked adds leave undo history clean (D-05)
 - [07-01] marks.sorted().forEachIndexed for 2x2 layout — slot index (0-3) maps to positions via i/2 (row) and i%2 (col); sorted ascending (D-06)
+- [08-01] sizeIn(minHeight=56.dp) on inner Boxes not fillMaxHeight() — Row without bounded max height causes infinite constraint; fillMaxHeight() in unbounded Row pushes subsequent composables off screen (Robolectric test revealed)
+- [08-01] RectangleShape import is androidx.compose.ui.graphics.RectangleShape not foundation.shape — confirmed via compile error
+- [08-01] TextMMD fontFamily parameter works in MMD 1.0.1 — confirmed via javap decompilation of AAR classes.jar; BasicText fallback not needed for CTRL-01
 
 ### Architecture Decisions
 
@@ -130,8 +134,8 @@ Last activity: 2026-03-27
 ### Research Flags (carry into planning)
 
 - **Phase 7 (GRID):** Dynamic pencil font multiplier `0.60f` implemented; 2x2 layout with 4-mark cap — tune to 0.55f on device if marks clip. Implemented in 07-01.
-- **Phase 8 (CTRL):** TextMMD font parameter surface is unknown (closed-source AAR). Attempt `TextMMD(fontSize=18.sp)` first; fall back to `BasicText` if ignored. Document result as CLAUDE.md convention.
-- **Phase 8 (CTRL):** Border thickness: 1dp may render gray at fast waveform — default to 2dp for all new borders in this milestone; verify on device before reducing.
+- **Phase 8 (CTRL):** RESOLVED — TextMMD `fontFamily` parameter confirmed working in MMD 1.0.1 (verified via javap decompilation of AAR classes.jar). BasicText fallback not needed.
+- **Phase 8 (CTRL):** RESOLVED — 1dp border used for Fill/Pencil frame; verify on device if gray rendering occurs at fast waveform.
 - **Phase 9 (NAV):** Back-press handling requires `BackHandler` composable in GameScreen — confirm interaction with existing dialog dismissal flow.
 
 ### Known Risks
@@ -152,9 +156,9 @@ Last activity: 2026-03-27
 
 ## Session Continuity
 
-**Last session:** 2026-03-27T00:34:47.539Z
-**Next action:** Run `/gsd:execute-phase 8` to execute Controls & Number Pad Fixes
-**Stopped at:** Phase 8 plan approved — ready to execute
+**Last session:** 2026-03-27T01:36:00Z
+**Next action:** Phase 08 complete — proceed to Phase 09 (Game Navigation)
+**Stopped at:** Completed 08-01-PLAN.md — Controls and Number Pad Visual Fixes
 
 ---
 

@@ -26,7 +26,7 @@ Full phase details: `.planning/milestones/v1.0-ROADMAP.md`
 ### v1.1 Bug Fixes and Improvements
 
 - [x] **Phase 7: Grid Rendering Fixes** — Pencil marks visible and correctly sized in all cell states (completed 2026-03-27)
-- [ ] **Phase 8: Controls & Number Pad Fixes** — All control buttons visually correct and grouped
+- [x] **Phase 8: Controls & Number Pad Fixes** — All control buttons visually correct and grouped (completed 2026-03-27)
 - [ ] **Phase 9: Game Navigation** — Back-press dialog and save/resume work reliably
 
 ## Phase Details
@@ -56,7 +56,7 @@ Plans:
   4. The Fill and Pencil buttons are enclosed in a shared border frame that visually separates them from the Undo and Get Hint buttons
 **Plans**: 1 plan
 Plans:
-- [ ] 08-01-PLAN.md — Controls row border frame, inactive gray, two-line hint, condensed number pad font
+- [x] 08-01-PLAN.md — Controls row border frame, inactive gray, two-line hint, condensed number pad font
 
 **UI hint**: yes
 
@@ -82,5 +82,5 @@ Plans:
 | 5. Scoring & Completion | v1.0 | 3/3 | Complete | 2026-03-25 |
 | 6. Menu & Navigation | v1.0 | 2/2 | Complete | 2026-03-25 |
 | 7. Grid Rendering Fixes | v1.1 | 1/1 | Complete   | 2026-03-27 |
-| 8. Controls & Number Pad Fixes | v1.1 | 0/1 | Not started | - |
+| 8. Controls & Number Pad Fixes | v1.1 | 1/1 | Complete | 2026-03-27 |
 | 9. Game Navigation | v1.1 | 0/? | Not started | - |
