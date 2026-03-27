@@ -132,6 +132,23 @@ class GameViewModel(
     }
 
     /**
+     * Discards the current game state and clears the DataStore save.
+     *
+     * Used by the "Forfeit" path in the exit confirmation dialog (NAV-02).
+     *
+     * - Calls [repository.clearGame] to remove any persisted save
+     * - Resets [_uiState] to a blank [GameUiState] (all zeros, no selection)
+     * - Sets [_showResumeDialog] to false so the Resume button does not appear on the main menu
+     * - Clears [undoStack] so undo() is a no-op after forfeiting
+     */
+    suspend fun quitGame() {
+        withContext(ioDispatcher) { repository.clearGame() }
+        _uiState.value = GameUiState()
+        _showResumeDialog.value = false
+        undoStack.clear()
+    }
+
+    /**
      * Starts a new game at [difficulty].
      *
      * Emits isLoading=true immediately, generates the puzzle on [Dispatchers.Default] (CPU-bound),

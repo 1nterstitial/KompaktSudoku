@@ -20,9 +20,9 @@
 
 ### Game Navigation
 
-- [ ] **NAV-01**: Pressing Back during an active game shows a confirmation overlay with "Return to Menu" (saves game) and "Quit Game" (discards save) options
-- [ ] **NAV-02**: After selecting "Return to Menu", the Resume button appears on the main menu
-- [ ] **NAV-03**: After an unexpected app kill, the saved game state is preserved and the Resume button appears on next launch
+- [x] **NAV-01**: Pressing Back during an active game shows a confirmation overlay with "Return to Menu" (saves game) and "Quit Game" (discards save) options
+- [x] **NAV-02**: After selecting "Return to Menu", the Resume button appears on the main menu
+- [x] **NAV-03**: After an unexpected app kill, the saved game state is preserved and the Resume button appears on next launch
 
 ## Future Requirements
 
@@ -47,9 +47,9 @@ _(None identified — v1.1 is scoped to bug fixes and cosmetic improvements from
 | CTRL-02 | Phase 8 | Pending |
 | CTRL-03 | Phase 8 | Pending |
 | CTRL-04 | Phase 8 | Pending |
-| NAV-01 | Phase 9 | Pending |
-| NAV-02 | Phase 9 | Pending |
-| NAV-03 | Phase 9 | Pending |
+| NAV-01 | Phase 9 | Complete |
+| NAV-02 | Phase 9 | Complete |
+| NAV-03 | Phase 9 | Complete |
 
 ---
 *Last updated: 2026-03-25 — traceability mapped to Phases 7–9*

@@ -1,6 +1,10 @@
 package com.mudita.sudoku.ui.game
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,9 +18,14 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,10 +57,15 @@ fun GameScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
-    BackHandler {
-        coroutineScope.launch {
-            viewModel.saveNow()
-            onBackToMenu()
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    // First back press shows dialog; second back press (while dialog visible) dismisses it.
+    // Disabled during puzzle generation (isLoading=true) — avoid saving an empty/partial board.
+    BackHandler(enabled = !uiState.isLoading) {
+        if (showExitDialog) {
+            showExitDialog = false
+        } else {
+            showExitDialog = true
         }
     }
 
@@ -85,48 +99,69 @@ fun GameScreen(
         return
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.systemBars)
-            .padding(horizontal = 8.dp)
-    ) {
-        // 1. Difficulty label — top bar (D-07)
-        DifficultyBar(difficulty = uiState.difficulty)
-
-        // 2. Grid — fills all remaining vertical space (D-07)
-        GameGrid(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            board = uiState.board,
-            solution = uiState.solution,
-            givenMask = uiState.givenMask,
-            selectedCellIndex = uiState.selectedCellIndex,
-            pencilMarks = uiState.pencilMarks,
-            onCellClick = viewModel::selectCell
-        )
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.systemBars)
+                .padding(horizontal = 8.dp)
+        ) {
+            // 1. Difficulty label — top bar (D-07)
+            DifficultyBar(difficulty = uiState.difficulty)
 
-        Spacer(modifier = Modifier.height(8.dp))
+            // 2. Grid — fills all remaining vertical space (D-07)
+            GameGrid(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                board = uiState.board,
+                solution = uiState.solution,
+                givenMask = uiState.givenMask,
+                selectedCellIndex = uiState.selectedCellIndex,
+                pencilMarks = uiState.pencilMarks,
+                onCellClick = viewModel::selectCell
+            )
 
-        // 3. Controls row — Fill/Pencil mode toggles + Undo + Get Hint (D-07, D-08, D-02)
-        ControlsRow(
-            inputMode = uiState.inputMode,
-            onToggleMode = viewModel::toggleInputMode,
-            onUndo = viewModel::undo,
-            onHint = viewModel::requestHint,
-            canRequestHint = canRequestHint
-        )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
+            // 3. Controls row — Fill/Pencil mode toggles + Undo + Get Hint (D-07, D-08, D-02)
+            ControlsRow(
+                inputMode = uiState.inputMode,
+                onToggleMode = viewModel::toggleInputMode,
+                onUndo = viewModel::undo,
+                onHint = viewModel::requestHint,
+                canRequestHint = canRequestHint
+            )
 
-        // 4. Number pad — digits 1–9 + Erase (D-07, D-05, D-06)
-        NumberPad(
-            onDigitClick = viewModel::enterDigit,
-            onErase = viewModel::eraseCell
-        )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
+            // 4. Number pad — digits 1–9 + Erase (D-07, D-05, D-06)
+            NumberPad(
+                onDigitClick = viewModel::enterDigit,
+                onErase = viewModel::eraseCell
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        if (showExitDialog) {
+            ExitConfirmationDialog(
+                onSaveAndExit = {
+                    showExitDialog = false
+                    coroutineScope.launch {
+                        viewModel.saveNow()
+                        onBackToMenu()
+                    }
+                },
+                onForfeit = {
+                    showExitDialog = false
+                    coroutineScope.launch {
+                        viewModel.quitGame()
+                        onBackToMenu()
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -162,5 +197,66 @@ private fun LoadingScreen() {
         contentAlignment = Alignment.Center
     ) {
         TextMMD(text = "Generating puzzle\u2026") // … (ellipsis)
+    }
+}
+
+/**
+ * Exit confirmation overlay shown when the player presses Back during an active game.
+ *
+ * Two options:
+ * - "Save and Exit": persists current game state via saveNow() then navigates to menu
+ * - "Forfeit": clears saved game state via quitGame() then navigates to menu
+ *
+ * Design constraints (UI-02):
+ * - No animations (no AnimatedVisibility, no Crossfade) — E-ink ghosting
+ * - No RoundedCornerShape — produces anti-aliased gray pixels on E-ink; use RectangleShape only
+ * - No ripple — disabled by ThemeMMD; indication=null on scrim click
+ * - Scrim at ~40% black alpha to dim game content behind the dialog
+ * - ButtonMMD and TextMMD exclusively (CLAUDE.md)
+ */
+@Composable
+private fun ExitConfirmationDialog(
+    onSaveAndExit: () -> Unit,
+    onForfeit: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.4f))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {} // consume clicks on scrim — do not dismiss on scrim tap
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .background(Color.White, RectangleShape)
+                .border(1.dp, Color.Black, RectangleShape)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TextMMD(text = "Leave game?")
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            ButtonMMD(
+                onClick = onSaveAndExit,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextMMD(text = "Save and Exit")
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            ButtonMMD(
+                onClick = onForfeit,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TextMMD(text = "Forfeit")
+            }
+        }
     }
 }
