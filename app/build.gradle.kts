@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,9 +21,22 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            val props = Properties().apply {
+                rootProject.file("local.properties").inputStream().use { load(it) }
+            }
+            storeFile = file(props["RELEASE_STORE_FILE"] as String)
+            storePassword = props["RELEASE_STORE_PASSWORD"] as String
+            keyAlias = props["RELEASE_KEY_ALIAS"] as String
+            keyPassword = props["RELEASE_KEY_PASSWORD"] as String
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -34,6 +49,11 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+
+    lint {
+        // App targets Mudita Kompakt (AOSP 12 = API 31) — not distributed via Google Play
+        disable += "ExpiredTargetSdkVersion"
     }
 
     testOptions {
