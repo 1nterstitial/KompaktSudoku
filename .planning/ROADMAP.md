@@ -65,11 +65,15 @@ Plans:
 **Depends on**: Nothing (self-contained changes in GameScreen.kt and GameViewModel.kt)
 **Requirements**: NAV-01, NAV-02, NAV-03
 **Success Criteria** (what must be TRUE):
-  1. Pressing Back during an active game shows a confirmation overlay with "Return to Menu" and "Quit Game" options — the back press does not immediately exit
-  2. Selecting "Return to Menu" saves the current game state and returns to the main menu, where the Resume button is immediately visible
-  3. Selecting "Quit Game" discards the saved game state and returns to the main menu without a Resume button
+  1. Pressing Back during an active game shows a confirmation overlay with "Save and Exit" and "Forfeit" options — the back press does not immediately exit
+  2. Selecting "Save and Exit" saves the current game state and returns to the main menu, where the Resume button is immediately visible
+  3. Selecting "Forfeit" discards the saved game state and returns to the main menu without a Resume button
   4. If the app is force-closed mid-game, the saved game state persists and the Resume button appears on the next launch
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 09-01-PLAN.md — Back-press exit dialog with Save and Exit / Forfeit + quitGame() ViewModel function
+
+**UI hint**: yes
 
 ## Progress Table
 
@@ -83,4 +87,4 @@ Plans:
 | 6. Menu & Navigation | v1.0 | 2/2 | Complete | 2026-03-25 |
 | 7. Grid Rendering Fixes | v1.1 | 1/1 | Complete   | 2026-03-27 |
 | 8. Controls & Number Pad Fixes | v1.1 | 1/1 | Complete | 2026-03-27 |
-| 9. Game Navigation | v1.1 | 0/? | Not started | - |
+| 9. Game Navigation | v1.1 | 0/1 | Not started | - |
