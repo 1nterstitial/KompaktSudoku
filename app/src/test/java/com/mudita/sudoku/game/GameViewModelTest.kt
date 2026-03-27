@@ -901,4 +901,173 @@ class GameViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
     }
+
+    // ------------------------------------------------------------------ pencil mark cap (GRID-02)
+
+    @Test
+    fun `pencilMark 4 marks can be added to a cell - GRID-02`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.toggleInputMode() // FILL -> PENCIL
+            awaitItem()
+
+            viewModel.enterDigit(1)
+            awaitItem()
+            viewModel.enterDigit(2)
+            awaitItem()
+            viewModel.enterDigit(3)
+            awaitItem()
+            viewModel.enterDigit(4)
+            val state = awaitItem()
+            assertEquals("All 4 marks should be present", setOf(1, 2, 3, 4), state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `pencilMark 5th mark is silently blocked when cell has 4 - GRID-02`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.toggleInputMode() // FILL -> PENCIL
+            awaitItem()
+
+            // Add 4 marks
+            viewModel.enterDigit(1)
+            awaitItem()
+            viewModel.enterDigit(2)
+            awaitItem()
+            viewModel.enterDigit(3)
+            awaitItem()
+            viewModel.enterDigit(4)
+            awaitItem()
+
+            // Attempt to add 5th mark — should be a no-op
+            viewModel.enterDigit(5)
+            expectNoEvents()
+
+            val state = viewModel.uiState.value
+            assertEquals("Size should still be 4 after blocked add", 4, state.pencilMarks[emptyIdx].size)
+            assertEquals("Set should still be {1,2,3,4}", setOf(1, 2, 3, 4), state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `pencilMark toggle-off allowed when cell has 4 marks - GRID-02`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.toggleInputMode() // FILL -> PENCIL
+            awaitItem()
+
+            // Add 4 marks
+            viewModel.enterDigit(1)
+            awaitItem()
+            viewModel.enterDigit(2)
+            awaitItem()
+            viewModel.enterDigit(3)
+            awaitItem()
+            viewModel.enterDigit(4)
+            awaitItem()
+
+            // Toggle off digit 3 (already present → remove)
+            viewModel.enterDigit(3)
+            val state = awaitItem()
+            assertEquals("After removing 3, set should be {1,2,4}", setOf(1, 2, 4), state.pencilMarks[emptyIdx])
+            assertEquals("Size should be 3 after removal", 3, state.pencilMarks[emptyIdx].size)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `pencilMark adding mark after removing one from full cell succeeds - GRID-02`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.toggleInputMode() // FILL -> PENCIL
+            awaitItem()
+
+            // Add 4 marks
+            viewModel.enterDigit(1)
+            awaitItem()
+            viewModel.enterDigit(2)
+            awaitItem()
+            viewModel.enterDigit(3)
+            awaitItem()
+            viewModel.enterDigit(4)
+            awaitItem()
+
+            // Remove digit 3
+            viewModel.enterDigit(3)
+            awaitItem()
+
+            // Now add digit 7 (cell has 3 marks, cap not hit)
+            viewModel.enterDigit(7)
+            val state = awaitItem()
+            assertEquals("Set should be {1,2,4,7} after removing 3 and adding 7", setOf(1, 2, 4, 7), state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `pencilMark undo stack unchanged when 5th mark blocked - GRID-02`() = runTest {
+        viewModel.uiState.test {
+            awaitItem()
+            viewModel.startGame(Difficulty.EASY)
+            awaitItem()
+            awaitItem()
+
+            val emptyIdx = FakeGenerator.emptyIndices().first()
+            viewModel.selectCell(emptyIdx)
+            awaitItem()
+            viewModel.toggleInputMode() // FILL -> PENCIL
+            awaitItem()
+
+            // Add 4 marks (last one is digit 4)
+            viewModel.enterDigit(1)
+            awaitItem()
+            viewModel.enterDigit(2)
+            awaitItem()
+            viewModel.enterDigit(3)
+            awaitItem()
+            viewModel.enterDigit(4)
+            awaitItem()
+
+            // Attempt blocked 5th mark — no state change
+            viewModel.enterDigit(5)
+            expectNoEvents()
+
+            // Undo should undo the 4th mark add (digit 4), not the blocked 5th
+            viewModel.undo()
+            val state = awaitItem()
+            assertEquals("Undo should remove digit 4 (last successful add)", setOf(1, 2, 3), state.pencilMarks[emptyIdx])
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
 }

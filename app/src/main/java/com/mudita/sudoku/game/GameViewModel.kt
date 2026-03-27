@@ -418,6 +418,11 @@ class GameViewModel(
     private fun applyPencilMark(idx: Int, digit: Int, state: GameUiState) {
         val currentSet = state.pencilMarks[idx]
         val wasAdded = digit !in currentSet
+
+        // D-05: Cap at 4 pencil marks per cell. Silent no-op if adding would exceed.
+        // Toggle-off (removing existing mark) is always allowed.
+        if (wasAdded && currentSet.size >= 4) return
+
         undoStack.addLast(GameAction.SetPencilMark(idx, digit, wasAdded))
         val newMarks = state.pencilMarks.copyOf()
         newMarks[idx] = if (wasAdded) currentSet + digit else currentSet - digit
