@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Bug Fixes and Improvements
-status: planning
-stopped_at: Completed 09-01-PLAN.md — Game Navigation exit confirmation dialog
-last_updated: "2026-03-27T02:48:15.451Z"
-last_activity: 2026-03-25 — v1.1 roadmap created (Phases 7–9)
+status: executing
+stopped_at: Planned 09-01-PLAN.md — Game Navigation back-press dialog
+last_updated: "2026-03-27T02:34:03.439Z"
+last_activity: 2026-03-27 -- Phase 09 execution started
 progress:
   total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 1
+  completed_phases: 2
+  total_plans: 3
+  completed_plans: 2
 ---
 
 # Project State: Mudita Kompakt Sudoku
@@ -20,16 +20,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-25)
 
 **Core Value:** A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-ink display — responsive touch input, high-contrast grid, and smooth puzzle flow without display artifacts.
-**Current Focus:** v1.1 Bug Fixes and Improvements — run `/gsd:plan-phase 7` to begin
+**Current Focus:** Phase 09 — game-navigation
 
 ---
 
 ## Current Position
 
-Phase: 9
-Plan: 09-01 complete
-Status: Phase 09 plan 01 executed — exit confirmation dialog implemented
-Last activity: 2026-03-27 — 09-01 Game Navigation complete
+Phase: 09 (game-navigation) — EXECUTING
+Plan: 1 of 1
+Status: Executing Phase 09
+Last activity: 2026-03-27 -- Phase 09 execution started
 
 ## Phase Sequence
 
@@ -42,21 +42,23 @@ Last activity: 2026-03-27 — 09-01 Game Navigation complete
 | 5 | Scoring & Completion | v1.0 | Complete |
 | 6 | Menu & Navigation | v1.0 | Complete |
 | 7 | Grid Rendering Fixes | v1.1 | Not started |
-| 8 | Controls & Number Pad Fixes | v1.1 | Not started |
-| 9 | Game Navigation | v1.1 | In Progress (1/1 plans done) |
+| 8 | Controls & Number Pad Fixes | v1.1 | Complete |
+| 9 | Game Navigation | v1.1 | Not started |
 
 ---
 
 ## Performance Metrics
 
-**Plans completed:** 1 (v1.1)
+**Plans completed:** 0 (v1.1)
 **Plans total:** TBD (phases not yet planned)
 **Phases completed:** 0/3 (v1.1)
-**Requirements mapped:** 9/9 (NAV-01, NAV-02, NAV-03 completed 2026-03-27)
+**Requirements mapped:** 9/9
 
 | Phase | Plan | Duration | Tasks | Files | Completed |
 |-------|------|----------|-------|-------|-----------|
-| 09 | 01 | 11m | 2 | 3 | 2026-03-27 |
+| — | — | — | — | — | — |
+| Phase 07-grid-rendering-fixes P01 | 7 | 2 tasks | 3 files |
+| 08 | 01 | 11min | 2 | 2 | 2026-03-27 |
 
 ## Accumulated Context
 
@@ -114,10 +116,13 @@ Last activity: 2026-03-27 — 09-01 Game Navigation complete
 - [06-01] startGame(difficulty) called before navigating to GAME screen to pre-start puzzle generation (Pitfall 5 avoidance)
 - [06-01] MenuScreen has no BackHandler — ComponentActivity back exits app by default (D-11 intentional)
 - [06-02] assertDoesNotExist() used for conditionally absent Resume button — node is not in composition at all when hasSavedGame=false (if block removes it); assertIsNotDisplayed() would fail
-- [09-01] Dialog state as local composable state in GameScreen (not ViewModel) — pure UI concern; GameUiState not modified
-- [09-01] quitGame() resets uiState to GameUiState(), clears DataStore save via repository.clearGame(), sets showResumeDialog false, clears undoStack
-- [09-01] BackHandler disabled during isLoading to prevent saving empty/partial board state
-- [09-01] Second back press while dialog is visible dismisses it (standard Android UX pattern)
+- [07-01] drawPencilMarks builds TextStyle internally from isSelected+density (D-08) — removes style param, encapsulates all pencil style logic in the function
+- [07-01] Dynamic pencil font: (cellSize/2 * 0.60f) / density sp — fills ~60% of each 2x2 slot, device-density-aware; reduce to 0.55f if marks clip on device
+- [07-01] 4-mark cap guard placed before undoStack.addLast — blocked adds leave undo history clean (D-05)
+- [07-01] marks.sorted().forEachIndexed for 2x2 layout — slot index (0-3) maps to positions via i/2 (row) and i%2 (col); sorted ascending (D-06)
+- [08-01] sizeIn(minHeight=56.dp) on inner Boxes not fillMaxHeight() — Row without bounded max height causes infinite constraint; fillMaxHeight() in unbounded Row pushes subsequent composables off screen (Robolectric test revealed)
+- [08-01] RectangleShape import is androidx.compose.ui.graphics.RectangleShape not foundation.shape — confirmed via compile error
+- [08-01] TextMMD fontFamily parameter works in MMD 1.0.1 — confirmed via javap decompilation of AAR classes.jar; BasicText fallback not needed for CTRL-01
 
 ### Architecture Decisions
 
@@ -128,9 +133,9 @@ Last activity: 2026-03-27 — 09-01 Game Navigation complete
 
 ### Research Flags (carry into planning)
 
-- **Phase 7 (GRID):** Dynamic pencil font multiplier `0.55f` is an estimate — tune on device; verify all 9 marks fit without clipping in one cell.
-- **Phase 8 (CTRL):** TextMMD font parameter surface is unknown (closed-source AAR). Attempt `TextMMD(fontSize=18.sp)` first; fall back to `BasicText` if ignored. Document result as CLAUDE.md convention.
-- **Phase 8 (CTRL):** Border thickness: 1dp may render gray at fast waveform — default to 2dp for all new borders in this milestone; verify on device before reducing.
+- **Phase 7 (GRID):** Dynamic pencil font multiplier `0.60f` implemented; 2x2 layout with 4-mark cap — tune to 0.55f on device if marks clip. Implemented in 07-01.
+- **Phase 8 (CTRL):** RESOLVED — TextMMD `fontFamily` parameter confirmed working in MMD 1.0.1 (verified via javap decompilation of AAR classes.jar). BasicText fallback not needed.
+- **Phase 8 (CTRL):** RESOLVED — 1dp border used for Fill/Pencil frame; verify on device if gray rendering occurs at fast waveform.
 - **Phase 9 (NAV):** Back-press handling requires `BackHandler` composable in GameScreen — confirm interaction with existing dialog dismissal flow.
 
 ### Known Risks
@@ -151,9 +156,9 @@ Last activity: 2026-03-27 — 09-01 Game Navigation complete
 
 ## Session Continuity
 
-**Last session:** 2026-03-27T02:48:15.449Z
-**Next action:** Run `/gsd:plan-phase 7` to plan Grid Rendering Fixes
-**Stopped at:** Completed 09-01-PLAN.md — Game Navigation exit confirmation dialog
+**Last session:** 2026-03-26T00:00:00.000Z
+**Next action:** Execute Phase 09 — run /gsd:execute-phase 9
+**Stopped at:** Planned 09-01-PLAN.md — Game Navigation back-press dialog
 
 ---
 
