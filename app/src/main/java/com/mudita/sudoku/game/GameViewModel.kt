@@ -129,6 +129,7 @@ class GameViewModel(
         val state = _uiState.value
         if (state.isLoading || state.isComplete || state.board.all { it == 0 }) return
         repository.saveGame(state)
+        _showResumeDialog.value = true
     }
 
     /**
