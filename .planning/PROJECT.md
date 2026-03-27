@@ -38,12 +38,9 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 
 - ✓ Pencil mark digits visible in white on selected (black) cells — Validated in Phase 07: grid-rendering-fixes (GRID-01)
 - ✓ Pencil mark font sized to fit 4 marks (2×2) at maximum per cell — Validated in Phase 07: grid-rendering-fixes (GRID-02)
-- [ ] Number pad text vertically centered with taller/thinner font
-- [ ] "Get Hint" button text centered (two lines, vertically centered)
-- [ ] Fill/Pencil inactive button has subtle background; pair has frame separating it from number row
-- [ ] Number pad text vertically centered with taller/thinner font
-- [ ] "Get Hint" button text centered (two lines, vertically centered)
-- [ ] Fill/Pencil inactive button has subtle background; pair has frame separating it from number row
+- ✓ Number pad digits use sans-serif-condensed (Roboto Condensed) for better vertical centering — Validated in Phase 08: controls-number-pad-fixes (CTRL-01)
+- ✓ "Get Hint" button renders as two centered lines — Validated in Phase 08: controls-number-pad-fixes (CTRL-02)
+- ✓ Inactive Fill/Pencil button has mid-gray (#E0E0E0) background; pair enclosed in 1dp border frame — Validated in Phase 08: controls-number-pad-fixes (CTRL-03, CTRL-04)
 
 ### Out of Scope
 
@@ -74,7 +71,7 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 ## Context
 
 - **Shipped:** v1.0 MVP — 2026-03-25
-- **Codebase:** ~6,650 lines Kotlin, 138 commits, 6 phases, 21 plans
+- **Codebase:** ~6,700 lines Kotlin, 8 phases, 23 plans
 - **Platform:** Mudita Kompakt, MuditaOS K (de-Googled AOSP Android 12, API 31)
 - **Display:** 4.3" E-ink touchscreen, 800×480, monochromatic, ~216 ppi
 - **Tech stack:** Kotlin 2.3.20, Jetpack Compose BOM 2026.03.00, MMD 1.0.1, Sudoklify 1.0.0-beta04, DataStore 1.2.1
