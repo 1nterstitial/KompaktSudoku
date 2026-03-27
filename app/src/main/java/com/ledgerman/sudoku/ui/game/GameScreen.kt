@@ -153,7 +153,7 @@ fun GameScreen(
                         onBackToMenu()
                     }
                 },
-                onForfeit = {
+                onQuitGame = {
                     showExitDialog = false
                     coroutineScope.launch {
                         viewModel.quitGame()
@@ -205,7 +205,7 @@ private fun LoadingScreen() {
  *
  * Two options:
  * - "Save and Exit": persists current game state via saveNow() then navigates to menu
- * - "Forfeit": clears saved game state via quitGame() then navigates to menu
+ * - "Quit Game": clears saved game state via quitGame() then navigates to menu
  *
  * Design constraints (UI-02):
  * - No animations (no AnimatedVisibility, no Crossfade) — E-ink ghosting
@@ -217,7 +217,7 @@ private fun LoadingScreen() {
 @Composable
 private fun ExitConfirmationDialog(
     onSaveAndExit: () -> Unit,
-    onForfeit: () -> Unit
+    onQuitGame: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -252,10 +252,10 @@ private fun ExitConfirmationDialog(
             Spacer(modifier = Modifier.height(12.dp))
 
             ButtonMMD(
-                onClick = onForfeit,
+                onClick = onQuitGame,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                TextMMD(text = "Forfeit")
+                TextMMD(text = "Quit Game")
             }
         }
     }

@@ -135,12 +135,12 @@ class GameViewModel(
     /**
      * Discards the current game state and clears the DataStore save.
      *
-     * Used by the "Forfeit" path in the exit confirmation dialog (NAV-02).
+     * Used by the "Quit Game" path in the exit confirmation dialog (NAV-02).
      *
      * - Calls [repository.clearGame] to remove any persisted save
      * - Resets [_uiState] to a blank [GameUiState] (all zeros, no selection)
      * - Sets [_showResumeDialog] to false so the Resume button does not appear on the main menu
-     * - Clears [undoStack] so undo() is a no-op after forfeiting
+     * - Clears [undoStack] so undo() is a no-op after quitting
      */
     suspend fun quitGame() {
         withContext(ioDispatcher) { repository.clearGame() }
