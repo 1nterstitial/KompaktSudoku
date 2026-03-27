@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -21,22 +19,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    signingConfigs {
-        create("release") {
-            val props = Properties().apply {
-                rootProject.file("local.properties").inputStream().use { load(it) }
-            }
-            storeFile = file(props["RELEASE_STORE_FILE"] as String)
-            storePassword = props["RELEASE_STORE_PASSWORD"] as String
-            keyAlias = props["RELEASE_KEY_ALIAS"] as String
-            keyPassword = props["RELEASE_KEY_PASSWORD"] as String
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
