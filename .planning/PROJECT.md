@@ -41,6 +41,7 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 - ✓ Number pad digits use sans-serif-condensed (Roboto Condensed) for better vertical centering — Validated in Phase 08: controls-number-pad-fixes (CTRL-01)
 - ✓ "Get Hint" button renders as two centered lines — Validated in Phase 08: controls-number-pad-fixes (CTRL-02)
 - ✓ Inactive Fill/Pencil button has mid-gray (#E0E0E0) background; pair enclosed in 1dp border frame — Validated in Phase 08: controls-number-pad-fixes (CTRL-03, CTRL-04)
+- ✓ Exit confirmation dialog (Save / Forfeit) shown on back press during active game — Validated in Phase 09: game-navigation (NAV-01, NAV-02, NAV-03)
 
 ### Out of Scope
 
@@ -118,4 +119,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-27 — Phase 07 complete (GRID-01, GRID-02)*
+*Last updated: 2026-03-27 — Phase 09 complete (NAV-01, NAV-02, NAV-03) — milestone v1.1 complete*
