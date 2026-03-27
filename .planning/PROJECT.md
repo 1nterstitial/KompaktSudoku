@@ -36,8 +36,11 @@ A fully playable Sudoku experience that feels native on the Mudita Kompakt's E-i
 
 ### Active
 
-- [ ] Pencil mark digits visible in white on selected (black) cells
-- [ ] Pencil mark font sized to fit 4 marks (2×2) at maximum per cell
+- ✓ Pencil mark digits visible in white on selected (black) cells — Validated in Phase 07: grid-rendering-fixes (GRID-01)
+- ✓ Pencil mark font sized to fit 4 marks (2×2) at maximum per cell — Validated in Phase 07: grid-rendering-fixes (GRID-02)
+- [ ] Number pad text vertically centered with taller/thinner font
+- [ ] "Get Hint" button text centered (two lines, vertically centered)
+- [ ] Fill/Pencil inactive button has subtle background; pair has frame separating it from number row
 - [ ] Number pad text vertically centered with taller/thinner font
 - [ ] "Get Hint" button text centered (two lines, vertically centered)
 - [ ] Fill/Pencil inactive button has subtle background; pair has frame separating it from number row
@@ -118,4 +121,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-25 — v1.1 milestone started*
+*Last updated: 2026-03-27 — Phase 07 complete (GRID-01, GRID-02)*
