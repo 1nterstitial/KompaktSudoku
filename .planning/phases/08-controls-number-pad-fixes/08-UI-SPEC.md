@@ -48,7 +48,6 @@ Declared values (multiples of 4):
 | 3xl | 64dp | Not used in this phase |
 
 Exceptions:
-- NumberPad row uses `Arrangement.spacedBy(2.dp)` — intentionally tighter than the 4dp minimum to maximize digit button width across the 800px display. This is a pre-existing value; do not change.
 - Touch target minimum: 56dp height on all buttons (`sizeIn(minHeight = 56.dp)`) — pre-existing constraint, must be preserved.
 - CTRL-04 border frame: 1dp black stroke border (`Border(1.dp, Color.Black)`) enclosing the Fill+Pencil button group. Minimum 1dp; use 2dp if 1dp renders as gray on the E-ink waveform (verify on device — source: STATE.md research flag).
 
@@ -187,6 +186,7 @@ No third-party shadcn registries. No vetting gate required.
 4. **Shape import**: `import androidx.compose.foundation.shape.RectangleShape` — for CTRL-04 border.
 5. **TextAlign import**: `import androidx.compose.ui.text.style.TextAlign` — for CTRL-02 if used.
 6. **Test coverage**: Verify CTRL-03 and CTRL-04 visually in a Compose Preview or UI test; CTRL-01 and CTRL-02 require on-device or emulator verification because font rendering is hardware/density-dependent.
+7. **NumberPad row gap (frozen pre-existing value)**: NumberPad rows use `Arrangement.spacedBy(2.dp)` — this is a pre-existing frozen value, must not be changed in this phase.
 
 ---
 
