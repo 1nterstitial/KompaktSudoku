@@ -149,7 +149,7 @@ Last activity: 2026-03-27 - Completed quick task 260327-1c5: v1.0 GitHub release
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260327-0yw | Two minor changes: 1) Rename Forfeit to Quit Game throughout the codebase. 2) Rename package from com.mudita.sudoku to com.ledgerman.sudoku everywhere | 2026-03-27 | c14b92f | [260327-0yw-two-minor-changes-1-rename-forfeit-to-qu](./quick/260327-0yw-two-minor-changes-1-rename-forfeit-to-qu/) |
-| 260327-1c5 | Delete v1.0 git tag, reissue with concise description, create GitHub release, build debug-signed APK and attach | 2026-03-27 | — | [260327-1c5-delete-the-v1-0-git-tag-reissue-it-with-](./quick/260327-1c5-delete-the-v1-0-git-tag-reissue-it-with-/) |
+| 260327-1c5 | Delete v1.0 git tag, reissue with concise description, create GitHub release, build debug-signed APK and attach | 2026-03-27 | 0971062 | [260327-1c5-delete-the-v1-0-git-tag-reissue-it-with-](./quick/260327-1c5-delete-the-v1-0-git-tag-reissue-it-with-/) |
 
 ### Blockers
 
