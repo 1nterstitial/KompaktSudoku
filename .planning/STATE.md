@@ -4,7 +4,7 @@ milestone: v1.1
 milestone_name: Bug Fixes and Improvements
 status: executing
 stopped_at: Planned 09-01-PLAN.md — Game Navigation back-press dialog
-last_updated: "2026-03-27T02:55:40.939Z"
+last_updated: "2026-03-27T14:42:00.000Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 3
@@ -150,6 +150,7 @@ Last activity: 2026-03-27 - Completed quick task 260327-1c5: v1.0 GitHub release
 |---|-------------|------|--------|-----------|
 | 260327-0yw | Two minor changes: 1) Rename Forfeit to Quit Game throughout the codebase. 2) Rename package from com.mudita.sudoku to com.ledgerman.sudoku everywhere | 2026-03-27 | c14b92f | [260327-0yw-two-minor-changes-1-rename-forfeit-to-qu](./quick/260327-0yw-two-minor-changes-1-rename-forfeit-to-qu/) |
 | 260327-1c5 | Delete v1.0 git tag, reissue with concise description, create GitHub release, build debug-signed APK and attach | 2026-03-27 | 0971062 | [260327-1c5-delete-the-v1-0-git-tag-reissue-it-with-](./quick/260327-1c5-delete-the-v1-0-git-tag-reissue-it-with-/) |
+| 260327-es8 | Delete all GitHub releases and tags, recreate clean v1.0 release with privacy-safe description and APK | 2026-03-27 | — | [260327-es8-delete-all-github-releases-and-create-fr](./quick/260327-es8-delete-all-github-releases-and-create-fr/) |
 
 ### Blockers
 
@@ -163,9 +164,9 @@ Last activity: 2026-03-27 - Completed quick task 260327-1c5: v1.0 GitHub release
 
 ## Session Continuity
 
-**Last session:** 2026-03-26T00:00:00.000Z
+**Last session:** 2026-03-27T14:42:00.000Z
 **Next action:** Execute Phase 09 — run /gsd:execute-phase 9
-**Stopped at:** Planned 09-01-PLAN.md — Game Navigation back-press dialog
+**Stopped at:** Completed quick task 260327-es8: delete all GitHub releases and create fresh v1.0
 
 ---
 
