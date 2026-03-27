@@ -93,16 +93,11 @@ fun GameGrid(
         fontWeight = FontWeight.Normal,
         color = Color.White
     )
-    val pencilStyle = TextStyle(
-        fontSize = 9.sp,
-        fontWeight = FontWeight.Normal,
-        color = Color.Black
-    )
-
     BoxWithConstraints(modifier = modifier) {
         val gridSizeDp = minOf(maxWidth, maxHeight)
         val gridSizePx = with(LocalDensity.current) { gridSizeDp.toPx() }
         val cellSizePx = gridSizePx / 9f
+        val density = LocalDensity.current.density
 
         Canvas(
             modifier = Modifier
@@ -158,7 +153,8 @@ fun GameGrid(
                     cellTop = row * cellSizePx,
                     cellSize = cellSizePx,
                     textMeasurer = textMeasurer,
-                    style = pencilStyle
+                    isSelected = cell.isSelected,
+                    density = density
                 )
             }
 
@@ -198,8 +194,13 @@ private fun DrawScope.drawErrorIndicator(cell: CellData, cellSize: Float) {
 }
 
 /**
- * Draws pencil mark candidates in a 3×3 mini-grid inside the cell.
- * Digit n appears at sub-cell position ((n-1)/3, (n-1)%3).
+ * Draws pencil mark candidates in a 2x2 grid inside the cell (max 4 marks).
+ * Marks are sorted ascending: sorted[0]=top-left, sorted[1]=top-right,
+ * sorted[2]=bottom-left, sorted[3]=bottom-right.
+ *
+ * Per D-01/D-02: uses Color.White when isSelected (black background), Color.Black otherwise.
+ * Per D-07: font size computed dynamically from cellSize — (cellSize/2 * 0.60) px converted to sp.
+ * Per D-08: builds TextStyle internally from cellSize and isSelected (no external style param).
  */
 private fun DrawScope.drawPencilMarks(
     marks: Set<Int>,
@@ -207,16 +208,24 @@ private fun DrawScope.drawPencilMarks(
     cellTop: Float,
     cellSize: Float,
     textMeasurer: TextMeasurer,
-    style: TextStyle
+    isSelected: Boolean,
+    density: Float
 ) {
-    val subSize = cellSize / 3f
-    for (digit in 1..9) {
-        if (digit !in marks) continue
-        val subRow = (digit - 1) / 3
-        val subCol = (digit - 1) % 3
+    val dynamicPencilFontSp = (cellSize / 2f * 0.60f) / density
+    val color = if (isSelected) Color.White else Color.Black
+    val style = TextStyle(
+        fontSize = dynamicPencilFontSp.sp,
+        fontWeight = FontWeight.Normal,
+        color = color
+    )
+    val sorted = marks.sorted()
+    val slotSize = cellSize / 2f
+    sorted.forEachIndexed { i, digit ->
+        val slotRow = i / 2   // 0,1 -> row 0; 2,3 -> row 1
+        val slotCol = i % 2   // 0,2 -> col 0; 1,3 -> col 1
         val measured = textMeasurer.measure(digit.toString(), style)
-        val x = cellLeft + subCol * subSize + (subSize - measured.size.width) / 2f
-        val y = cellTop + subRow * subSize + (subSize - measured.size.height) / 2f
+        val x = cellLeft + slotCol * slotSize + (slotSize - measured.size.width) / 2f
+        val y = cellTop + slotRow * slotSize + (slotSize - measured.size.height) / 2f
         drawText(textLayoutResult = measured, topLeft = Offset(x, y))
     }
 }
