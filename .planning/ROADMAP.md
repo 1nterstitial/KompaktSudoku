@@ -54,7 +54,10 @@ Plans:
   2. The "Get Hint" button label reads as two lines, both centered within the button bounds
   3. The inactive Fill or Pencil mode button is visually distinct from the active one (mid-gray background vs. solid black)
   4. The Fill and Pencil buttons are enclosed in a shared border frame that visually separates them from the Undo and Get Hint buttons
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 08-01-PLAN.md — Controls row border frame, inactive gray, two-line hint, condensed number pad font
+
 **UI hint**: yes
 
 ### Phase 9: Game Navigation
@@ -79,5 +82,5 @@ Plans:
 | 5. Scoring & Completion | v1.0 | 3/3 | Complete | 2026-03-25 |
 | 6. Menu & Navigation | v1.0 | 2/2 | Complete | 2026-03-25 |
 | 7. Grid Rendering Fixes | v1.1 | 1/1 | Complete   | 2026-03-27 |
-| 8. Controls & Number Pad Fixes | v1.1 | 0/? | Not started | - |
+| 8. Controls & Number Pad Fixes | v1.1 | 0/1 | Not started | - |
 | 9. Game Navigation | v1.1 | 0/? | Not started | - |
