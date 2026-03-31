@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ledgerman.sudoku"
+    namespace = "com.interstitial.sudoku"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.ledgerman.sudoku"
+        applicationId = "com.interstitial.sudoku"
         minSdk = 31
         targetSdk = 31
         versionCode = 1

@@ -6,7 +6,7 @@
   This manifest is merged with the main manifest only during unit test runs.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ledgerman.sudoku">
+    package="com.interstitial.sudoku">
     <application>
         <activity
             android:name="androidx.activity.ComponentActivity"
