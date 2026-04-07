@@ -25,7 +25,7 @@ fun InputModeToggle(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
-            .height(36.dp)
+            .height(48.dp)
             .border(2.dp, onSurface)
     ) {
         Box(
