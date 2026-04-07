@@ -1,5 +1,6 @@
 package com.interstitial.sudoku.ui.records
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +47,7 @@ private fun DifficultySection(difficulty: Difficulty, record: DifficultyRecord) 
         style = MaterialTheme.typography.titleMedium,
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(horizontal = 16.dp, vertical = 12.dp)
     )
     HorizontalDividerMMD()

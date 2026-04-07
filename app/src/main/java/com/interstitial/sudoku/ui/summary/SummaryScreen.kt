@@ -8,6 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.interstitial.sudoku.puzzle.model.Difficulty
 import com.mudita.mmd.components.buttons.ButtonMMD
+import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.divider.HorizontalDividerMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
@@ -54,14 +55,14 @@ fun SummaryScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        ButtonMMD(
+        OutlinedButtonMMD(
             onClick = onBackToMenu,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(48.dp)
         ) { TextMMD("Back to menu") }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        ButtonMMD(
+        OutlinedButtonMMD(
             onClick = onViewRecords,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(48.dp)
         ) { TextMMD("View records") }
