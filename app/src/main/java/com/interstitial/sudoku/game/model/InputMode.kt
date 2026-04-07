@@ -1,3 +1,3 @@
 package com.interstitial.sudoku.game.model
 
-enum class InputMode { FILL, PENCIL }
+enum class InputMode { FILL, NOTES }

@@ -14,8 +14,7 @@ android {
         minSdk = 31
         targetSdk = 31
         versionCode = 1
-        versionName = "1.0"
-
+        versionName = "2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -36,16 +35,11 @@ android {
     buildFeatures {
         compose = true
     }
-
     lint {
-        // App targets Mudita Kompakt (AOSP 12 = API 31) — not distributed via Google Play
         disable += "ExpiredTargetSdkVersion"
     }
-
     testOptions {
         unitTests {
-            // Required for Robolectric to access merged Android resources and manifests
-            // (e.g., ComponentActivity registration for Compose UI tests with createComposeRule)
             isIncludeAndroidResources = true
         }
     }
@@ -58,41 +52,25 @@ kotlin {
 }
 
 dependencies {
-    // Compose BOM
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    // Compose UI
     implementation(libs.compose.ui)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.compose.ui.tooling)
 
-    // Activity (ComponentActivity + setContent)
     implementation(libs.androidx.activity.compose)
-
-    // Lifecycle / ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // Coroutines
     implementation(libs.coroutines.android)
-
-    // Serialization
     implementation(libs.kotlinx.serialization.json)
-
-    // DataStore
     implementation(libs.androidx.datastore.preferences)
-
-    // Sudoklify — puzzle generation
     implementation(libs.sudoklify.core)
     implementation(libs.sudoklify.presets)
-
-    // MMD — Mudita Mindful Design E-ink UI components (D-09)
     implementation(libs.mmd)
 
-    // Unit tests
     testImplementation(libs.junit)
     testImplementation(libs.coroutines.test)
     testImplementation(libs.mockk)
@@ -101,6 +79,5 @@ dependencies {
     testImplementation(libs.compose.ui.test.junit4)
     testImplementation(libs.compose.ui.test.manifest)
 
-    // Compose UI tests
     androidTestImplementation(libs.compose.ui.test.junit4)
 }
