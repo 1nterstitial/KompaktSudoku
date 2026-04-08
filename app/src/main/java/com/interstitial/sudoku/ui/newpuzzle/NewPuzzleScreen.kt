@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import com.interstitial.sudoku.puzzle.model.Difficulty
 import com.mudita.mmd.components.divider.HorizontalDividerMMD
 import com.mudita.mmd.components.text.TextMMD
@@ -22,7 +23,7 @@ fun NewPuzzleScreen(
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         TopAppBarMMD(
-            title = { TextMMD("New puzzle") },
+            title = { TextMMD("New puzzle", fontWeight = FontWeight.Bold) },
             navigationIcon = {
                 TextMMD(
                     text = "\u2190",
@@ -80,10 +81,11 @@ private fun DifficultyRow(
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        TextMMD(text = title, style = MaterialTheme.typography.titleMedium)
+        TextMMD(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
         TextMMD(
             text = subtitle,
             style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp)
         )
