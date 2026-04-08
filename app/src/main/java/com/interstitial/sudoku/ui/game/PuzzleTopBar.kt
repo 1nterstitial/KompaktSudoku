@@ -29,10 +29,10 @@ fun PuzzleTopBar(
     ) {
         TextMMD(
             text = "\u2190",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .clickable(onClick = onBack)
-                .padding(8.dp)
+                .padding(horizontal = 6.dp, vertical = 4.dp)
         )
         TextMMD(
             text = title,
