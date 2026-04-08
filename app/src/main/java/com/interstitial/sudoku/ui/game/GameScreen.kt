@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import com.interstitial.sudoku.game.model.GameAction
 import com.interstitial.sudoku.game.model.GameUiState
 import com.interstitial.sudoku.game.model.InputMode
-import com.mudita.mmd.components.buttons.ButtonMMD
 import com.mudita.mmd.components.snackbar.SnackbarHostMMD
 import com.mudita.mmd.components.snackbar.SnackbarHostStateMMD
 import com.mudita.mmd.components.text.TextMMD
@@ -166,23 +165,53 @@ private fun ControlsRow(
             }
         }
 
-        // Action buttons with icons
-        ButtonMMD(
-            onClick = onUndo,
-            enabled = hasUndo,
-            modifier = Modifier.weight(1f).height(34.dp)
-        ) { Icon(UndoIcon, contentDescription = "Undo", modifier = Modifier.size(18.dp)) }
+        // Action buttons — square bordered boxes matching Fill/Notes style
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(34.dp)
+                .border(2.dp, onSurface)
+                .clickable(enabled = hasUndo, onClick = onUndo),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                UndoIcon,
+                contentDescription = "Undo",
+                modifier = Modifier.size(18.dp),
+                tint = if (hasUndo) onSurface else onSurface.copy(alpha = 0.38f)
+            )
+        }
 
-        ButtonMMD(
-            onClick = onErase,
-            enabled = canErase,
-            modifier = Modifier.weight(1f).height(34.dp)
-        ) { Icon(EraseIcon, contentDescription = "Erase", modifier = Modifier.size(18.dp)) }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(34.dp)
+                .border(2.dp, onSurface)
+                .clickable(enabled = canErase, onClick = onErase),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                EraseIcon,
+                contentDescription = "Erase",
+                modifier = Modifier.size(18.dp),
+                tint = if (canErase) onSurface else onSurface.copy(alpha = 0.38f)
+            )
+        }
 
-        ButtonMMD(
-            onClick = onHint,
-            enabled = canHint,
-            modifier = Modifier.weight(1f).height(34.dp)
-        ) { Icon(HintIcon, contentDescription = "Hint", modifier = Modifier.size(18.dp)) }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(34.dp)
+                .border(2.dp, onSurface)
+                .clickable(enabled = canHint, onClick = onHint),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                HintIcon,
+                contentDescription = "Hint",
+                modifier = Modifier.size(18.dp),
+                tint = if (canHint) onSurface else onSurface.copy(alpha = 0.38f)
+            )
+        }
     }
 }

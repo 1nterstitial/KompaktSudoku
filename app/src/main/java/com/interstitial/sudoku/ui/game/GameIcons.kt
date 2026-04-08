@@ -16,7 +16,7 @@ val UndoIcon: ImageVector by lazy {
     ).apply {
         path(
             stroke = SolidColor(Color.Black),
-            strokeLineWidth = 2f,
+            strokeLineWidth = 2.5f,
             fill = null
         ) {
             // Arrow arc (counter-clockwise from right)
@@ -41,7 +41,7 @@ val EraseIcon: ImageVector by lazy {
     ).apply {
         path(
             stroke = SolidColor(Color.Black),
-            strokeLineWidth = 2f,
+            strokeLineWidth = 2.5f,
             fill = null
         ) {
             // Backspace outline
@@ -56,7 +56,7 @@ val EraseIcon: ImageVector by lazy {
         }
         path(
             stroke = SolidColor(Color.Black),
-            strokeLineWidth = 2f,
+            strokeLineWidth = 2.5f,
             fill = null
         ) {
             // X inside
@@ -78,7 +78,7 @@ val HintIcon: ImageVector by lazy {
     ).apply {
         path(
             stroke = SolidColor(Color.Black),
-            strokeLineWidth = 2f,
+            strokeLineWidth = 2.5f,
             fill = null
         ) {
             // Bulb
