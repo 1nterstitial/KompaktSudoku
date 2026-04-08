@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.interstitial.sudoku.game.model.GameAction
 import com.interstitial.sudoku.game.model.GameUiState
@@ -128,8 +129,8 @@ private fun ControlsRow(
         Row(
             modifier = Modifier
                 .weight(2f)
-                .height(32.dp)
-                .border(1.dp, onSurface)
+                .height(34.dp)
+                .border(2.dp, onSurface)
         ) {
             Box(
                 modifier = Modifier
@@ -141,7 +142,8 @@ private fun ControlsRow(
             ) {
                 TextMMD(
                     text = "Fill",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
                     color = if (inputMode == InputMode.FILL) surface else onSurface
                 )
             }
@@ -155,7 +157,8 @@ private fun ControlsRow(
             ) {
                 TextMMD(
                     text = "Notes",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
                     color = if (inputMode == InputMode.NOTES) surface else onSurface
                 )
             }
@@ -165,19 +168,19 @@ private fun ControlsRow(
         ButtonMMD(
             onClick = onUndo,
             enabled = hasUndo,
-            modifier = Modifier.weight(1f).height(32.dp)
-        ) { TextMMD("Undo", style = MaterialTheme.typography.labelMedium) }
+            modifier = Modifier.weight(1f).height(34.dp)
+        ) { TextMMD("Undo", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold) }
 
         ButtonMMD(
             onClick = onErase,
             enabled = canErase,
-            modifier = Modifier.weight(1f).height(32.dp)
-        ) { TextMMD("Erase", style = MaterialTheme.typography.labelMedium) }
+            modifier = Modifier.weight(1f).height(34.dp)
+        ) { TextMMD("Erase", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold) }
 
         ButtonMMD(
             onClick = onHint,
             enabled = canHint,
-            modifier = Modifier.weight(1f).height(32.dp)
-        ) { TextMMD("Hint", style = MaterialTheme.typography.labelMedium) }
+            modifier = Modifier.weight(1f).height(34.dp)
+        ) { TextMMD("Hint", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold) }
     }
 }
