@@ -7,6 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
@@ -16,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.interstitial.sudoku.game.model.GameAction
 import com.interstitial.sudoku.game.model.GameUiState
 import com.interstitial.sudoku.game.model.InputMode
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.mudita.mmd.components.snackbar.SnackbarHostMMD
 import com.mudita.mmd.components.snackbar.SnackbarHostStateMMD
 import com.mudita.mmd.components.text.TextMMD
@@ -165,53 +169,86 @@ private fun ControlsRow(
             }
         }
 
-        // Action buttons — square bordered boxes matching Fill/Notes style
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(34.dp)
-                .border(2.dp, onSurface)
-                .clickable(enabled = hasUndo, onClick = onUndo),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                UndoIcon,
-                contentDescription = "Undo",
-                modifier = Modifier.size(18.dp),
-                tint = if (hasUndo) onSurface else onSurface.copy(alpha = 0.38f)
-            )
-        }
+        // Action buttons — dark filled, white icons, briefly reverse on press
+        val scope = rememberCoroutineScope()
+        var pressedButton by remember { mutableIntStateOf(0) }
 
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(34.dp)
-                .border(2.dp, onSurface)
-                .clickable(enabled = canErase, onClick = onErase),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                EraseIcon,
-                contentDescription = "Erase",
-                modifier = Modifier.size(18.dp),
-                tint = if (canErase) onSurface else onSurface.copy(alpha = 0.38f)
-            )
-        }
+        ActionIconButton(
+            icon = UndoIcon,
+            contentDescription = "Undo",
+            enabled = hasUndo,
+            pressed = pressedButton == 1,
+            onSurface = onSurface,
+            surface = surface,
+            onClick = {
+                pressedButton = 1
+                onUndo()
+                scope.launch { delay(150); pressedButton = 0 }
+            },
+            modifier = Modifier.weight(1f)
+        )
 
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(34.dp)
-                .border(2.dp, onSurface)
-                .clickable(enabled = canHint, onClick = onHint),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                HintIcon,
-                contentDescription = "Hint",
-                modifier = Modifier.size(18.dp),
-                tint = if (canHint) onSurface else onSurface.copy(alpha = 0.38f)
-            )
-        }
+        ActionIconButton(
+            icon = EraseIcon,
+            contentDescription = "Erase",
+            enabled = canErase,
+            pressed = pressedButton == 2,
+            onSurface = onSurface,
+            surface = surface,
+            onClick = {
+                pressedButton = 2
+                onErase()
+                scope.launch { delay(150); pressedButton = 0 }
+            },
+            modifier = Modifier.weight(1f)
+        )
+
+        ActionIconButton(
+            icon = HintIcon,
+            contentDescription = "Hint",
+            enabled = canHint,
+            pressed = pressedButton == 3,
+            onSurface = onSurface,
+            surface = surface,
+            onClick = {
+                pressedButton = 3
+                onHint()
+                scope.launch { delay(150); pressedButton = 0 }
+            },
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun ActionIconButton(
+    icon: ImageVector,
+    contentDescription: String,
+    enabled: Boolean,
+    pressed: Boolean,
+    onSurface: Color,
+    surface: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val bg = when {
+        !enabled -> onSurface.copy(alpha = 0.38f)
+        pressed -> surface
+        else -> onSurface
+    }
+    val tint = when {
+        !enabled -> surface
+        pressed -> onSurface
+        else -> surface
+    }
+    Box(
+        modifier = modifier
+            .height(34.dp)
+            .border(2.dp, onSurface)
+            .background(bg)
+            .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(icon, contentDescription = contentDescription, modifier = Modifier.size(18.dp), tint = tint)
     }
 }
