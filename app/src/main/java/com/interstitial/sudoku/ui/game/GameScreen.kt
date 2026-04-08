@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -59,13 +60,13 @@ fun GameScreen(
                 }
             )
 
-            // Grid fills all remaining vertical space
+            // Grid sized by width, maintaining square aspect ratio
             SudokuGrid(
                 state = state,
                 onCellTap = { row, col -> onAction(GameAction.SelectCell(row * 9 + col)) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .aspectRatio(1f)
                     .padding(horizontal = 4.dp)
             )
 
