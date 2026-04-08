@@ -27,7 +27,7 @@ fun RecordsScreen(
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         TopAppBarMMD(
-            title = { TextMMD("Records") },
+            title = { TextMMD("Records", fontWeight = FontWeight.Bold) },
             navigationIcon = {
                 TextMMD(
                     text = "\u2190",
