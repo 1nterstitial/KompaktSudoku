@@ -3,7 +3,6 @@ package com.interstitial.sudoku.ui.game
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -35,7 +34,6 @@ fun DigitPad(
     Canvas(
         modifier = modifier
             .fillMaxWidth()
-            .height(120.dp)
             .padding(horizontal = 4.dp)
             .pointerInput(Unit) {
                 detectTapGestures { offset ->

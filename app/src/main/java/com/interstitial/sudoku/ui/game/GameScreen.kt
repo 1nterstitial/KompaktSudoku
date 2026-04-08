@@ -93,7 +93,7 @@ fun GameScreen(
                         onAction(GameAction.PlaceDigit(digit))
                     }
                 },
-                modifier = Modifier
+                modifier = Modifier.weight(1f)
             )
         }
 
