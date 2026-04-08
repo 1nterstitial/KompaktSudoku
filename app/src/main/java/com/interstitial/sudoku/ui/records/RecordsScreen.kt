@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 import com.interstitial.sudoku.game.model.DifficultyRecord
 import com.interstitial.sudoku.puzzle.model.Difficulty
 import com.mudita.mmd.components.divider.HorizontalDividerMMD
-import com.mudita.mmd.components.lazy.LazyColumnMMD
 import com.mudita.mmd.components.text.TextMMD
 import com.mudita.mmd.components.top_app_bar.TopAppBarMMD
 
@@ -34,29 +33,30 @@ fun RecordsScreen(
             }
         )
 
-        LazyColumnMMD {
-            for (difficulty in Difficulty.entries) {
-                val record = records[difficulty] ?: DifficultyRecord()
-                item {
-                    TextMMD(
-                        text = difficulty.name.lowercase().replaceFirstChar { it.uppercase() },
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .padding(horizontal = 16.dp, vertical = 12.dp)
-                    )
-                    HorizontalDividerMMD()
-                    RecordRow("Completed", if (record.completedCount > 0) record.completedCount.toString() else "\u2014")
-                    HorizontalDividerMMD()
-                    RecordRow("Best time", record.bestTimeMs?.let { formatTime(it) } ?: "\u2014")
-                    HorizontalDividerMMD()
-                    RecordRow("Best no-hint", record.bestNoHintTimeMs?.let { formatTime(it) } ?: "\u2014")
-                    HorizontalDividerMMD(thickness = 2.dp)
-                }
-            }
+        for (difficulty in Difficulty.entries) {
+            val record = records[difficulty] ?: DifficultyRecord()
+            DifficultySection(difficulty, record)
         }
     }
+}
+
+@Composable
+private fun DifficultySection(difficulty: Difficulty, record: DifficultyRecord) {
+    TextMMD(
+        text = difficulty.name.lowercase().replaceFirstChar { it.uppercase() },
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    )
+    HorizontalDividerMMD()
+    RecordRow("Completed", if (record.completedCount > 0) record.completedCount.toString() else "\u2014")
+    HorizontalDividerMMD()
+    RecordRow("Best time", record.bestTimeMs?.let { formatTime(it) } ?: "\u2014")
+    HorizontalDividerMMD()
+    RecordRow("Best no-hint", record.bestNoHintTimeMs?.let { formatTime(it) } ?: "\u2014")
+    HorizontalDividerMMD(thickness = 2.dp)
 }
 
 @Composable

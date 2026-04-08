@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mudita.mmd.components.divider.HorizontalDividerMMD
-import com.mudita.mmd.components.lazy.LazyColumnMMD
 import com.mudita.mmd.components.text.TextMMD
 
 @Composable
@@ -20,44 +19,36 @@ fun HomeScreen(
     onRecords: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumnMMD(modifier = modifier.fillMaxSize().padding(top = 32.dp)) {
-        item {
-            TextMMD(
-                text = "Sudoku",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
-            )
-            HorizontalDividerMMD(thickness = 2.dp)
-        }
+    Column(modifier = modifier.fillMaxSize().padding(top = 32.dp)) {
+        TextMMD(
+            text = "Sudoku",
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+        )
+        HorizontalDividerMMD(thickness = 2.dp)
 
         if (hasSavedGame) {
-            item {
-                MenuRow(
-                    title = "Continue puzzle",
-                    subtitle = "$savedGameDifficulty \u00B7 $savedGameCellsLeft cells left",
-                    onClick = onContinue
-                )
-                HorizontalDividerMMD()
-            }
-        }
-
-        item {
             MenuRow(
-                title = "New puzzle",
-                subtitle = "Choose easy, medium, or hard",
-                onClick = onNewPuzzle
+                title = "Continue puzzle",
+                subtitle = "$savedGameDifficulty \u00B7 $savedGameCellsLeft cells left",
+                onClick = onContinue
             )
             HorizontalDividerMMD()
         }
 
-        item {
-            MenuRow(
-                title = "Records",
-                subtitle = "Completed puzzles and best times",
-                onClick = onRecords
-            )
-            HorizontalDividerMMD()
-        }
+        MenuRow(
+            title = "New puzzle",
+            subtitle = "Choose easy, medium, or hard",
+            onClick = onNewPuzzle
+        )
+        HorizontalDividerMMD()
+
+        MenuRow(
+            title = "Records",
+            subtitle = "Completed puzzles and best times",
+            onClick = onRecords
+        )
+        HorizontalDividerMMD()
     }
 }
 
