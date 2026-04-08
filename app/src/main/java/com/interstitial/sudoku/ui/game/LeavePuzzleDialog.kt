@@ -8,7 +8,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mudita.mmd.components.buttons.ButtonMMD
-import com.mudita.mmd.components.buttons.OutlinedButtonMMD
 import com.mudita.mmd.components.text.TextMMD
 
 @Composable
@@ -38,7 +37,7 @@ fun LeavePuzzleDialog(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            OutlinedButtonMMD(
+            ButtonMMD(
                 onClick = onDiscard,
                 modifier = Modifier.fillMaxWidth().height(48.dp)
             ) { TextMMD("Discard puzzle") }

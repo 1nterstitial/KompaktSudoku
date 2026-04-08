@@ -35,7 +35,7 @@ fun DigitPad(
     Canvas(
         modifier = modifier
             .fillMaxWidth()
-            .height(168.dp)
+            .height(120.dp)
             .padding(horizontal = 4.dp)
             .pointerInput(Unit) {
                 detectTapGestures { offset ->
