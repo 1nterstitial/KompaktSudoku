@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -165,23 +166,23 @@ private fun ControlsRow(
             }
         }
 
-        // Action buttons
+        // Action buttons with icons
         ButtonMMD(
             onClick = onUndo,
             enabled = hasUndo,
             modifier = Modifier.weight(1f).height(34.dp)
-        ) { TextMMD("Undo", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold) }
+        ) { Icon(UndoIcon, contentDescription = "Undo", modifier = Modifier.size(18.dp)) }
 
         ButtonMMD(
             onClick = onErase,
             enabled = canErase,
             modifier = Modifier.weight(1f).height(34.dp)
-        ) { TextMMD("Erase", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold) }
+        ) { Icon(EraseIcon, contentDescription = "Erase", modifier = Modifier.size(18.dp)) }
 
         ButtonMMD(
             onClick = onHint,
             enabled = canHint,
             modifier = Modifier.weight(1f).height(34.dp)
-        ) { TextMMD("Hint", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold) }
+        ) { Icon(HintIcon, contentDescription = "Hint", modifier = Modifier.size(18.dp)) }
     }
 }
