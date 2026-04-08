@@ -26,7 +26,7 @@ fun SummaryScreen(
 ) {
     Column(modifier = modifier.fillMaxSize()) {
         TopAppBarMMD(
-            title = { TextMMD("Puzzle complete") }
+            title = { TextMMD("Puzzle complete", fontWeight = FontWeight.Bold) }
         )
 
         StatRow("Difficulty", difficulty.name.lowercase().replaceFirstChar { it.uppercase() })
@@ -40,6 +40,7 @@ fun SummaryScreen(
             TextMMD(
                 text = "New personal record",
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
             )
             HorizontalDividerMMD(thickness = 2.dp)
@@ -74,8 +75,8 @@ private fun StatRow(label: String, value: String) {
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        TextMMD(text = label, style = MaterialTheme.typography.bodyLarge)
-        TextMMD(text = value, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+        TextMMD(text = label, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+        TextMMD(text = value, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
     }
 }
 
