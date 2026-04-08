@@ -24,19 +24,19 @@ fun PuzzleActionRow(
         ButtonMMD(
             onClick = onUndo,
             enabled = hasUndo,
-            modifier = Modifier.weight(1f).height(48.dp)
+            modifier = Modifier.weight(1f).height(36.dp)
         ) { TextMMD("Undo") }
 
         ButtonMMD(
             onClick = onErase,
             enabled = canErase,
-            modifier = Modifier.weight(1f).height(48.dp)
+            modifier = Modifier.weight(1f).height(36.dp)
         ) { TextMMD("Erase") }
 
         ButtonMMD(
             onClick = onHint,
             enabled = canHint,
-            modifier = Modifier.weight(1f).height(48.dp)
+            modifier = Modifier.weight(1f).height(36.dp)
         ) { TextMMD("Hint") }
     }
 }
